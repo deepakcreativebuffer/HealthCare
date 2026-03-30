@@ -4,7 +4,6 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'r
 import ResidentLayout from './resident-panel/layouts/ResidentLayout';
 import Dashboard from './resident-panel/pages/Dashboard';
 import Profile from './resident-panel/pages/Profile';
-import React, { useState } from "react";
 import Navbar from "./components/layout/Navbar";
 import SubNav from "./components/layout/SubNav";
 import MedicalDashboard from "./components/dashboard/MedicalDashboard";
