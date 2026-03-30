@@ -16,44 +16,44 @@ const StaffSchedule = () => {
       actionText="View All"
       showMore={false}
     >
-      <div className="space-y-3">
+      <div className="space-y-2">
         {mockData.staffSchedule.map((shift, idx) => (
           <div
             key={idx}
-            className="bg-white border border-slate-100 rounded-2xl p-4 flex items-center gap-4 hover:shadow-sm transition-all group/shift cursor-pointer relative overflow-hidden"
+            className="bg-white border border-[#E2E8F0] rounded-[10px] px-3 py-3 flex items-center gap-3 hover:shadow-sm transition-all group/shift cursor-pointer relative overflow-hidden"
           >
             {/* Left Icon square */}
             <div
-              className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 transition-colors ${
+              className={`w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0 transition-colors ${
                 shift.color === "blue"
-                  ? "bg-blue-50 text-blue-500"
+                  ? "bg-[#DEF3FF] text-[#129FED]"
                   : shift.color === "green"
-                    ? "bg-green-50 text-green-500"
-                    : "bg-orange-50 text-orange-500"
+                    ? "bg-[#E9F7EF] text-[#27AE60]"
+                    : "bg-[#FFF4E5] text-[#FF9800]"
               }`}
             >
-              <CalendarRange size={20} />
+              <CalendarRange size={18} />
             </div>
 
             <div className="flex-1 flex items-center justify-between">
               <div>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-2xl font-bold text-slate-800 tracking-tight leading-none">
+                  <span className="text-[18px] font-bold text-slate-800 leading-none">
                     {shift.count}
                   </span>
                 </div>
-                <p className="text-[10px] font-bold text-slate-400 mt-1.5 uppercase tracking-tight">
+                <p className="text-[11px] font-bold text-slate-400 mt-1 uppercase tracking-tight">
                   Total Number of Shift
                 </p>
               </div>
 
               <div
-                className={`px-3 py-1 rounded-full text-[10px] font-bold ${
+                className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                   shift.color === "blue"
-                    ? "bg-[#e0f2fe] text-[#0ea5e9]"
+                    ? "bg-[#DEF3FF] text-[#129FED]"
                     : shift.color === "green"
-                      ? "bg-[#dcfce7] text-[#22c55e]"
-                      : "bg-[#ffedd5] text-[#f97316]"
+                      ? "bg-[#E9F7EF] text-[#27AE60]"
+                      : "bg-[#FFF4E5] text-[#FF9800]"
                 }`}
               >
                 {shift.facility}

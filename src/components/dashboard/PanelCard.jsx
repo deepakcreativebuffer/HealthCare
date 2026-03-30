@@ -14,10 +14,10 @@ const PanelCard = ({
   onAction,
 }) => {
   return (
-    <div className="dashboard-card h-full group/panel flex flex-col">
-      <div className="p-4 px-5 border-b border-slate-50 flex items-center justify-between shrink-0 h-[64px]">
+    <div className="bg-white rounded-[10px] border border-[#E2E8F0] shadow-sm h-full group/panel flex flex-col overflow-hidden">
+      <div className="p-3 px-5 border-b border-gray-100 flex items-center justify-between shrink-0 h-[56px]">
         <div className="flex items-center gap-2">
-          {Icon && <Icon size={18} className="text-blue-600" />}
+          {Icon && <Icon size={18} className="text-action-blue" />}
           <h3 className="text-sm font-bold text-slate-800 leading-tight">
             {title}
           </h3>
@@ -40,10 +40,10 @@ const PanelCard = ({
       </div>
 
       {showFooter && (
-        <div className="mt-auto px-5 py-3 border-t border-slate-50 flex items-center justify-center shrink-0 h-[48px]">
+        <div className="mt-auto px-5 py-3 border-t border-gray-100 flex items-center justify-center shrink-0 h-[48px]">
           <button
             onClick={onAction}
-            className="text-blue-600 hover:text-blue-700 font-bold text-[11px] flex items-center gap-1.5 active:translate-y-px transition-all group/btn"
+            className="text-action-blue hover:text-blue-700 font-bold text-[11px] flex items-center gap-1.5 active:translate-y-px transition-all group/btn"
           >
             {actionText}
             <ChevronRight

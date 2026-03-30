@@ -1,18 +1,21 @@
 import React from 'react';
 import { mockUser } from '../data/mockData';
+import doctorImg from '../../assets/doctor.svg';
 
 const WelcomeBanner = () => {
   return (
-    <div className="bg-gradient-to-r from-[#00AEEF] to-[#0072CE] rounded-2xl p-8 text-white relative overflow-hidden shadow-lg shadow-blue-500/20">
-      <div className="relative z-10 max-w-2xl">
-        <h1 className="text-3xl font-bold mb-2">Good Morning, {mockUser.name.split(' ')[0]}! 👋</h1>
-        <p className="text-blue-100 text-lg mb-6 leading-relaxed opacity-90">How can we assist you today?</p>
-        <p className="font-medium">Welcome to the Oasis Notes!</p>
+    <div className="bg-gradient-to-r from-[#0088FF] to-[#20D5FE] rounded-[10px] p-6 sm:p-8 text-white relative overflow-hidden shadow-md">
+      <div className="relative z-10 max-w-full sm:max-w-2xl text-center sm:text-left">
+        <h1 className="text-[22px] sm:text-[28px] font-bold mb-1 flex items-center justify-center sm:justify-start gap-2">
+          Good Morning, {mockUser.name.split(' ')[0]}! 👋
+        </h1>
+        <p className="text-white/90 text-[14px] mb-4">How can we assist you today?</p>
+        <p className="text-[14px] font-medium mt-8">Welcome to the Oasis Notes!</p>
       </div>
-      
-      {/* Decorative abstract elements/illustration */}
-      <div className="absolute right-0 bottom-0 top-0 w-1/3 min-w-[300px] pointer-events-none flex items-end justify-end">
-        <div className="w-full h-full bg-[url('https://illustrations.popsy.co/blue/startup-team.svg')] bg-contain bg-right-bottom bg-no-repeat opacity-90 translate-x-12 translate-y-4" />
+
+      {/* Doctor illustration - hidden on mobile, visible on sm and up */}
+      <div className="hidden sm:flex absolute right-0 bottom-0 top-0 w-1/3 min-w-[200px] pointer-events-none items-center justify-end pr-4">
+        <img src={doctorImg} alt="Doctors" className="h-[90%] w-auto object-contain opacity-40 sm:opacity-100" />
       </div>
     </div>
   );

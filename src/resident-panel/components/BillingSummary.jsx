@@ -21,20 +21,20 @@ const BillingSummary = () => {
         <p className="text-2xl font-bold text-action-blue">${billingDetails.balanceDue.toFixed(2)}</p>
       </div>
 
-      <div className="bg-gray-50 p-4 rounded-xl border border-gray-100 mt-2">
+      <div className="bg-gray-50 p-4 rounded-[10px] border border-[#E2E8F0] mt-2">
         <div className="flex items-center gap-2 text-sm text-gray-500 mb-3">
           <CreditCard className="w-4 h-4" />
           <span>Last Payment: ${billingDetails.lastPayment.amount.toFixed(2)}; {billingDetails.lastPayment.date}</span>
         </div>
-        
+
         {/* Progress Bar */}
         <div className="w-full h-2 bg-gray-200 rounded-full mt-4 mb-2 overflow-hidden">
-          <div 
-            className="h-full bg-action-blue rounded-full" 
-            style={{ width: `${billingDetails.progress}%` }} 
+          <div
+            className="h-full bg-action-blue rounded-full"
+            style={{ width: `${billingDetails.progress}%` }}
           />
         </div>
-        
+
         <div className="flex items-center justify-between mt-3 text-sm">
           <span className="text-gray-500">Insurance Coverage: <span className="font-bold text-gray-900">60%</span></span>
           <Badge variant="neutral" className="bg-gray-200 text-gray-700">

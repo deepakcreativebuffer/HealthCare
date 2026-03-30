@@ -2,24 +2,30 @@ import React from 'react';
 
 const WelcomeBanner = () => {
   return (
-    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 via-blue-500 to-teal-400 p-8 text-white min-h-[220px]">
-      <div className="flex flex-col gap-2 max-w-lg relative z-10">
-        <h1 className="text-4xl font-bold tracking-tight">Good Morning, Sarah! 👋</h1>
-        <p className="text-blue-50 font-medium text-lg">How can we assist you today?</p>
-        <p className="text-blue-100 text-sm mt-4 backdrop-blur-sm bg-white/10 px-4 py-2 rounded-lg inline-block w-fit">
-          Welcome back to the Oasis Notes!
-        </p>
+    <div className="bg-gradient-to-r from-[#0088FF] to-[#20D5FE] rounded-[10px] p-6 sm:p-8 text-white relative overflow-hidden shadow-md min-h-[180px] sm:min-h-[200px]">
+      <div className="relative z-10 max-w-full sm:max-w-2xl text-center sm:text-left flex flex-col justify-center h-full">
+        <h1 className="text-[24px] sm:text-[32px] font-bold mb-2 flex items-center justify-center sm:justify-start gap-2">
+          Good Morning, Sarah! 👋
+        </h1>
+        <p className="text-white/90 text-[14px] sm:text-[16px] mb-6">How can we assist you today?</p>
+        
+        <div className="backdrop-blur-md bg-white/10 px-4 py-2 rounded-lg border border-white/20 inline-block w-fit mx-auto sm:mx-0">
+          <p className="text-[14px] font-medium">Welcome back to the Oasis Notes!</p>
+        </div>
       </div>
 
-      <img 
-        src="/medical_admin_banner_illustration.png" 
-        alt="Oasis Medical Illustration"
-        className="absolute right-0 bottom-0 h-full w-auto object-contain opacity-90 scale-x-[-1] translate-x-12 mix-blend-overlay lg:translate-x-0 lg:opacity-100 lg:mix-blend-normal transform"
-      />
-      
-      {/* Decorative blobs */}
-      <div className="absolute top-[-20%] right-[-10%] w-64 h-64 bg-white/10 rounded-full blur-3xl" />
-      <div className="absolute bottom-[-20%] left-[-10%] w-48 h-48 bg-blue-400/20 rounded-full blur-2xl" />
+      {/* Doctor illustration - hidden on smallest, visible from sm up */}
+      <div className="hidden sm:flex absolute right-0 bottom-0 top-0 w-1/3 min-w-[220px] pointer-events-none items-center justify-end pr-4">
+        <img 
+          src="/src/assets/doctor.svg" 
+          alt="Doctors" 
+          className="h-[90%] w-auto object-contain opacity-40 sm:opacity-100" 
+        />
+      </div>
+
+      {/* Decorative shapes */}
+      <div className="absolute top-[-20%] right-[10%] w-32 h-32 bg-white/10 rounded-full blur-2xl" />
+      <div className="absolute bottom-[-10%] left-[5%] w-24 h-24 bg-white/10 rounded-full blur-xl" />
     </div>
   );
 };

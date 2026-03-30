@@ -20,8 +20,8 @@ const RecentDocuments = () => {
         {recentDocuments.map((doc) => (
           <div key={doc.id} className="flex justify-between items-center py-2 border-b border-gray-100 last:border-0">
             <div>
-              <p className="font-semibold text-gray-900">{doc.name}</p>
-              <div className="flex items-center gap-1 mt-1 text-sm text-gray-500">
+              <p className="font-semibold text-gray-900 text-[14px]">{doc.name}</p>
+              <div className="flex items-center gap-1 mt-1 text-[12px] text-gray-500">
                 <CalendarIcon className="w-3 h-3" />
                 <span>{doc.date}</span>
               </div>

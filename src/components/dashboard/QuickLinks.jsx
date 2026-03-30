@@ -50,32 +50,32 @@ const linkItems = [
 const QuickLinks = () => {
   return (
     <PanelCard title="Quick Links" icon={Zap} customScroll={true}>
-      <div className="space-y-3 max-h-[410px] overflow-y-auto no-scrollbar pr-1">
+      <div className="space-y-2 max-h-[410px] overflow-y-auto no-scrollbar pr-1">
         {linkItems.map((link, idx) => (
           <button
             key={idx}
-            className={`w-full flex items-center gap-4 p-3 rounded-2xl border border-dashed transition-all text-left group/link shrink-0 ${
+            className={`w-full flex items-center gap-3 p-3 rounded-[10px] border transition-all text-left group/link shrink-0 ${
               link.color === "green"
-                ? "bg-[#f0fdf4] border-green-200"
+                ? "bg-[#E9F7EF] border-[#C2E9D1]"
                 : link.color === "blue"
-                  ? "bg-[#f0f9ff] border-blue-200"
+                  ? "bg-[#DEF3FF] border-[#B5E1FA]"
                   : link.color === "orange"
-                    ? "bg-[#fff7ed] border-orange-200"
-                    : "bg-[#fef2f2] border-red-200"
+                    ? "bg-[#FFF4E5] border-[#FFE0B2]"
+                    : "bg-[#FFEBEE] border-[#FFCDD2]"
             }`}
           >
             {/* White Circle for Icon */}
-            <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shrink-0 shadow-sm">
+            <div className="w-9 h-9 rounded-full bg-white flex items-center justify-center shrink-0 shadow-sm border border-white/50">
               <link.icon
-                size={18}
+                size={16}
                 className={`${
                   link.color === "green"
-                    ? "text-green-500"
+                    ? "text-[#27AE60]"
                     : link.color === "blue"
-                      ? "text-blue-500"
+                      ? "text-[#129FED]"
                       : link.color === "orange"
-                        ? "text-orange-500"
-                        : "text-red-500"
+                        ? "text-[#FF9800]"
+                        : "text-[#D32F2F]"
                 }`}
               />
             </div>
@@ -84,21 +84,21 @@ const QuickLinks = () => {
               <h4 className="text-[13px] font-bold text-slate-800 leading-tight">
                 {link.label}
               </h4>
-              <p className="text-[10px] text-slate-400 font-bold mt-0.5">
+              <p className="text-[11px] text-slate-500 font-medium mt-0.5 opacity-80">
                 {link.sub}
               </p>
             </div>
 
             <ChevronRight
-              size={18}
+              size={16}
               className={`transition-all group-hover/link:translate-x-1 ${
                 link.color === "green"
-                  ? "text-green-500"
+                  ? "text-[#27AE60]"
                   : link.color === "blue"
-                    ? "text-blue-500"
+                    ? "text-[#129FED]"
                     : link.color === "orange"
-                      ? "text-orange-500"
-                      : "text-red-500"
+                      ? "text-[#FF9800]"
+                      : "text-[#D32F2F]"
               }`}
             />
           </button>
