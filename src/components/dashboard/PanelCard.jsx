@@ -10,6 +10,7 @@ const PanelCard = ({
   headerAction,
   showFooter = true,
   showMore = true,
+  customScroll = false,
   onAction,
 }) => {
   return (
@@ -32,7 +33,9 @@ const PanelCard = ({
         </div>
       </div>
 
-      <div className="flex-1 p-5 pt-4 overflow-y-auto no-scrollbar scroll-smooth">
+      <div
+        className={`flex-1 p-5 pt-4 overflow-y-auto scroll-smooth ${customScroll ? "custom-scrollbar" : "no-scrollbar"}`}
+      >
         {children}
       </div>
 
