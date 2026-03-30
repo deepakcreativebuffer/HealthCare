@@ -1,0 +1,95 @@
+import React from 'react';
+import { Card, Badge, Button } from './ui';
+import { Activity, Pill, MoreHorizontal, Link, Clock } from 'lucide-react';
+import { diagnosisProblems, medications } from '../data/mockData';
+
+const ClinicalOverview = () => {
+  return (
+    <Card className="h-full flex flex-col">
+      <div className="flex items-center justify-between pb-4 border-b border-gray-100 mb-6">
+        <h3 className="text-lg font-bold flex items-center gap-2">
+          <Activity className="w-5 h-5 text-blue-500" />
+          Clinical Overview
+        </h3>
+        <button className="text-gray-400 hover:text-gray-600">
+          <MoreHorizontal className="w-5 h-5" />
+        </button>
+      </div>
+
+      <div className="space-y-6">
+        {/* Diagnosis & Problems */}
+        <div className="border border-gray-100 rounded-xl overflow-hidden">
+          <div className="bg-gray-50/50 px-4 py-3 flex items-center justify-between border-b border-gray-100">
+            <h4 className="font-bold flex items-center gap-2 text-gray-900">
+              <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
+                <Activity className="w-4 h-4" />
+              </span>
+              Diagnosis & Problems
+            </h4>
+            <Button variant="ghost" className="text-action-blue px-0 hover:bg-transparent font-semibold">
+              View Full History
+            </Button>
+          </div>
+
+          <div className="p-4 space-y-4">
+            {diagnosisProblems.map((prob) => (
+              <div key={prob.id} className="flex justify-between items-center bg-gray-50 p-3 rounded-lg border border-gray-100">
+                <div className="flex gap-3 items-center text-gray-700">
+                  <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 shrink-0">
+                    <Link className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900">{prob.name}</p>
+                    <p className="text-sm text-gray-500 flex items-center gap-1">
+                      {prob.onset ? <span className="flex items-center"><Clock className="w-3 h-3 mr-1"/> Onset: {prob.onset}</span> : <span className="flex items-center"><Clock className="w-3 h-3 mr-1"/> Type: {prob.type}</span>}
+                    </p>
+                  </div>
+                </div>
+                <Badge 
+                  variant={prob.status.toLowerCase() === 'active' ? 'success' : prob.status.toLowerCase() === 'chronic' ? 'success' : 'danger'}
+                >
+                  {prob.status}
+                </Badge>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Medications */}
+        <div className="border border-gray-100 rounded-xl overflow-hidden">
+          <div className="bg-gray-50/50 px-4 py-3 flex items-center justify-between border-b border-gray-100">
+            <h4 className="font-bold flex items-center gap-2 text-gray-900">
+              <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
+                <Pill className="w-4 h-4" />
+              </span>
+              Medications
+            </h4>
+            <Button variant="ghost" className="text-blue-600 px-0 hover:bg-transparent font-semibold">
+              View Full History
+            </Button>
+          </div>
+
+          <div className="p-4 space-y-4">
+            {medications.map((med) => (
+              <div key={med.id} className="flex justify-between items-center bg-gray-50 p-3 rounded-lg border border-gray-100">
+                <div className="text-gray-700">
+                  <p className="font-semibold text-gray-900">
+                    {med.name} {med.dose && <span className="font-normal text-gray-500">{med.dose}</span>}
+                  </p>
+                  <p className="text-sm text-gray-500 flex items-center gap-2 mt-1">
+                    <span className="flex items-center"><Clock className="w-3 h-3 mr-1"/> {med.details}</span>
+                  </p>
+                </div>
+                <Badge variant="neutral" className="bg-gray-200 text-gray-700">
+                  {med.status}
+                </Badge>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </Card>
+  );
+};
+
+export default ClinicalOverview;

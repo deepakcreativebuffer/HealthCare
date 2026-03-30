@@ -1,12 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Roboto", ui-sans-serif, system-ui, sans-serif;
   
   /* Primary Oasis Brand Colors */
   --color-oasis-blue: #1e40af;
   --color-oasis-teal: #0d9488;
   --color-oasis-sky: #0ea5e9;
+  --color-action-blue: #129FED;
   
   /* Status Colors from design */
   --color-brand-primary: #1e88e5;
