@@ -1,31 +1,38 @@
 import React from 'react';
 import { Search, Bell, Settings, LogOut, User, ChevronDown } from 'lucide-react';
 
-const Navbar = () => {
+const Navbar = ({ activeTab, onTabChange }) => {
+  const tabs = ['Dashboard', 'Billing & Claims', 'Users', 'Tracking', 'Log', 'Activity Log'];
+
   return (
     <nav className="bg-white border-b border-gray-100 px-6 py-3 flex items-center justify-between sticky top-0 z-50">
       <div className="flex items-center gap-8">
         {/* Logo */}
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-gradient-to-tr from-blue-600 to-teal-400 rounded-full flex items-center justify-center">
+        <div className="flex items-center gap-2 cursor-pointer" onClick={() => onTabChange('Dashboard')}>
+          <div className="w-8 h-8 bg-gradient-to-tr from-blue-600 to-teal-400 rounded-full flex items-center justify-center shadow-lg shadow-blue-100">
             <div className="w-4 h-4 bg-white rounded-full opacity-80" />
           </div>
-          <span className="text-xl font-bold tracking-tight text-slate-800">OASIS NOTES</span>
+          <span className="text-xl font-bold tracking-tight text-slate-800 tracking-tighter">OASIS NOTES</span>
         </div>
 
         {/* Main Navigation */}
         <div className="hidden lg:flex items-center gap-1">
-          {['Dashboard', 'Billing & Claims', 'Users', 'Tracking', 'Log', 'Activity Log'].map((item, idx) => (
+          {tabs.map((item) => (
             <button
               key={item}
-              className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-                idx === 0 
-                  ? 'bg-blue-50 text-blue-600' 
-                  : 'text-slate-500 hover:bg-gray-50 hover:text-slate-700'
+              onClick={() => onTabChange(item)}
+              className={`px-4 py-2 text-[13px] font-bold rounded-xl transition-all ${
+                activeTab === item 
+                  ? 'bg-blue-600 text-white shadow-md shadow-blue-100' 
+                  : 'text-slate-400 hover:bg-gray-50 hover:text-slate-700'
               }`}
             >
               <div className="flex items-center gap-2">
-                {idx === 0 && <div className="w-4 h-4 border-2 border-blue-600 rounded-sm" />}
+                {activeTab === item && (
+                   <div className="w-4 h-4 border-2 border-white/50 rounded-sm flex items-center justify-center">
+                     <div className="w-1.5 h-1.5 bg-white rounded-full" />
+                   </div>
+                )}
                 {item}
               </div>
             </button>
