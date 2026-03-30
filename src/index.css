@@ -1,0 +1,73 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  
+  /* Primary Oasis Brand Colors */
+  --color-oasis-blue: #1e40af;
+  --color-oasis-teal: #0d9488;
+  --color-oasis-sky: #0ea5e9;
+  
+  /* Status Colors from design */
+  --color-brand-primary: #1e88e5;
+  --color-clinical: #22c55e;
+  --color-therapy: #06b6d4;
+  --color-social: #f97316;
+  --color-nursing: #ef4444;
+  
+  /* UI Elements */
+  --color-bg-dashboard: #f4f7fa;
+  --color-border: #f1f5f9;
+  
+  /* Precise Shadows */
+  --shadow-card: 0px 4px 20px 0px rgba(0, 0, 0, 0.05); /* Figma-like soft shadow */
+}
+
+@layer base {
+  html, body {
+    @apply bg-bg-dashboard font-sans text-slate-900 antialiased;
+  }
+}
+
+@layer components {
+  .dashboard-card {
+    @apply bg-white rounded-2xl shadow-card border border-border overflow-hidden flex flex-col h-full;
+  }
+  
+  .panel-header {
+    @apply flex items-center justify-between p-5 border-b border-slate-50;
+  }
+  
+  .panel-title {
+    @apply text-sm font-bold text-slate-800 flex items-center gap-2;
+  }
+  
+  .panel-body {
+    @apply flex-1 p-5 overflow-y-auto no-scrollbar pt-4;
+  }
+  
+  .panel-footer {
+    @apply p-4 mt-auto border-t border-slate-50 flex items-center justify-center;
+  }
+  
+  .footer-link {
+    @apply text-[11px] font-bold text-blue-600 hover:text-blue-700 transition-colors flex items-center gap-1.5;
+  }
+
+  .inner-card {
+    @apply bg-white rounded-xl border border-slate-100 p-3 shadow-sm;
+  }
+
+  .initial-circle {
+    @apply w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold shrink-0;
+  }
+}
+
+/* Scrollbar Utility */
+@utility no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}

@@ -1,0 +1,57 @@
+export const mockData = {
+  stats: [
+    { title: "Total Residents", value: "128", trend: "+12%", trendUp: true, icon: "Users" },
+    { title: "Total Employees", value: "8", trend: "+5%", trendUp: true, icon: "UserCheck" },
+    { title: "Pending PTO Requests", value: "6", trend: "+5%", trendUp: true, icon: "CalendarClock" },
+    { title: "Sick Time Off", value: "5", trend: "+5%", trendUp: true, icon: "Stethoscope" },
+    { title: "Appointments Today", value: "18", trend: "+5%", trendUp: true, icon: "CalendarDays" },
+    { title: "Claims Pending", value: "12", trend: "-8%", trendUp: false, icon: "FileText" },
+  ],
+  appointments: [
+    { name: "Maria Johnson", doctor: "Dr. Sarah Miller", time: "9:00 AM", duration: "30 min", type: "General" },
+    { name: "Maria Johnson", doctor: "Dr. Blake Carter", time: "10:30 AM", duration: "30 min", type: "Follow-up" },
+    { name: "Emily Davis", doctor: "Dr. Lisa Chen", time: "11:00 AM", duration: "60 min", type: "Therapy" },
+    { name: "James Williams", doctor: "Dr. Pande", time: "2:00 PM", duration: "45 min", type: "Check-up" },
+  ],
+  staffSchedule: [
+    { count: 3, shiftType: "Total Number of Shift", facility: "Sunrise Care Home", color: "blue" },
+    { count: 2, shiftType: "Total Number of Shift", facility: "Sunrise Care Home", color: "green" },
+    { count: 2, shiftType: "Total Number of Shift", facility: "Oakwood Manor", color: "orange" },
+  ],
+  mainStats: [
+    { label: "Total Number of Measurable Goal", value: 84, color: "blue" },
+    { label: "Total Number of Interventions", value: 18, color: "orange" },
+    { label: "Total Number of Objective", value: 67, color: "green" },
+    { label: "Total Number of Notes Library", value: 40, color: "sky" },
+  ],
+  residentRecords: [
+    { name: "Maria Johnson", dob: "Jan 16, 2026", initial: "MJ", color: "orange" },
+    { name: "Sarah Miller", dob: "Jan 16, 2026", initial: "SM", color: "blue" },
+    { name: "Maria Johnson", dob: "Jan 16, 2026", initial: "JW", color: "green" },
+    { name: "Sarah Miller", dob: "Jan 16, 2026", initial: "ED", color: "red" },
+    { name: "Maria Johnson", dob: "Jan 16, 2026", initial: "RJ", color: "teal" },
+  ],
+  employeeRecords: [
+    { name: "Dr. Amanda Roberts", role: "Clinical", initial: "AR", color: "orange" },
+    { name: "Mike Chen", role: "Therapy", initial: "MC", color: "orange" },
+    { name: "Sarah Mitchell", role: "Social", initial: "SM", color: "orange" },
+    { name: "Dr. James Williams", role: "Nursing", initial: "JW", color: "orange" },
+    { name: "Dr. James Williams", role: "Clinical", initial: "KW", color: "orange" },
+  ],
+  specialNotes: [
+    { category: "CCU", patient: "Angie Stone", note: "Medication reminder overdue", time: "2 hrs ago", color: "red" },
+    { category: "UNG", patient: "GL1 9522 Callwal Anderson Check", note: "350 the stained removed.", time: "4 hrs ago", color: "orange" },
+    { category: "DR 9550", patient: "Blake Carter", note: "And aprcarlshees hilt ennerlelmory Cub apoiderifes serior aClals", time: "5 hrs ago", color: "teal" },
+    { category: "PC 106", patient: "Credential expiration reminder", note: "Due 03/29", time: "1 day ago", color: "blue" },
+    { category: "Rejected Claim", patient: "Robert Jones", note: "Amount $29,500", time: "1 day ago", color: "orange" },
+  ],
+  activityLog: [
+    { type: "PTO Request", status: "Approved", user: "Sarah M.", time: "1 hr ago" },
+    { type: "Progress Note", status: "Created", user: "Subodh Pal", time: "2 min ago" },
+    { type: "Compliance", status: "Missing Notes (3)", user: "System", time: "1.5 hr ago" },
+    { type: "Treatment Plan", status: "Updated", user: "Dr. Roberts", time: "15 min ago" },
+    { type: "CLM-2024-1892", status: "Claim", user: "Lisa Park", time: "2 hr ago" },
+    { type: "Draft Note", status: "Incident #47", user: "Admin", time: "2 hr ago" },
+    { type: "Session started", status: "Auth", user: "Amy Torres", time: "2.5 hr ago" },
+  ],
+};
