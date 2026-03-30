@@ -1,62 +1,43 @@
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "./components/layout/Navbar";
 import SubNav from "./components/layout/SubNav";
-import WelcomeBanner from "./components/dashboard/WelcomeBanner";
-import StatsGrid from "./components/dashboard/StatsGrid";
-import AppointmentsList from "./components/dashboard/AppointmentsList";
-import StaffSchedule from "./components/dashboard/StaffSchedule";
-import StatsList from "./components/dashboard/StatsList";
-import QuickLinks from "./components/dashboard/QuickLinks";
-import ResidentRecords from "./components/dashboard/ResidentRecords";
-import EmployeeRecords from "./components/dashboard/EmployeeRecords";
-import SpecialNotes from "./components/dashboard/SpecialNotes";
-import ActivityLog from "./components/dashboard/ActivityLog";
+import MedicalDashboard from "./components/dashboard/MedicalDashboard";
+import BillingDashboard from "./components/billing/BillingDashboard";
 
 function App() {
+  const [activeTab, setActiveTab] = useState("Dashboard");
+
   return (
-    <div className="min-h-screen bg-bg-dashboard flex flex-col">
-      <Navbar />
+    <div className="min-h-screen bg-[#f8fafc] flex flex-col overflow-hidden">
+      {/* Persistant Top Navbar */}
+      <Navbar activeTab={activeTab} onTabChange={setActiveTab} />
+      
+      {/* Persistant App Module Tabs */}
       <SubNav />
 
-      <main className="flex-1 py-8 max-w-[1600px] mx-auto w-full">
-        {/* Header Section */}
-        <WelcomeBanner />
-        <StatsGrid />
-
-        {/* Main Grid Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
-          {/* Column 1 */}
-          <div className="flex flex-col gap-6 h-full">
-            <AppointmentsList />
-            <ResidentRecords />
-          </div>
-
-          {/* Column 2 */}
-          <div className="flex flex-col gap-6 h-full">
-            <StaffSchedule />
-            <EmployeeRecords />
-          </div>
-
-          {/* Column 3 */}
-          <div className="flex flex-col gap-6 h-full">
-            <StatsList />
-            <SpecialNotes />
-          </div>
-
-          {/* Column 4 */}
-          <div className="flex flex-col gap-6 h-full">
-            <QuickLinks />
-            <ActivityLog />
-          </div>
-        </div>
-      </main>
-
-      {/* Footer / Version */}
-      <footer className="px-6 py-4 text-center border-t border-gray-100 bg-white sm:bg-transparent">
-        <p className="text-xs font-medium text-slate-400">
-          App v1.0 • OASIS NOTES Inc.
-        </p>
-      </footer>
+      {/* Conditional Dashboard Content */}
+      <div className="flex-1 overflow-hidden flex flex-col">
+        {activeTab === "Dashboard" ? (
+          <main className="flex-1 overflow-y-auto p-8 scroll-smooth no-scrollbar">
+            <MedicalDashboard />
+          </main>
+        ) : activeTab === "Billing & Claims" ? (
+          <BillingDashboard />
+        ) : (
+          <main className="flex-1 flex items-center justify-center p-8">
+            <div className="text-center">
+              <h2 className="text-2xl font-bold text-slate-800">Section Under Construction</h2>
+              <p className="text-slate-500 mt-2">The {activeTab} module will be available soon.</p>
+              <button 
+                onClick={() => setActiveTab("Dashboard")}
+                className="mt-6 bg-blue-600 text-white px-6 py-2 rounded-xl font-bold shadow-lg shadow-blue-100 hover:bg-blue-700 transition-all"
+              >
+                Back to Dashboard
+              </button>
+            </div>
+          </main>
+        )}
+      </div>
     </div>
   );
 }
