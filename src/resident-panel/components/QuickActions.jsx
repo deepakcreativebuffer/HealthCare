@@ -1,23 +1,36 @@
 import React from 'react';
 import { Card } from './ui';
-import { Calendar, CalendarCheck, Clock } from 'lucide-react';
+import { CalendarCheck, CalendarPlus, History } from 'lucide-react';
 
 const QuickActions = () => {
   return (
-    <div className="grid grid-cols-3 gap-3">
-      <Card className="flex flex-col items-center justify-center p-4 cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-colors group">
-        <Calendar className="w-6 h-6 text-gray-400 group-hover:text-blue-600 mb-2" />
-        <span className="text-xs font-semibold text-center group-hover:text-blue-600">Book<br/>Appointment</span>
-      </Card>
-      <Card className="flex flex-col items-center justify-center p-4 cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-colors group">
-        <CalendarCheck className="w-6 h-6 text-gray-400 group-hover:text-blue-600 mb-2" />
-        <span className="text-xs font-semibold text-center group-hover:text-blue-600">Manage<br/>Appointments</span>
-      </Card>
-      <Card className="flex flex-col items-center justify-center p-4 cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-colors group">
-        <Clock className="w-6 h-6 text-gray-400 group-hover:text-blue-600 mb-2" />
-        <span className="text-xs font-semibold text-center group-hover:text-blue-600">Appointment<br/>History</span>
-      </Card>
-    </div>
+    <Card className="p-2 bg-white">
+      <div className="flex flex-col sm:flex-row items-center justify-around divide-y sm:divide-y-0 sm:divide-x divide-slate-100">
+        {/* Book Appointment */}
+        <div className="flex items-center gap-4 flex-1 justify-center cursor-pointer group px-3 py-4 sm:py-2 w-full sm:w-auto">
+          <CalendarCheck className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400 group-hover:text-action-blue transition-colors" />
+          <div className="text-action-blue font-bold text-[13px] sm:text-[14px] leading-tight">
+            Book<br />Appointment
+          </div>
+        </div>
+
+        {/* Manage Appointments */}
+        <div className="flex items-center gap-4 flex-1 justify-center cursor-pointer group px-3 py-4 sm:py-2 w-full sm:w-auto">
+          <CalendarPlus className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400 group-hover:text-action-blue transition-colors" />
+          <div className="text-action-blue font-bold text-[13px] sm:text-[14px] leading-tight">
+            Manage<br />Appointments
+          </div>
+        </div>
+
+        {/* Appointment History */}
+        <div className="flex items-center gap-4 flex-1 justify-center cursor-pointer group px-3 py-4 sm:py-2 w-full sm:w-auto">
+          <History className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400 group-hover:text-action-blue transition-colors" />
+          <div className="text-action-blue font-bold text-[13px] sm:text-[14px] leading-tight">
+            Appointment<br />History
+          </div>
+        </div>
+      </div>
+    </Card>
   );
 };
 

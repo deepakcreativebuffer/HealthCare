@@ -78,7 +78,7 @@ const BillingDashboard = () => {
 
   return (
     <main className="flex-1 overflow-y-auto p-6 scroll-smooth no-scrollbar">
-      <div className="max-w-[1600px] mx-auto space-y-6 pb-20">
+      <div className="max-w-full mx-auto space-y-6 pb-20">
         {/* Row 3: Billing-Specific Navigation & Filters */}
         <div className="flex items-center justify-between pb-4 bg-transparent">
           {/* Billing Tabs */}
@@ -87,11 +87,10 @@ const BillingDashboard = () => {
               <button
                 key={tab.label}
                 onClick={() => setActiveBillingTab(tab.label)}
-                className={`px-5 py-2 rounded-xl text-[13px] font-bold transition-all ${
-                  activeBillingTab === tab.label
+                className={`px-5 py-2 rounded-xl text-[13px] font-bold transition-all ${activeBillingTab === tab.label
                     ? "bg-blue-600 text-white shadow-lg shadow-blue-100"
                     : "text-slate-400 hover:text-slate-600"
-                }`}
+                  }`}
               >
                 {tab.label}
               </button>
@@ -301,11 +300,10 @@ const BillingDashboard = () => {
                   <button
                     key={tab}
                     onClick={() => setActiveTableTab(tab)}
-                    className={`py-4 text-[13px] font-bold transition-all relative ${
-                      activeTableTab === tab
+                    className={`py-4 text-[13px] font-bold transition-all relative ${activeTableTab === tab
                         ? "text-blue-600 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-blue-600"
                         : "text-slate-400 hover:text-slate-600 font-extrabold"
-                    }`}
+                      }`}
                   >
                     {tab}
                   </button>
@@ -383,15 +381,14 @@ const BillingDashboard = () => {
                             </td>
                             <td className="px-6 py-4">
                               <span
-                                className={`text-[10px] font-extrabold px-3 py-1 rounded-full whitespace-nowrap shadow-sm border border-transparent ${
-                                  claim.status === "Submitted"
+                                className={`text-[10px] font-extrabold px-3 py-1 rounded-full whitespace-nowrap shadow-sm border border-transparent ${claim.status === "Submitted"
                                     ? "bg-blue-50 text-blue-500 border-blue-100"
                                     : claim.status === "Paid"
                                       ? "bg-green-50 text-green-500 border-green-100"
                                       : claim.status === "Denied"
                                         ? "bg-red-50 text-red-500 border-red-100"
                                         : "bg-orange-50 text-orange-500 border-orange-100"
-                                }`}
+                                  }`}
                               >
                                 {claim.status}
                               </span>
@@ -463,13 +460,12 @@ const BillingDashboard = () => {
                               </td>
                               <td className="px-6 py-4">
                                 <span
-                                  className={`text-[10px] font-extrabold px-3 py-1 rounded-full whitespace-nowrap shadow-sm border border-transparent ${
-                                    sub.status === "Accepted"
+                                  className={`text-[10px] font-extrabold px-3 py-1 rounded-full whitespace-nowrap shadow-sm border border-transparent ${sub.status === "Accepted"
                                       ? "bg-green-50 text-green-500 border-green-100"
                                       : sub.status === "Rejected"
                                         ? "bg-red-50 text-red-500 border-red-100"
                                         : "bg-orange-50 text-orange-500 border-orange-100"
-                                  }`}
+                                    }`}
                                 >
                                   {sub.status}
                                 </span>
@@ -482,8 +478,8 @@ const BillingDashboard = () => {
                   </div>
                 </>
               )}
+            </div>
           </div>
-        </div>
 
           {/* RIGHT COLUMN (2/5) */}
           <div className="lg:col-span-2 space-y-6">
@@ -676,33 +672,30 @@ const BillingDashboard = () => {
                 ].map((item, idx) => (
                   <div
                     key={idx}
-                    className={`p-4 rounded-xl flex flex-col items-center justify-center border shadow-sm ${
-                      item.color === "green"
+                    className={`p-4 rounded-xl flex flex-col items-center justify-center border shadow-sm ${item.color === "green"
                         ? "bg-[#e9f7ef] border-[#d5f1e0]"
                         : item.color === "orange"
                           ? "bg-[#fff7ed] border-[#ffedd5]"
                           : "bg-[#fef2f2] border-[#fee2e2]"
-                    }`}
+                      }`}
                   >
                     <span
-                      className={`text-[17px] font-extrabold ${
-                        item.color === "green"
+                      className={`text-[17px] font-extrabold ${item.color === "green"
                           ? "text-[#27ae60]"
                           : item.color === "orange"
                             ? "text-[#f97316]"
                             : "text-[#ef4444]"
-                      }`}
+                        }`}
                     >
                       {item.value}
                     </span>
                     <span
-                      className={`text-[9px] font-extrabold mt-1 text-center leading-[1.1] uppercase tracking-tighter ${
-                        item.color === "green"
+                      className={`text-[9px] font-extrabold mt-1 text-center leading-[1.1] uppercase tracking-tighter ${item.color === "green"
                           ? "text-[#27ae60]/80"
                           : item.color === "orange"
                             ? "text-[#f97316]/80"
                             : "text-[#ef4444]/80"
-                      }`}
+                        }`}
                     >
                       {item.label}
                     </span>
@@ -824,9 +817,9 @@ const BillingDashboard = () => {
           </p>
         </div>
         {/* Claim Workspace Modal */}
-        <ClaimWorkspaceModal 
-          isOpen={isClaimModalOpen} 
-          onClose={() => setIsClaimModalOpen(false)} 
+        <ClaimWorkspaceModal
+          isOpen={isClaimModalOpen}
+          onClose={() => setIsClaimModalOpen(false)}
           claimId={selectedClaimId}
         />
       </div>

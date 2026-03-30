@@ -18,35 +18,35 @@ const StatsList = () => {
       actionText="View All Stats"
       customScroll={true}
     >
-      <div className="space-y-3">
+      <div className="space-y-2">
         {mockData.mainStats.map((stat, idx) => {
           const Config = iconMap[stat.color];
           return (
             <div
               key={idx}
-              className="bg-white border border-slate-100 rounded-2xl p-4 flex items-center gap-4 hover:shadow-sm transition-all group cursor-pointer relative"
+              className="bg-white border border-[#E2E8F0] rounded-[10px] px-3 py-3 flex items-center gap-3 hover:shadow-sm transition-all group cursor-pointer relative overflow-hidden"
             >
               {/* Icon Container */}
               <div
-                className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 ${Config.bg} group-hover:scale-105 transition-transform shadow-sm`}
+                className={`w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0 ${Config.bg} group-hover:scale-105 transition-transform shadow-sm`}
               >
-                <Config.icon size={24} />
+                <Config.icon size={18} />
               </div>
 
               {/* Content */}
               <div className="flex-1">
                 <div className="flex items-center justify-between">
                   <div>
-                    <span className="text-2xl font-bold text-slate-800 tracking-tight leading-none block">
+                    <span className="text-[18px] font-bold text-slate-800 leading-none block">
                       {stat.value}
                     </span>
-                    <p className="text-[11px] font-bold text-slate-400 mt-1.5 leading-tight uppercase tracking-tight">
-                      {stat.label}
+                    <p className="text-[10px] font-bold text-slate-400 mt-1 leading-tight uppercase tracking-tight">
+                      {stat.label.substring(0, 16)}...
                     </p>
                   </div>
 
                   {/* View All Individual Link */}
-                  <button className="text-[10px] font-extrabold text-[#1e88e5] hover:underline whitespace-nowrap">
+                  <button className="text-[10px] font-extrabold text-action-blue hover:underline whitespace-nowrap">
                     View All
                   </button>
                 </div>

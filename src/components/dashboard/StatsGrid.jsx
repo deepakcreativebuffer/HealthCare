@@ -1,10 +1,10 @@
 import React from 'react';
-import { 
-  Users, 
-  UserCheck, 
-  CalendarClock, 
-  Stethoscope, 
-  CalendarDays, 
+import {
+  Users,
+  UserCheck,
+  CalendarClock,
+  Stethoscope,
+  CalendarDays,
   FileText,
   TrendingDown,
   TrendingUp
@@ -22,30 +22,33 @@ const iconMap = {
 
 const StatsGrid = () => {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 py-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 py-6">
       {mockData.stats.map((stat, idx) => {
-        const IconConfig = iconMap[stat.icon];
+        const IconConfig = iconMap[stat.icon || 'Users'];
         return (
-          <div key={idx} className="dashboard-card p-4 hover:shadow-md transition-shadow group cursor-pointer">
-            <div className="flex items-center gap-3 mb-3">
-              <div className={`${IconConfig.bg} ${IconConfig.color} p-2 rounded-lg group-hover:scale-110 transition-transform`}>
+          <div key={idx} className="bg-white rounded-[10px] border border-[#E2E8F0] shadow-sm p-4 hover:shadow-md transition-all group cursor-pointer flex flex-col h-full">
+            <div className="flex items-center gap-3 mb-2">
+              <div className={`${IconConfig.bg} ${IconConfig.color} w-10 h-10 rounded-[10px] flex items-center justify-center group-hover:scale-105 transition-transform shrink-0`}>
                 <IconConfig.icon size={20} />
               </div>
-              <span className="text-2xl font-bold text-slate-800 tracking-tight">{stat.value}</span>
+              <div className="flex flex-col">
+                <span className="text-[20px] font-bold text-slate-800 leading-tight">{stat.value}</span>
+                <p className="text-[12px] font-medium text-slate-500">{stat.title}</p>
+              </div>
             </div>
-            <div className="flex flex-col">
-              <p className="text-xs font-medium text-slate-500 mb-1">{stat.title}</p>
-              <div className="flex items-center gap-1">
+
+            <div className="mt-auto flex items-center gap-1.5 pt-2 border-t border-gray-100">
+              <div className={`flex items-center gap-0.5 px-1.5 py-0.5 rounded-full ${stat.trendUp ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'}`}>
                 {stat.trendUp ? (
-                  <TrendingUp size={12} className="text-green-500" />
+                  <TrendingUp size={10} />
                 ) : (
-                  <TrendingDown size={12} className="text-red-500" />
+                  <TrendingDown size={10} />
                 )}
-                <span className={`text-[10px] font-bold ${stat.trendUp ? 'text-green-500' : 'text-red-500'}`}>
+                <span className="text-[10px] font-bold">
                   {stat.trend}
                 </span>
-                <span className="text-[10px] text-slate-400">vs last month</span>
               </div>
+              <span className="text-[10px] text-slate-400">vs last month</span>
             </div>
           </div>
         );

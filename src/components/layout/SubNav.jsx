@@ -27,14 +27,14 @@ import { CalendarClock } from 'lucide-react';
 
 const SubNav = () => {
   return (
-    <div className="bg-white px-6 py-2 border-b border-gray-100 flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth">
+    <div className="bg-[#f8fafc] px-4 sm:px-6 py-3 border-b border-gray-100 flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth">
       {subNavItems.map((item, idx) => (
         <button
           key={item.label}
-          className="flex items-center gap-2 px-3 py-2 rounded-lg text-slate-500 hover:bg-gray-50 hover:text-slate-800 transition-all border border-transparent whitespace-nowrap active:scale-95 duration-75"
+          className="flex items-center gap-2 px-3 py-2 rounded-[10px] bg-white text-slate-500 hover:text-[#129FED] hover:border-[#90CEF0] transition-all border border-[#E2E8F0] shadow-sm whitespace-nowrap active:scale-95 duration-75 group"
         >
-          <item.icon size={18} className="text-slate-400 group-hover:text-blue-500" />
-          <span className="text-sm font-medium">{item.label}</span>
+          <item.icon size={16} className="text-slate-400 group-hover:text-[#129FED]" />
+          <span className="text-[13px] font-bold">{item.label}</span>
         </button>
       ))}
     </div>
