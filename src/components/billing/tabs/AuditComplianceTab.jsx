@@ -18,7 +18,7 @@ const AuditComplianceTab = () => {
       <div className="space-y-10">
         {/* Row 1: Information Boxes */}
         <div className="flex gap-6">
-          <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col gap-2 flex-1 hover:border-slate-200 transition-all">
+          <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm flex flex-col gap-2 flex-1 hover:border-slate-200 transition-all">
             <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
               Submission Timestamp
             </span>
@@ -27,7 +27,7 @@ const AuditComplianceTab = () => {
             </span>
           </div>
 
-          <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col gap-2 flex-1 hover:border-slate-200 transition-all">
+          <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm flex flex-col gap-2 flex-1 hover:border-slate-200 transition-all">
             <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
               Last Modified By
             </span>

@@ -1,57 +1,204 @@
 export const mockData = {
-  stats: [
-    { title: "Total Residents", value: "128", trend: "+12%", trendUp: true, icon: "Users" },
-    { title: "Total Employees", value: "8", trend: "+5%", trendUp: true, icon: "UserCheck" },
-    { title: "Pending PTO Requests", value: "6", trend: "+5%", trendUp: true, icon: "CalendarClock" },
-    { title: "Sick Time Off", value: "5", trend: "+5%", trendUp: true, icon: "Stethoscope" },
-    { title: "Appointments Today", value: "18", trend: "+5%", trendUp: true, icon: "CalendarDays" },
-    { title: "Claims Pending", value: "12", trend: "-8%", trendUp: false, icon: "FileText" },
+  residents: [
+    {
+      id: "RES001",
+      name: "Maria Johnson",
+      age: 72,
+      gender: "Female",
+      roomNumber: "101",
+      admissionDate: "2023-11-12",
+      status: "Active",
+      email: "maria.j@example.com",
+      phone: "555-0101",
+      medicalConditions: ["Hypertension", "Type 2 Diabetes"],
+      medications: ["Lisinopril 20mg", "Metformin 500mg"],
+      allergies: ["Penicillin"],
+      emergencyContact: { name: "Robert Johnson", relation: "Son", phone: "555-0123" },
+      insurance: { provider: "Medicare", id: "MC123456789" },
+      vitals: { bp: "135/85", bloodSugar: "110 mg/dL", weight: 65, heartRate: 72 }
+    },
+    {
+      id: "RES002",
+      name: "James Williams",
+      age: 85,
+      gender: "Male",
+      roomNumber: "104",
+      admissionDate: "2023-08-05",
+      status: "Active",
+      email: "james.w@example.com",
+      phone: "555-0102",
+      medicalConditions: ["Dementia", "Arthritis"],
+      medications: ["Donepezil 10mg", "Celecoxib 200mg"],
+      allergies: ["Sulfa Drugs"],
+      emergencyContact: { name: "Sarah Williams", relation: "Daughter", phone: "555-0124" },
+      insurance: { provider: "Aetna", id: "AE987654321" },
+      vitals: { bp: "128/80", bloodSugar: "95 mg/dL", weight: 78, heartRate: 68 }
+    },
+    {
+      id: "RES003",
+      name: "Sarah Miller",
+      age: 68,
+      gender: "Female",
+      roomNumber: "202",
+      admissionDate: "2024-01-15",
+      status: "Active",
+      email: "sarah.m@example.com",
+      phone: "555-0103",
+      medicalConditions: ["Asthma", "Osteoporosis"],
+      medications: ["Albuterol Inhaler", "Alendronate 70mg"],
+      allergies: ["Peanuts", "Dust"],
+      emergencyContact: { name: "David Miller", relation: "Spouse", phone: "555-0125" },
+      insurance: { provider: "Blue Cross Blue Shield", id: "BC112233445" },
+      vitals: { bp: "120/75", bloodSugar: "90 mg/dL", weight: 60, heartRate: 70 }
+    },
+    {
+      id: "RES004",
+      name: "Robert Jones",
+      age: 79,
+      gender: "Male",
+      roomNumber: "205",
+      admissionDate: "2023-12-01",
+      status: "Active",
+      medicalConditions: ["Chronic Kidney Disease", "Heart Failure"],
+      medications: ["Furosemide 40mg", "Enalapril 5mg"],
+      allergies: ["Aspirin"],
+      emergencyContact: { name: "Mary Jones", relation: "Spouse", phone: "555-0126" },
+      insurance: { provider: "Cigna", id: "CI556677889" },
+      vitals: { bp: "140/90", bloodSugar: "105 mg/dL", weight: 82, heartRate: 76 }
+    },
+    {
+      id: "RES005",
+      name: "Emily Davis",
+      age: 75,
+      gender: "Female",
+      roomNumber: "301",
+      admissionDate: "2024-02-10",
+      status: "Active",
+      medicalConditions: ["COPD", "Anxiety"],
+      medications: ["Spiolto Respimat", "Sertraline 50mg"],
+      allergies: ["Shellfish"],
+      emergencyContact: { name: "John Davis", relation: "Son", phone: "555-0127" },
+      insurance: { provider: "UnitedHealthcare", id: "UH998877665" },
+      vitals: { bp: "130/82", bloodSugar: "98 mg/dL", weight: 58, heartRate: 74 }
+    },
+    {
+      id: "RES006",
+      name: "Michael Wilson",
+      age: 82,
+      gender: "Male",
+      roomNumber: "303",
+      admissionDate: "2023-09-20",
+      status: "Discharged",
+      medicalConditions: ["Post-Stroke Recovery"],
+      medications: ["Clopidogrel 75mg", "Atorvastatin 40mg"],
+      allergies: ["None"],
+      emergencyContact: { name: "Linda Wilson", relation: "Spouse", phone: "555-0128" },
+      insurance: { provider: "Humana", id: "HU443322110" },
+      vitals: { bp: "125/78", bloodSugar: "94 mg/dL", weight: 75, heartRate: 65 }
+    },
+    { id: "RES007", name: "Barbara Taylor", age: 70, gender: "Female", roomNumber: "102", admissionDate: "2023-11-25", status: "Active" },
+    { id: "RES008", name: "William Anderson", age: 88, gender: "Male", roomNumber: "105", admissionDate: "2023-07-14", status: "Active" },
+    { id: "RES009", name: "Elizabeth Thomas", age: 74, gender: "Female", roomNumber: "201", admissionDate: "2024-03-05", status: "Under Observation" },
+    { id: "RES010", name: "Richard Moore", age: 81, gender: "Male", roomNumber: "204", admissionDate: "2023-10-18", status: "Active" },
+    { id: "RES011", name: "Dorothy Jackson", age: 77, gender: "Female", roomNumber: "302", admissionDate: "2024-01-22", status: "Active" },
+    { id: "RES012", name: "Charles White", age: 84, gender: "Male", roomNumber: "305", admissionDate: "2023-08-30", status: "Active" },
+    { id: "RES013", name: "Patricia Harris", age: 69, gender: "Female", roomNumber: "103", admissionDate: "2023-12-15", status: "Active" },
+    { id: "RES014", name: "Christopher Martin", age: 73, gender: "Male", roomNumber: "203", admissionDate: "2024-02-28", status: "Active" },
+    { id: "RES015", name: "Margaret Thompson", age: 90, gender: "Female", roomNumber: "304", admissionDate: "2023-06-10", status: "Active" },
+    { id: "RES016", name: "Anthony Garcia", age: 71, gender: "Male", roomNumber: "106", admissionDate: "2023-11-02", status: "Discharged" },
+    { id: "RES017", name: "Susan Martinez", age: 76, gender: "Female", roomNumber: "206", admissionDate: "2024-01-10", status: "Active" },
+    { id: "RES018", name: "Ronald Robinson", age: 83, gender: "Male", roomNumber: "306", admissionDate: "2023-09-05", status: "Active" },
+    { id: "RES019", name: "Betty Clark", age: 78, gender: "Female", roomNumber: "107", admissionDate: "2023-10-25", status: "Active" },
+    { id: "RES020", name: "Thomas Rodriguez", age: 80, gender: "Male", roomNumber: "207", admissionDate: "2024-02-15", status: "Active" }
   ],
-  appointments: [
-    { name: "Maria Johnson", doctor: "Dr. Sarah Miller", time: "9:00 AM", duration: "30 min", type: "General" },
-    { name: "Maria Johnson", doctor: "Dr. Blake Carter", time: "10:30 AM", duration: "30 min", type: "Follow-up" },
-    { name: "Emily Davis", doctor: "Dr. Lisa Chen", time: "11:00 AM", duration: "60 min", type: "Therapy" },
-    { name: "James Williams", doctor: "Dr. Pande", time: "2:00 PM", duration: "45 min", type: "Check-up" },
+  staff: [
+    { id: "STF001", name: "Dr. Amanda Roberts", role: "Doctor", shift: "Morning", department: "Clinical", contact: "amanda@care.com", phone: "555-1001", status: "Active", joinDate: "2022-01-15" },
+    { id: "STF002", name: "Nurse Sarah Mitchell", role: "Nurse", shift: "Morning", department: "Nursing", contact: "sarah@care.com", phone: "555-1002", status: "Active", joinDate: "2022-03-20" },
+    { id: "STF003", name: "Admin Subodh Pal", role: "Admin", shift: "General", department: "Administration", contact: "subodh@care.com", phone: "555-1003", status: "Active", joinDate: "2021-06-10" },
+    { id: "STF004", name: "Dr. Lisa Chen", role: "Doctor", shift: "Afternoon", department: "Therapy", contact: "lisa@care.com", phone: "555-1004", status: "Inactive", joinDate: "2022-11-05" },
+    { id: "STF005", name: "Caretaker Mike Ross", role: "Caretaker", shift: "Night", department: "Nursing", contact: "mike@care.com", phone: "555-1005", status: "Active", joinDate: "2023-01-12" },
+    { id: "STF006", name: "Nurse Amy Torres", role: "Nurse", shift: "Afternoon", department: "Nursing", contact: "amy@care.com", phone: "555-1006", status: "Active", joinDate: "2023-04-18" },
+    { id: "STF007", name: "Dr. James Williams", role: "Doctor", shift: "Morning", department: "Clinical", contact: "james@care.com", phone: "555-1007", status: "Active", joinDate: "2021-09-22" },
+    { id: "STF008", name: "Caretaker Linda Park", role: "Caretaker", shift: "Evening", department: "Social", contact: "linda@care.com", phone: "555-1008", status: "Inactive", joinDate: "2023-07-30" },
+    { id: "STF009", name: "Admin John Doe", role: "Admin", shift: "General", department: "Finance", contact: "john@care.com", phone: "555-1009", status: "Active", joinDate: "2022-08-14" },
+    { id: "STF010", name: "Staff Emma Watson", role: "Nurse", shift: "Night", department: "Clinical", contact: "emma@care.com", phone: "555-1010", status: "Active", joinDate: "2023-02-25" }
   ],
-  staffSchedule: [
-    { count: 3, shiftType: "Total Number of Shift", facility: "Sunrise Care Home", color: "blue" },
-    { count: 2, shiftType: "Total Number of Shift", facility: "Sunrise Care Home", color: "green" },
-    { count: 2, shiftType: "Total Number of Shift", facility: "Oakwood Manor", color: "orange" },
-  ],
-  mainStats: [
-    { label: "Total Number of Measurable Goal", value: 84, color: "blue" },
-    { label: "Total Number of Interventions", value: 18, color: "orange" },
-    { label: "Total Number of Objective", value: 67, color: "green" },
-    { label: "Total Number of Notes Library", value: 40, color: "sky" },
-  ],
-  residentRecords: [
-    { name: "Maria Johnson", dob: "Jan 16, 2026", initial: "MJ", color: "orange" },
-    { name: "Sarah Miller", dob: "Jan 16, 2026", initial: "SM", color: "blue" },
-    { name: "Maria Johnson", dob: "Jan 16, 2026", initial: "JW", color: "green" },
-    { name: "Sarah Miller", dob: "Jan 16, 2026", initial: "ED", color: "red" },
-    { name: "Maria Johnson", dob: "Jan 16, 2026", initial: "RJ", color: "teal" },
-  ],
-  employeeRecords: [
-    { name: "Dr. Amanda Roberts", role: "Clinical", initial: "AR", color: "orange" },
-    { name: "Mike Chen", role: "Therapy", initial: "MC", color: "orange" },
-    { name: "Sarah Mitchell", role: "Social", initial: "SM", color: "orange" },
-    { name: "Dr. James Williams", role: "Nursing", initial: "JW", color: "orange" },
-    { name: "Dr. James Williams", role: "Clinical", initial: "KW", color: "orange" },
-  ],
-  specialNotes: [
-    { category: "CCU", patient: "Angie Stone", note: "Medication reminder overdue", time: "2 hrs ago", color: "red" },
-    { category: "UNG", patient: "GL1 9522 Callwal Anderson Check", note: "350 the stained removed.", time: "4 hrs ago", color: "orange" },
-    { category: "DR 9550", patient: "Blake Carter", note: "And aprcarlshees hilt ennerlelmory Cub apoiderifes serior aClals", time: "5 hrs ago", color: "teal" },
-    { category: "PC 106", patient: "Credential expiration reminder", note: "Due 03/29", time: "1 day ago", color: "blue" },
-    { category: "Rejected Claim", patient: "Robert Jones", note: "Amount $29,500", time: "1 day ago", color: "orange" },
+  billing: [
+    { invoiceId: "INV001", residentId: "RES001", date: "2024-03-01", totalAmount: 1250.00, paidAmount: 1250.00, status: "Paid", method: "Insurance" },
+    { invoiceId: "INV002", residentId: "RES002", date: "2024-03-05", totalAmount: 2400.00, paidAmount: 1000.00, status: "Pending", method: "Card" },
+    { invoiceId: "INV003", residentId: "RES004", date: "2024-02-20", totalAmount: 950.00, paidAmount: 0.00, status: "Overdue", method: "None" },
+    { invoiceId: "INV004", residentId: "RES003", date: "2024-03-10", totalAmount: 1500.00, paidAmount: 1500.00, status: "Paid", method: "Cash" },
+    { invoiceId: "INV005", residentId: "RES005", date: "2024-03-12", totalAmount: 3200.00, paidAmount: 3200.00, status: "Paid", method: "Insurance" },
+    { invoiceId: "INV006", residentId: "RES001", date: "2024-02-01", totalAmount: 1100.00, paidAmount: 1100.00, status: "Paid", method: "Insurance" },
+    { invoiceId: "INV007", residentId: "RES007", date: "2024-03-15", totalAmount: 1800.00, paidAmount: 0.00, status: "Pending", method: "None" },
+    { invoiceId: "INV008", residentId: "RES008", date: "2024-03-18", totalAmount: 2100.00, paidAmount: 2100.00, status: "Paid", method: "Card" },
+    { invoiceId: "INV009", residentId: "RES010", date: "2024-02-28", totalAmount: 1450.00, paidAmount: 0.00, status: "Overdue", method: "None" },
+    { invoiceId: "INV010", residentId: "RES011", date: "2024-03-20", totalAmount: 2700.00, paidAmount: 1500.00, status: "Pending", method: "Insurance" }
   ],
   activityLog: [
-    { type: "PTO Request", status: "Approved", user: "Sarah M.", time: "1 hr ago" },
-    { type: "Progress Note", status: "Created", user: "Subodh Pal", time: "2 min ago" },
-    { type: "Compliance", status: "Missing Notes (3)", user: "System", time: "1.5 hr ago" },
-    { type: "Treatment Plan", status: "Updated", user: "Dr. Roberts", time: "15 min ago" },
-    { type: "CLM-2024-1892", status: "Claim", user: "Lisa Park", time: "2 hr ago" },
-    { type: "Draft Note", status: "Incident #47", user: "Admin", time: "2 hr ago" },
-    { type: "Session started", status: "Auth", user: "Amy Torres", time: "2.5 hr ago" },
+    { id: 1, type: "Admission", message: "New resident Maria Johnson admitted to Room 101", user: "Admin Subodh", status: "Approved", time: "1 hr ago", timestamp: "2024-03-31T09:00:00Z" },
+    { id: 2, type: "Payment", message: "Payment of $1250 received for Invoice INV001", user: "System", status: "Created", time: "2 hr ago", timestamp: "2024-03-31T10:15:00Z" },
+    { id: 3, type: "Clinical", message: "Progress note updated for James Williams", user: "Dr. Roberts", status: "Updated", time: "3 hr ago", timestamp: "2024-03-31T11:30:00Z" },
+    { id: 4, type: "Medication", message: "Medication reminder for Emily Davis (Room 301)", user: "Nurse Sarah", status: "Pending", time: "4 hr ago", timestamp: "2024-03-31T12:00:00Z" },
+    { id: 5, type: "Compliance", message: "Missing Notes (3) detected", user: "System", status: "Missing Notes (3)", time: "5 hr ago", timestamp: "2024-03-31T14:00:00Z" }
   ],
+  dashboardStats: {
+    totalResidents: 128,
+    occupancyRate: "85%",
+    monthlyRevenue: "$45,200",
+    pendingPayments: "$12,400",
+    staffOnDuty: 8,
+    recentAdmissions: 5
+  },
+  alerts: [
+    { id: 1, type: "Medication", message: "Room 204 - Medication due at 3PM", severity: "high" },
+    { id: 2, type: "Billing", message: "3 invoices are overdue for Richard Moore", severity: "medium" },
+    { id: 3, type: "System", message: "Staff meeting at 4PM in Conference Hall", severity: "low" }
+  ],
+  ptoRequests: [
+    { id: "PTO-001", staffName: "Nurse Sarah Mitchell", department: "Nursing", startDate: "2024-04-10", endDate: "2024-04-12", status: "Pending", reason: "Family Event" },
+    { id: "PTO-002", staffName: "Dr. Lisa Chen", department: "Therapy", startDate: "2024-04-15", endDate: "2024-04-15", status: "Pending", reason: "Medical Appointment" },
+    { id: "PTO-003", staffName: "Mike Ross", department: "Nursing", startDate: "2024-04-20", endDate: "2024-04-25", status: "Approved", reason: "Vacation" },
+    { id: "PTO-004", staffName: "Emma Watson", department: "Clinical", startDate: "2024-04-05", endDate: "2024-04-06", status: "Pending", reason: "Personal" }
+  ],
+  sickLeave: [
+    { id: "SICK-001", staffName: "Amy Torres", department: "Nursing", date: "2024-03-31", status: "Active", reason: "Flu" },
+    { id: "SICK-002", staffName: "James Williams", department: "Clinical", date: "2024-03-31", status: "Active", reason: "Fever" },
+    { id: "SICK-003", staffName: "Linda Park", department: "Social", date: "2024-03-30", status: "Recovered", reason: "Headache" }
+  ],
+  appointments: [
+    { id: "APT-001", name: "Maria Johnson", doctor: "Dr. Amanda Roberts", date: "2024-03-31", time: "10:00 AM", phone: "555-0101", duration: "30 min", type: "General Check-up", reason: "Follow up on hypertension", status: "Scheduled" },
+    { id: "APT-002", name: "James Williams", doctor: "Dr. Lisa Chen", date: "2024-04-01", time: "11:30 AM", phone: "555-0102", duration: "45 min", type: "Therapy Session", reason: "Physical therapy for arthritis", status: "In-Progress" },
+    { id: "APT-003", name: "Sarah Miller", doctor: "Dr. James Williams", date: "2024-04-02", time: "02:00 PM", phone: "555-0103", duration: "1 hr", type: "Specialist Visit", reason: "Orthopedic consultation", status: "Scheduled" },
+    { id: "APT-004", name: "Robert Jones", doctor: "Dr. Amanda Roberts", date: "2024-04-03", time: "03:45 PM", phone: "555-0104", duration: "30 min", type: "Diagnostic", reason: "Monthly blood work", status: "Scheduled" }
+  ],
+  mainStats: [
+    { value: "124", label: "Total Resident Census", color: "blue" },
+    { value: "88%", label: "Current Occupancy %", color: "orange" },
+    { value: "24", label: "Pending Refills", color: "green" },
+    { value: "96%", label: "Documentation Compliance", color: "sky" }
+  ],
+  activityLogs: [
+    { userName: "Sarah Mitchell", action: "Updated medication for Resident #104", actionType: "Update", date: "2024-03-31", time: "10:30 AM", icon: "Edit", color: "blue" },
+    { userName: "Dr. Amanda Roberts", action: "Created new resident profile", actionType: "Create", date: "2024-03-31", time: "11:15 AM", icon: "UserPlus", color: "green" },
+    { userName: "Mike Ross", action: "Deleted outdated shift assignment", actionType: "Delete", date: "2024-03-31", time: "01:20 PM", icon: "Trash2", color: "red" },
+    { userName: "Admin Sarah Mitchell", action: "Assigned Nurse Amy to Night Shift", actionType: "Shift Assignment", date: "2024-03-31", time: "02:45 PM", icon: "CalendarRange", color: "indigo" }
+  ],
+  staffSchedule: [
+    { count: 12, facility: "Main", color: "blue" },
+    { count: 8, facility: "Care", color: "green" },
+    { count: 4, facility: "Main", color: "orange" }
+  ],
+  specialNotes: [
+    { category: "Nurse Alert", patient: "Maria Johnson", note: "High Fall Risk - Bed alarm activated", time: "10:30 AM", date: "2024-03-31", color: "red" },
+    { category: "Care Note", patient: "James Williams", note: "Wound Care dressing change due at 2PM", time: "11:45 AM", date: "2024-03-31", color: "orange" },
+    { category: "General", patient: "Sarah Miller", note: "Family visiting at 5PM in Lounge A", time: "01:15 PM", date: "2024-03-31", color: "teal" }
+  ],
+  staffShifts: [
+    { id: "SFT-001", staffName: "Dr. Amanda Roberts", day: "Monday", date: "2024-03-31", time: "08:00 AM - 04:00 PM", shiftType: "Morning Shift", facility: "Main Facility" },
+    { id: "SFT-002", staffName: "Nurse Sarah Mitchell", day: "Monday", date: "2024-03-31", time: "07:00 AM - 03:00 PM", shiftType: "Morning Shift", facility: "Care Facility" },
+    { id: "SFT-003", staffName: "Dr. Lisa Chen", day: "Monday", date: "2024-03-31", time: "01:00 PM - 09:00 PM", shiftType: "Afternoon Shift", facility: "Main Facility" },
+    { id: "SFT-004", staffName: "Mike Ross", day: "Monday", date: "2024-03-31", time: "11:00 PM - 07:00 AM", shiftType: "Night Shift", facility: "Care Facility" },
+    { id: "SFT-005", staffName: "Amy Torres", day: "Tuesday", date: "2024-04-01", time: "03:00 PM - 11:00 PM", shiftType: "Evening Shift", facility: "Main Facility" }
+  ]
 };

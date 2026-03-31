@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { Mail, Bell, ChevronDown, User, LogOut, Edit3, LayoutGrid, ClipboardList, FileText, Pencil } from 'lucide-react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { mockUser } from '../data/mockData';
 
-const Navbar = () => {
+const Navbar = ({ resident }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+
+  const user = resident || { name: 'Sarah Mitchell', email: 'sarah.mitchell@oasisnotes.com' };
 
   const isActive = (path) => location.pathname === path;
 
@@ -82,8 +83,8 @@ const Navbar = () => {
 
             <div className="flex items-center gap-2 sm:gap-3 pl-2 sm:pl-6 border-l border-gray-200 relative">
               <div className="text-right hidden sm:block">
-                <p className="text-sm font-semibold text-gray-900">Sarah Mitchell</p>
-                <p className="text-xs text-gray-500">sarah.mitchell@oasisnotes.com</p>
+                <p className="text-sm font-semibold text-gray-900">{user.name}</p>
+                <p className="text-xs text-gray-500">{user.email}</p>
               </div>
               <div
                 className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gray-200 flex items-center justify-center group cursor-pointer relative"
@@ -100,8 +101,8 @@ const Navbar = () => {
               {showDropdown && (
                 <div className="absolute right-0 top-14 w-56 bg-white rounded-[10px] shadow-sm border border-[#E2E8F0] py-2 z-50">
                   <div className="px-4 py-2 border-b border-gray-100 sm:hidden">
-                    <p className="text-sm font-bold text-gray-900">Sarah Mitchell</p>
-                    <p className="text-xs text-gray-500">sarah.mitchell@oasisnotes.com</p>
+                    <p className="text-sm font-bold text-gray-900">{user.name}</p>
+                    <p className="text-xs text-gray-500">{user.email}</p>
                   </div>
                   <Link
                     to="/resident-dashboard/profile"

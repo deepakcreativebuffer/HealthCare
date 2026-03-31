@@ -1,4 +1,5 @@
 import React from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Plus, Target, Zap, FileText, ChevronRight } from "lucide-react";
 import PanelCard from "./PanelCard";
 
@@ -8,53 +9,76 @@ const linkItems = [
     label: "Add New User",
     sub: "Register a new profile",
     color: "green",
+    path: "/admin/users/new",
   },
   {
     icon: Target,
     label: "Resident Vitals",
     sub: "Log daily health stats",
     color: "blue",
+    path: "/admin/vitals",
   },
   {
     icon: Zap,
     label: "Resident Tracking",
     sub: "View current location and status",
     color: "orange",
+    path: "/admin/tracking",
   },
   {
     icon: FileText,
     label: "View Logs",
     sub: "Access historical records",
     color: "red",
+    path: "/admin/logs",
   },
   {
     icon: Plus,
     label: "Skills and Knowledge Training",
     sub: "Educational modules",
     color: "green",
+    path: "/admin/training",
   },
   {
     icon: Target,
     label: "On Site and Facility Orientation Verification",
     sub: "Confirm site-specific training",
     color: "blue",
+    path: "/admin/orientation",
   },
   {
     icon: Zap,
     label: "Clinical Oversight",
     sub: "Supervisory reviews",
     color: "orange",
+    path: "/admin/clinical-oversight",
   },
 ];
 
-const QuickLinks = () => {
+const QuickLinks = ({ onAdmitClick }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleLinkClick = (e, link) => {
+    if (link.label !== "Add New User") {
+      e.preventDefault();
+      return;
+    }
+    e.preventDefault();
+    onAdmitClick();
+  };
+
   return (
     <PanelCard title="Quick Links" icon={Zap} customScroll={true}>
       <div className="space-y-2 max-h-[410px] overflow-y-auto no-scrollbar pr-1">
         {linkItems.map((link, idx) => (
-          <button
+          <Link
             key={idx}
-            className={`w-full flex items-center gap-3 p-3 rounded-[10px] border transition-all text-left group/link shrink-0 ${
+            to={link.path}
+            onClick={(e) => handleLinkClick(e, link)}
+            className={`w-full flex items-center gap-3 p-3 rounded-[10px] border transition-all text-left group/link shrink-0 no-underline ${
+              link.label === "Add New User" ? "cursor-pointer" : "cursor-default"
+            } ${
               link.color === "green"
                 ? "bg-[#E9F7EF] border-[#C2E9D1]"
                 : link.color === "blue"
@@ -101,7 +125,7 @@ const QuickLinks = () => {
                       : "text-[#D32F2F]"
               }`}
             />
-          </button>
+          </Link>
         ))}
       </div>
     </PanelCard>
@@ -109,3 +133,4 @@ const QuickLinks = () => {
 };
 
 export default QuickLinks;
+

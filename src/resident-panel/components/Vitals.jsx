@@ -1,9 +1,8 @@
 import React from 'react';
-import { Card, Button } from './ui';
+import { Card } from './ui';
 import { FileText, MoreHorizontal, Clock } from 'lucide-react';
-import { vitals } from '../data/mockData';
 
-const Vitals = () => {
+const Vitals = ({ vitals }) => {
   return (
     <Card className="flex flex-col p-0 overflow-hidden">
       <div className="flex items-center justify-between p-2 px-3 border-b border-gray-100">
@@ -43,16 +42,16 @@ const Vitals = () => {
           <h4 className="font-bold text-slate-500 mb-4 text-[15px]">Latest Vitals</h4>
           <ul className="space-y-3 text-[13px] text-gray-500 pl-1">
             <li className="flex items-start before:content-['•'] before:mr-2 before:text-gray-300">
-              Blood Pressure: <span className="ml-1">120/80 mmHg</span>
+              Blood Pressure: <span className="ml-1">{vitals.bloodPressure}</span>
             </li>
             <li className="flex items-start before:content-['•'] before:mr-2 before:text-gray-300">
-              Heart Rate: <span className="ml-1">74 bpm</span>
+              Heart Rate: <span className="ml-1">{vitals.heartRate}</span>
             </li>
             <li className="flex items-start before:content-['•'] before:mr-2 before:text-gray-300">
-              Body Mass Index: <span className="ml-1">171 lbs</span>
+              Body Mass Index: <span className="ml-1">{vitals.bmi}</span>
             </li>
             <li className="flex items-start before:content-['•'] before:mr-2 before:text-gray-300">
-              Respiration Rate: <span className="ml-1">60 bpm</span>
+              Respiration Rate: <span className="ml-1">{vitals.respirationRate}</span>
             </li>
           </ul>
         </div>
