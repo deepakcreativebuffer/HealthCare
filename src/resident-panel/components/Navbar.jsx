@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, Bell, ChevronDown, User, LogOut, Edit3, LayoutGrid, ClipboardList, FileText } from 'lucide-react';
+import { Mail, Bell, ChevronDown, User, LogOut, Edit3, LayoutGrid, ClipboardList, FileText, Pencil } from 'lucide-react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { mockUser } from '../data/mockData';
 
@@ -42,26 +42,26 @@ const Navbar = () => {
             <div className="hidden md:flex items-center space-x-3">
               <Link
                 to="/resident-dashboard"
-                className={`flex items-center space-x-2 px-4 py-2 rounded-[10px] text-[14px] font-semibold transition-all duration-200 border ${isActive('/resident-dashboard')
+                className={`flex items-center space-x-2 px-3 py-1 rounded-[10px] text-[13px] font-semibold transition-all duration-200 border ${isActive('/resident-dashboard')
                   ? 'bg-[#DEF3FF] text-[#129FED] border-[#90CEF0]'
                   : 'bg-white text-[#6D758F] border-[#E2E8F0] hover:bg-gray-50'
                   }`}
               >
-                <LayoutGrid className="w-[14px] h-[14px]" />
+                <LayoutGrid className="w-[13px] h-[13px]" />
                 <span>Dashboard</span>
               </Link>
 
               <button
-                className="flex items-center space-x-2 px-4 py-2 rounded-[10px] text-[14px] font-semibold transition-all duration-200 border bg-white text-[#6D758F] border-[#E2E8F0] hover:bg-gray-50"
+                className="flex items-center space-x-2 px-3 py-1 rounded-[10px] text-[13px] font-semibold transition-all duration-200 border bg-white text-[#6D758F] border-[#E2E8F0] hover:bg-gray-50"
               >
-                <ClipboardList className="w-[14px] h-[14px]" />
+                <ClipboardList className="w-[13px] h-[13px]" />
                 <span>Intake</span>
               </button>
 
               <button
-                className="flex items-center space-x-2 px-4 py-2 rounded-[10px] text-[14px] font-semibold transition-all duration-200 border bg-white text-[#6D758F] border-[#E2E8F0] hover:bg-gray-50"
+                className="flex items-center space-x-2 px-3 py-1 rounded-[10px] text-[13px] font-semibold transition-all duration-200 border bg-white text-[#6D758F] border-[#E2E8F0] hover:bg-gray-50"
               >
-                <FileText className="w-[14px] h-[14px]" />
+                <FileText className="w-[13px] h-[13px]" />
                 <span>Progress Chart</span>
               </button>
             </div>
@@ -105,16 +105,16 @@ const Navbar = () => {
                   </div>
                   <Link
                     to="/resident-dashboard/profile"
-                    className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                    className="flex items-center gap-3 px-4 py-2.5 text-[14px] font-medium text-gray-700 hover:bg-gray-50"
                     onClick={() => setShowDropdown(false)}
                   >
-                    <Edit3 className="w-4 h-4" /> Edit Profile Details
+                    <Pencil className="w-[18px] h-[18px] text-gray-500" /> Edit Profile Details
                   </Link>
                   <button
                     onClick={handleLogout}
-                    className="flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 w-full text-left"
+                    className="flex items-center gap-3 px-4 py-2.5 text-[14px] font-medium text-red-600 hover:bg-red-50 w-full text-left"
                   >
-                    <LogOut className="w-4 h-4" /> Logout
+                    <LogOut className="w-[18px] h-[18px] text-red-500" /> Logout
                   </button>
                 </div>
               )}

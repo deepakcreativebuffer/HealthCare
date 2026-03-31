@@ -1,42 +1,63 @@
 import React from 'react';
-import { Search, Bell, Settings, LogOut, User, ChevronDown, LayoutGrid, Mail } from 'lucide-react';
+import { Search, Bell, Settings, LogOut, User, ChevronDown, LayoutGrid, Mail, ReceiptText, Users, MapPin, FileText, History, UserPlus, Pencil } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Navbar = ({ activeTab, onTabChange }) => {
-  const tabs = ['Dashboard', 'Billing & Claims', 'Users', 'Tracking', 'Log', 'Activity Log'];
+  const [isProfileOpen, setIsProfileOpen] = React.useState(false);
+  const navigate = useNavigate();
+  const dropdownRef = React.useRef(null);
+
+  const navItems = [
+    { name: 'Dashboard', icon: LayoutGrid },
+    { name: 'Billing & Claims', icon: ReceiptText },
+    { name: 'Users', icon: Users },
+    { name: 'Tracking', icon: MapPin },
+    { name: 'Log', icon: FileText },
+    { name: 'Activity Log', icon: History },
+  ];
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    navigate('/');
+  };
+
+  // Close dropdown when clicking outside
+  React.useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsProfileOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   return (
-    <nav className="bg-white border-b border-gray-100 px-4 sm:px-6 py-3 flex items-center justify-between sticky top-0 z-50 overflow-x-auto no-scrollbar">
+    <nav className="bg-white border-b border-gray-100 px-4 sm:px-6 py-3 flex items-center justify-between">
       <div className="flex items-center gap-4 lg:gap-8 shrink-0">
         {/* Logo */}
         <div className="flex items-center gap-2 cursor-pointer" onClick={() => onTabChange('Dashboard')}>
-          <div className="w-9 h-9 bg-gradient-to-tr from-[#0088FF] to-[#20D5FE] rounded-full flex items-center justify-center shadow-sm">
-             <div className="w-5 h-5 border-2 border-white/40 rounded-full flex items-center justify-center">
-                <div className="w-2 h-2 bg-white rounded-full" />
-             </div>
-          </div>
-          <span className="text-xl font-black tracking-tighter text-slate-800 uppercase hidden sm:block">OASIS NOTES</span>
+          <Link to="/" className="flex items-center space-x-2 justify-center">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold" />
+            <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">
+              HealthCare
+            </span>
+          </Link>
         </div>
 
         {/* Main Navigation */}
-        <div className="hidden lg:flex items-center gap-1.5 overflow-x-auto no-scrollbar">
-          {tabs.map((item) => (
+        <div className="hidden lg:flex items-center gap-2 overflow-x-auto no-scrollbar max-w-[40vw] xl:max-w-none">
+          {navItems.map((item) => (
             <button
-              key={item}
-              onClick={() => onTabChange(item)}
-              className={`px-4 py-2.5 text-[13px] font-bold rounded-[10px] transition-all border whitespace-nowrap ${
-                activeTab === item 
-                  ? 'bg-[#DEF3FF] text-[#129FED] border-[#90CEF0] shadow-sm' 
-                  : 'text-slate-400 bg-white border-transparent hover:bg-gray-50 hover:text-slate-700'
-              }`}
+              key={item.name}
+              onClick={() => onTabChange(item.name)}
+              className={`px-3 py-1 text-[13px] font-medium rounded-[10px] transition-all border whitespace-nowrap flex items-center gap-2 ${activeTab === item.name
+                ? 'bg-[#E3F2FD] text-[#129FED] border-[#129FED] shadow-xs'
+                : 'bg-white text-slate-500 border-[#E2E8F0] hover:bg-slate-50'
+                }`}
             >
-              <div className="flex items-center gap-2">
-                {activeTab === item && (
-                   <div className="w-4 h-4 bg-[#129FED]/10 rounded-sm flex items-center justify-center">
-                     <LayoutGrid size={12} className="text-[#129FED]" />
-                   </div>
-                )}
-                {item}
-              </div>
+              <item.icon size={14} className={activeTab === item.name ? 'text-[#129FED]' : 'text-slate-500'} strokeWidth={2} />
+              {item.name}
             </button>
           ))}
         </div>
@@ -52,25 +73,35 @@ const Navbar = ({ activeTab, onTabChange }) => {
 
         <div className="h-8 w-px bg-gray-100 mx-1 hidden sm:block" />
 
-        <div className="flex items-center gap-3 pl-2 group cursor-pointer relative">
-          <div className="text-right hidden xl:block">
-            <p className="text-[14px] font-bold text-slate-900 leading-none">Sarah Mitchell</p>
-            <p className="text-[11px] text-slate-500 mt-1 uppercase font-bold tracking-tighter">Admin Dashboard</p>
+        <div className="relative" ref={dropdownRef}>
+          <div
+            className="flex items-center gap-3 pl-2 cursor-pointer hover:bg-slate-50/80 p-1.5 rounded-xl transition-all"
+            onClick={() => setIsProfileOpen(!isProfileOpen)}
+          >
+            <div className="text-right hidden xl:block">
+              <p className="text-[14px] font-bold text-[#334155] leading-none">Sarah Mitchell</p>
+              <p className="text-[12px] text-slate-500 mt-1 font-medium lowercase">sarah.mitchell@oasisnotes.com</p>
+            </div>
+            <div className="w-10 h-10 bg-slate-200 rounded-full flex items-center justify-center text-slate-600 overflow-hidden relative border border-slate-100 shadow-sm">
+              <User size={24} fill="currentColor" className="text-slate-400 mt-2" />
+            </div>
+            <ChevronDown size={14} className={`text-slate-400 hidden sm:block transition-transform duration-200 ${isProfileOpen ? 'rotate-180' : ''}`} />
           </div>
-          <div className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 overflow-hidden relative border border-gray-100">
-            <User size={24} />
-          </div>
-          <ChevronDown size={16} className="text-slate-400 hidden sm:block" />
-          
-          {/* Dropdown Simulation */}
-          <div className="absolute top-14 right-0 w-52 bg-white border border-[#E2E8F0] rounded-[10px] shadow-sm py-2 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-all transform scale-95 group-hover:scale-100 z-50">
-             <button className="w-full flex items-center gap-3 px-4 py-3 text-[13px] font-bold text-slate-700 hover:bg-gray-50">
-               <Settings size={16} className="text-[#129FED]" /> Edit Profile Details
-             </button>
-             <button className="w-full flex items-center gap-3 px-4 py-3 text-[13px] font-bold text-red-600 hover:bg-red-50">
-               <LogOut size={16} /> Logout
-             </button>
-          </div>
+
+          {/* Actual Dropdown Menu */}
+          {isProfileOpen && (
+            <div className="absolute top-14 right-0 w-52 bg-white border border-[#E2E8F0] rounded-[12px] shadow-[0_10px_40px_rgba(0,0,0,0.08)] py-1.5 z-50 animate-in fade-in zoom-in-95 duration-100 origin-top-right">
+              <button className="w-full flex items-center gap-3 px-4 py-3 text-[14px] font-medium text-slate-600 hover:bg-slate-50 transition-colors">
+                <Pencil size={18} className="text-slate-500" /> Edit Profile Details
+              </button>
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center gap-3 px-4 py-3 text-[14px] font-medium text-red-600 hover:bg-red-50 transition-colors"
+              >
+                <LogOut size={18} className="text-red-500" /> Logout
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </nav>

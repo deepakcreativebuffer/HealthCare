@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { User, Lock, Eye, EyeOff } from 'lucide-react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, Link } from 'react-router-dom';
 import ResidentLayout from './resident-panel/layouts/ResidentLayout';
 import Dashboard from './resident-panel/pages/Dashboard';
 import Profile from './resident-panel/pages/Profile';
@@ -49,11 +49,14 @@ const MockLogin = () => {
 
       <div className="bg-white p-10 rounded-[32px] shadow-[0_20px_50px_rgba(0,114,206,0.1)] max-w-md w-full border border-blue-50 relative z-10">
         <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-50 rounded-2xl mb-6 shadow-inner">
-            <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center font-bold text-white text-xl">ON</div>
-          </div>
+          <Link to="/" className="flex items-center space-x-2 justify-center mb-6">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold" />
+            <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">
+              HealthCare
+            </span>
+          </Link>
           <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Welcome Back</h1>
-          <p className="text-gray-500 mt-2 font-medium">Please enter your details to sign in</p>
+          <p className="text-gray-500 mt-2 font-medium text-sm">Please enter your details to sign in</p>
         </div>
 
         <form onSubmit={handleLogin} className="space-y-6">
@@ -148,23 +151,23 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("Dashboard");
   const navigate = useNavigate();
   return (
-    <div className="min-h-screen bg-[#f8fafc] flex flex-col overflow-hidden">
-      {/* Persistant Top Navbar */}
-      <Navbar activeTab={activeTab} onTabChange={setActiveTab} />
-
-      {/* Persistant App Module Tabs */}
-      <SubNav />
+    <div className="h-screen bg-[#f8fafc] flex flex-col overflow-hidden">
+      {/* Fixed Sticky Header Block */}
+      <header className="shrink-0 z-50 bg-white shadow-sm">
+        <Navbar activeTab={activeTab} onTabChange={setActiveTab} />
+        <SubNav />
+      </header>
 
       {/* Conditional Dashboard Content */}
       <div className="flex-1 overflow-hidden flex flex-col">
         {activeTab === "Dashboard" ? (
-          <main className="flex-1 overflow-y-auto p-8 scroll-smooth no-scrollbar">
+          <main className="flex-1 overflow-y-auto p-8 scroll-smooth custom-scrollbar">
             <MedicalDashboard />
           </main>
         ) : activeTab === "Billing & Claims" ? (
           <BillingDashboard />
         ) : (
-          <main className="flex-1 flex items-center justify-center p-8">
+          <main className="flex-1 overflow-y-auto flex items-center justify-center p-8 custom-scrollbar">
             <div className="text-center">
               <h2 className="text-2xl font-bold text-slate-800">Section Under Construction</h2>
               <p className="text-slate-500 mt-2">The {activeTab} module will be available soon.</p>
