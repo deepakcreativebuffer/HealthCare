@@ -78,10 +78,10 @@ const DetailedStatsView = ({ title, onBack }) => {
           result = await api.getAppointments();
           break;
         case "Staff Schedule":
-          result = mockData.staffShifts.map(s => ({
+          result = mockData.staffShifts.map((s) => ({
             ...s,
             name: s.staffName,
-            status: s.shiftType
+            status: s.shiftType,
           }));
           break;
         case "Main Stats List":
@@ -101,12 +101,14 @@ const DetailedStatsView = ({ title, onBack }) => {
           break;
         case "Activity Log":
           result = await api.getActivity();
-          result = result.map((l) => ({
-            id: `LOG-${l.id}`,
-            name: l.message,
-            status: l.status,
-            user: l.user,
-            time: l.time,
+          console.log("result", result);
+          result = result.map((l, i) => ({
+            id: `ACT-${i + 1}`,
+            name: l.action || l.message || "Manual Update",
+            status: l.status || "Completed",
+            userName: l.userName || l.user || "Admin",
+            time: l.time || "Recently",
+            statusColor: l.statusColor || "blue",
           }));
           break;
         case "Special Notes":
@@ -144,10 +146,11 @@ const DetailedStatsView = ({ title, onBack }) => {
         (item.status === "Inactive" || item.status === "Discharged")
       );
 
-    const matchesFilter = activeFilter === "All" || 
-                         item.role === activeFilter || 
-                         item.department === activeFilter || 
-                         item.date === activeFilter;
+    const matchesFilter =
+      activeFilter === "All" ||
+      item.role === activeFilter ||
+      item.department === activeFilter ||
+      item.date === activeFilter;
 
     if (!matchesFilter) return false;
 
@@ -243,7 +246,8 @@ const DetailedStatsView = ({ title, onBack }) => {
             title !== "Staff Schedule" &&
             title !== "Special Notes" && (
               <div className="flex items-center gap-2">
-                {(title.includes("Appointment") || title.includes("Activity")) && (
+                {(title.includes("Appointment") ||
+                  title.includes("Activity")) && (
                   <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-lg px-3 py-1.5 shadow-sm">
                     <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">
                       Range:
@@ -356,9 +360,27 @@ const DetailedStatsView = ({ title, onBack }) => {
                       Status
                     </th>
                   )}
-                  <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
-                    Name
-                  </th>
+                  {title === "Activity Log" && (
+                    <>
+                      <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                        Activity
+                      </th>
+                      <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest text-center">
+                        Status
+                      </th>
+                      <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                        Action By
+                      </th>
+                      <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest text-right">
+                        Time
+                      </th>
+                    </>
+                  )}
+                  {title !== "Activity Log" && (
+                    <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                      Name
+                    </th>
+                  )}
                   {title === "Special Notes" && (
                     <>
                       <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
@@ -418,20 +440,20 @@ const DetailedStatsView = ({ title, onBack }) => {
                       Amount
                     </th>
                   )}
-                  {(title !== "Total Appointments" &&
+                  {title !== "Total Appointments" &&
                     title !== "Staff Schedule" &&
-                    title !== "Activity Log") && (
-                    <>
-                      {title !== "Special Notes" && (
-                        <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest text-center">
-                          Status
+                    title !== "Activity Log" && (
+                      <>
+                        {title !== "Special Notes" && (
+                          <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest text-center">
+                            Status
+                          </th>
+                        )}
+                        <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest text-right">
+                          Actions
                         </th>
-                      )}
-                      <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest text-right">
-                        Actions
-                      </th>
-                    </>
-                  )}
+                      </>
+                    )}
                   {title === "Staff Schedule" && (
                     <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest text-center">
                       Shift Type
@@ -447,48 +469,77 @@ const DetailedStatsView = ({ title, onBack }) => {
                   >
                     {title === "Special Notes" && (
                       <td className="px-6 py-4">
-                        <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest italic border ${
-                          item.color === "red" ? "bg-red-50 text-red-600 border-red-100" :
-                          item.color === "orange" ? "bg-amber-50 text-amber-600 border-amber-100" :
-                          "bg-teal-50 text-teal-600 border-teal-100"
-                        }`}>
+                        <span
+                          className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest italic border ${
+                            item.color === "red"
+                              ? "bg-red-50 text-red-600 border-red-100"
+                              : item.color === "orange"
+                                ? "bg-amber-50 text-amber-600 border-amber-100"
+                                : "bg-teal-50 text-teal-600 border-teal-100"
+                          }`}
+                        >
                           {item.status}
                         </span>
                       </td>
                     )}
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-bold text-sm select-none">
-                          {(item.name || item.patient || "U")[0]}
+                    {title !== "Activity Log" && (
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-bold text-sm select-none">
+                            {(item.name || item.patient || "U")[0]}
+                          </div>
+                          <div>
+                            <p className="text-[14px] font-bold text-slate-800">
+                              {title === "Special Notes"
+                                ? item.patient
+                                : item.name ||
+                                  item.residentName ||
+                                  item.staffName ||
+                                  item.userName}
+                            </p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="text-[14px] font-bold text-slate-800">
-                            {title === "Special Notes" ? item.patient : (item.name || item.residentName || item.staffName || item.userName)}
-                          </p>
-                        </div>
-                      </div>
-                    </td>
+                      </td>
+                    )}
 
                     {title === "Activity Log" && (
                       <>
                         <td className="px-6 py-4">
-                          <p className="text-[13px] font-medium text-slate-600">{item.action}</p>
+                          <p className="text-[14px] font-bold text-slate-800">
+                            {item.name}
+                          </p>
                         </td>
                         <td className="px-6 py-4 text-center">
-                          <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${
-                            item.actionType === 'Update' ? 'bg-blue-50 text-blue-600 border-blue-100' :
-                            item.actionType === 'Delete' ? 'bg-red-50 text-red-600 border-red-100' :
-                            item.actionType === 'Create' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
-                            'bg-indigo-50 text-indigo-600 border-indigo-100'
-                          }`}>
-                            {item.actionType}
+                          <span
+                            className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border transition-all ${
+                              item.statusColor === "emerald"
+                                ? "bg-emerald-50 text-emerald-600 border-emerald-100"
+                                : item.statusColor === "blue"
+                                  ? "bg-blue-50 text-blue-600 border-blue-100"
+                                  : item.statusColor === "sky"
+                                    ? "bg-sky-50 text-sky-600 border-sky-100"
+                                    : item.statusColor === "red"
+                                      ? "bg-red-50 text-red-600 border-red-100"
+                                      : "bg-amber-50 text-amber-600 border-amber-100"
+                            }`}
+                          >
+                            {item.status}
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-right">
-                          <div className="space-y-0.5">
-                            <p className="text-[12px] font-black text-slate-400 uppercase tracking-widest leading-none italic">{item.date}</p>
-                            <p className="text-[10px] font-bold text-blue-500 whitespace-nowrap">{item.time}</p>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-2">
+                            <div className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-500">
+                              {item.userName?.[0]}
+                            </div>
+                            <p className="text-[13px] font-bold text-slate-600">
+                              {item.userName}
+                            </p>
                           </div>
+                        </td>
+                        <td className="px-6 py-4 text-right">
+                          <p className="text-[12px] font-black text-slate-400 uppercase tracking-widest">
+                            {item.time}
+                          </p>
                         </td>
                       </>
                     )}
@@ -496,12 +547,18 @@ const DetailedStatsView = ({ title, onBack }) => {
                     {title === "Special Notes" && (
                       <>
                         <td className="px-6 py-4">
-                          <p className="text-[13px] font-bold text-slate-600 line-clamp-1">{item.name}</p>
+                          <p className="text-[13px] font-bold text-slate-600 line-clamp-1">
+                            {item.name}
+                          </p>
                         </td>
                         <td className="px-6 py-4">
                           <div className="space-y-0.5">
-                            <p className="text-[12px] font-black text-slate-600 uppercase tracking-widest leading-none italic">{item.date}</p>
-                            <p className="text-[11px] font-bold text-blue-600 tracking-wider bg-blue-50/50 px-2 py-0.5 rounded w-fit">{item.time}</p>
+                            <p className="text-[12px] font-black text-slate-600 uppercase tracking-widest leading-none italic">
+                              {item.date}
+                            </p>
+                            <p className="text-[11px] font-bold text-blue-600 tracking-wider bg-blue-50/50 px-2 py-0.5 rounded w-fit">
+                              {item.time}
+                            </p>
                           </div>
                         </td>
                       </>
@@ -510,8 +567,12 @@ const DetailedStatsView = ({ title, onBack }) => {
                     {title === "Staff Schedule" && (
                       <td className="px-6 py-4">
                         <div className="space-y-0.5">
-                          <p className="text-[13px] font-black text-slate-700 uppercase italic leading-none">{item.day}, {item.date}</p>
-                          <p className="text-[11px] font-bold text-blue-600 tracking-wider bg-blue-50/50 px-2.5 py-1 rounded w-fit">{item.time}</p>
+                          <p className="text-[13px] font-black text-slate-700 uppercase italic leading-none">
+                            {item.day}, {item.date}
+                          </p>
+                          <p className="text-[11px] font-bold text-blue-600 tracking-wider bg-blue-50/50 px-2.5 py-1 rounded w-fit">
+                            {item.time}
+                          </p>
                         </div>
                       </td>
                     )}
@@ -676,7 +737,9 @@ const DetailedStatsView = ({ title, onBack }) => {
                       </span>
                     </div>
                   )}
-                  <div className={`p-4 rounded-2xl bg-slate-50 border border-slate-100 ${title === "Special Notes" ? "col-span-2" : ""}`}>
+                  <div
+                    className={`p-4 rounded-2xl bg-slate-50 border border-slate-100 ${title === "Special Notes" ? "col-span-2" : ""}`}
+                  >
                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">
                       Record ID
                     </p>
