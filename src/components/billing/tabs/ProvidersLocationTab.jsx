@@ -11,23 +11,25 @@ import {
 import { billingData } from "../../../data/billingData";
 
 const FieldBox = ({ label, value, isSelect = false }) => (
-  <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm flex flex-col gap-1.5 relative overflow-hidden group hover:border-slate-200 transition-all">
+  <div className="bg-white p-3.5 rounded-lg border border-slate-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)] flex flex-col gap-1 relative overflow-hidden group transition-all hover:shadow-[0_4px_15px_rgba(0,0,0,0.04)]">
     <div className="flex justify-between items-start">
-      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+      <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none">
         {label}
       </span>
-      {isSelect && <ChevronDown size={14} className="text-slate-400 mt-0.5" />}
+      {isSelect && <ChevronDown size={12} className="text-slate-300 mt-0.5" />}
     </div>
-    <span className="text-[14px] font-extrabold text-slate-800 tracking-tight">
+    <span className="text-[13px] font-bold text-slate-700 tracking-tight leading-none group-hover:text-slate-900">
       {value}
     </span>
   </div>
 );
 
-const SectionHeader = ({ icon: Icon, title }) => (
-  <div className="px-6 py-4 border-b border-slate-50 bg-[#f8fafc]/50 flex items-center gap-3 text-[#009bf2]">
-    <Icon size={16} className="stroke-[2.5]" />
-    <span className="text-[11px] font-extrabold uppercase tracking-widest">
+const SectionTitle = ({ icon: Icon, title }) => (
+  <div className="flex items-center gap-2 mb-4 px-1">
+    <div className="w-6 h-6 rounded-lg bg-slate-50 flex items-center justify-center border border-slate-100">
+      <Icon size={12} className="text-slate-400" />
+    </div>
+    <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
       {title}
     </span>
   </div>
@@ -37,68 +39,50 @@ const ProvidersLocationTab = () => {
   const { providers } = billingData.patientSnapshot;
 
   return (
-    <div className="p-8 space-y-8 animate-in fade-in duration-500">
-      {/* Tab Level Header */}
-      <div className="flex items-center gap-3 text-[#009bf2] mb-2">
-        <Building2 size={20} className="stroke-[2.5]" />
-        <h2 className="text-[13px] font-extrabold uppercase tracking-tight">
-          Providers & Service Location
-        </h2>
-      </div>
-
-      <div className="space-y-6">
-        {/* Section 1: Billing Detail (Mockup label: Subscriber Details) */}
-        <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
-          <SectionHeader icon={FileText} title="Subscriber Details" />
-          <div className="p-6 space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <FieldBox label="Name" value={providers.billing.name} />
-              <FieldBox label="NPI" value={providers.billing.npi} />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <FieldBox label="Tax ID" value={providers.billing.taxId} />
-              <FieldBox label="Phone" value={providers.billing.phone} />
-            </div>
+    <div className="p-6 space-y-8 animate-in fade-in duration-500 antialiased">
+      <div className="space-y-8">
+        {/* Section 1: Billing Detail */}
+        <section>
+          <SectionTitle icon={FileText} title="Subscriber Details" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <FieldBox label="Entity Name" value={providers.billing.name} />
+            <FieldBox label="NPI Identifier" value={providers.billing.npi} />
+            <FieldBox label="Tax Registration" value={providers.billing.taxId} />
+            <FieldBox label="Contact Phone" value={providers.billing.phone} />
           </div>
-        </div>
+        </section>
 
         {/* Section 2: Rendering Provider */}
-        <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
-          <SectionHeader icon={Stethoscope} title="Rendering Provider" />
-          <div className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <FieldBox
-                label="Provider"
-                value={providers.rendering.name}
-                isSelect={true}
-              />
-              <FieldBox label="NPI" value={providers.rendering.npi} />
-              <FieldBox
-                label="Specialty"
-                value={providers.rendering.specialty}
-              />
-            </div>
+        <section>
+          <SectionTitle icon={Stethoscope} title="Rendering Provider" />
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <FieldBox
+              label="Primary Provider"
+              value={providers.rendering.name}
+              isSelect={true}
+            />
+            <FieldBox label="NPI Number" value={providers.rendering.npi} />
+            <FieldBox
+              label="Clinical Specialty"
+              value={providers.rendering.specialty}
+            />
           </div>
-        </div>
+        </section>
 
         {/* Section 3: Service Location */}
-        <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
-          <SectionHeader icon={MapPin} title="Service Location" />
-          <div className="p-6 space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <FieldBox
-                label="Facility"
-                value={providers.facility.name}
-                isSelect={true}
-              />
-              <FieldBox label="Address" value={providers.facility.address} />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <FieldBox label="Facility NPI" value={providers.facility.npi} />
-              <FieldBox label="POS" value={providers.facility.pos} />
-            </div>
+        <section>
+          <SectionTitle icon={MapPin} title="Service Location" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <FieldBox
+              label="Medical Facility"
+              value={providers.facility.name}
+              isSelect={true}
+            />
+            <FieldBox label="Site Address" value={providers.facility.address} />
+            <FieldBox label="Facility NPI" value={providers.facility.npi} />
+            <FieldBox label="POS Code" value={providers.facility.pos} />
           </div>
-        </div>
+        </section>
       </div>
     </div>
   );

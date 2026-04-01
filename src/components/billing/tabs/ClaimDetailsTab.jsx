@@ -1,5 +1,5 @@
 import React from "react";
-import { FileCheck, ChevronDown, Lock, DollarSign } from "lucide-react";
+import { FileCheck, ChevronDown, Lock, DollarSign, Fingerprint, ShieldCheck } from "lucide-react";
 import { billingData } from "../../../data/billingData";
 
 const FieldBox = ({
@@ -7,20 +7,32 @@ const FieldBox = ({
   value,
   isSelect = false,
   isLocked = false,
-  isShort = false,
 }) => (
   <div
-    className={`bg-white p-5 rounded-xl border border-slate-100 shadow-sm flex flex-col gap-1.5 hover:border-slate-200 transition-all ${isShort ? "flex-1" : "flex-1"}`}
+    className="bg-white p-3.5 rounded-lg border border-slate-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)] flex flex-col gap-1 transition-all hover:shadow-[0_4px_15px_rgba(0,0,0,0.04)] group"
   >
     <div className="flex justify-between items-start">
-      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+      <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none">
         {label}
       </span>
-      {isSelect && <ChevronDown size={14} className="text-slate-400" />}
-      {isLocked && <Lock size={12} className="text-slate-300" />}
+      <div className="flex items-center gap-1">
+        {isSelect && <ChevronDown size={12} className="text-slate-300 group-hover:text-[#129FED]" />}
+        {isLocked && <Lock size={10} className="text-slate-200" />}
+      </div>
     </div>
-    <span className="text-[14px] font-extrabold text-slate-800 tracking-tight">
+    <span className="text-[13px] font-bold text-slate-700 tracking-tight leading-none group-hover:text-slate-900">
       {value}
+    </span>
+  </div>
+);
+
+const SectionTitle = ({ icon: Icon, title }) => (
+  <div className="flex items-center gap-2 mb-3 px-1">
+    <div className="w-6 h-6 rounded-lg bg-slate-50 flex items-center justify-center border border-slate-100">
+      <Icon size={12} className="text-slate-400" />
+    </div>
+    <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+      {title}
     </span>
   </div>
 );
@@ -29,82 +41,79 @@ const ClaimDetailsTab = () => {
   const { claimDetails } = billingData.patientSnapshot;
 
   return (
-    <div className="p-8 space-y-6 animate-in fade-in duration-500">
-      {/* Tab Level Header */}
-      <div className="flex items-center gap-3 text-[#009bf2] mb-2">
-        <FileCheck size={20} className="stroke-[2.5]" />
-        <h2 className="text-[13px] font-extrabold uppercase tracking-tight">
-          Claim Details & Compliance
-        </h2>
-      </div>
-
+    <div className="p-6 space-y-6 animate-in fade-in duration-500 antialiased">
       <div className="space-y-6">
-        {/* Row 1: Type, Frequency, Code */}
-        <div className="flex gap-4">
-          <FieldBox
-            label="Claim Type"
-            value={claimDetails.type}
-            isLocked={true}
-          />
-          <FieldBox
-            label="Claim Frequency"
-            value={claimDetails.frequency}
-            isSelect={true}
-          />
-          <FieldBox label="Frequency Code" value={claimDetails.frequencyCode} />
-        </div>
+        {/* Section 1: Claim Identity */}
+        <section>
+          <SectionTitle icon={Fingerprint} title="Claim Identity" />
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <FieldBox
+              label="Claim Type"
+              value={claimDetails.type}
+              isLocked={true}
+            />
+            <FieldBox
+              label="Billing Frequency"
+              value={claimDetails.frequency}
+              isSelect={true}
+            />
+            <FieldBox label="Frequency Code" value={claimDetails.frequencyCode} />
+          </div>
+        </section>
 
-        {/* Row 2: Signature & Assignment */}
-        <div className="flex gap-4">
-          <FieldBox
-            label="Signature on File"
-            value={claimDetails.signatureOnFile}
-            isSelect={true}
-          />
-          <FieldBox
-            label="Assignment of Benefits"
-            value={claimDetails.assignmentOfBenefits}
-            isSelect={true}
-          />
-        </div>
+        {/* Section 2: Authorization */}
+        <section>
+          <SectionTitle icon={ShieldCheck} title="Authorizations" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <FieldBox
+              label="Provider Signature"
+              value={claimDetails.signatureOnFile}
+              isSelect={true}
+            />
+            <FieldBox
+              label="Benefit Assignment"
+              value={claimDetails.assignmentOfBenefits}
+              isSelect={true}
+            />
+          </div>
+        </section>
 
-        {/* Total Charge Summary Bar (Indigo Tint) */}
-        <div className="bg-[#f5f7ff] p-6 rounded-xl border border-blue-50/50 flex items-center justify-between shadow-sm">
-          <span className="text-[13px] font-black text-slate-500 tracking-tight">
-            Total Charge Amount
-          </span>
+        {/* Section 3: Totals Bar */}
+        <div className="bg-slate-50 p-4 rounded-lg border border-slate-100 flex items-center justify-between shadow-[0_1px_4px_rgba(0,0,0,0.01)] transition-all hover:bg-slate-100/50">
           <div className="flex items-center gap-3">
-            <span className="text-[20px] font-black text-slate-800">
-              ${claimDetails.totalChargeAmount.toFixed(2)}
+            <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-slate-400 shadow-sm border border-slate-100">
+              <DollarSign size={14} />
+            </div>
+            <span className="text-[12px] font-bold text-slate-500 uppercase tracking-tight">
+              Aggregated Charge Value
             </span>
-            <span className="text-[11px] font-bold text-slate-300">Auto</span>
+          </div>
+          <div className="flex items-baseline gap-2">
+            <span className="text-[10px] font-bold text-slate-400">$</span>
+            <span className="text-[18px] font-black text-slate-900 tracking-tighter">
+              {claimDetails.totalChargeAmount.toFixed(2)}
+            </span>
+            <span className="text-[9px] font-black text-blue-500 uppercase tracking-widest bg-blue-50 px-1.5 py-0.5 rounded border border-blue-50">Auto</span>
           </div>
         </div>
 
-        {/* Payments / ERA Section */}
-        <div className="bg-white rounded-[32px] border border-slate-100 shadow-sm overflow-hidden">
-          <div className="px-6 py-4 border-b border-slate-50 bg-[#f8fafc]/50 flex items-center gap-3 text-[#009bf2]">
-            <DollarSign size={16} className="stroke-[2.5]" />
-            <span className="text-[11px] font-extrabold uppercase tracking-widest">
-              Payments / ERA
-            </span>
-          </div>
-
-          <div className="p-8 flex flex-col items-center justify-center text-center space-y-4">
-            <div className="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center text-slate-300">
-              <Lock size={24} />
+        {/* Section 4: Remittance Module */}
+        <section>
+          <SectionTitle icon={DollarSign} title="Payment Remittance (ERA)" />
+          <div className="bg-white rounded-lg border border-slate-100 shadow-[0_2px_12px_rgba(0,0,0,0.02)] p-10 flex flex-col items-center justify-center text-center space-y-4">
+            <div className="w-14 h-14 rounded-full bg-slate-50 flex items-center justify-center text-slate-200 border border-slate-50">
+              <Lock size={20} />
             </div>
-            <div className="space-y-1">
-              <p className="text-[15px] font-extrabold text-slate-500 tracking-tight">
-                ERA Claim ID | Paid Amount | Adjustments | Patient Resp | Denial
-                Codes
+            <div className="space-y-1.5">
+              <p className="text-[14px] font-bold text-slate-500 tracking-tight">
+                Historical remittance data will appear after the first submission cycle.
               </p>
-              <p className="text-[12px] font-bold text-slate-300">
-                Coming Soon — Enabled after first claim submission
+              <p className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">
+                Protected by HealthCloud HIPAA Compliance Engine
               </p>
             </div>
           </div>
-        </div>
+        </section>
       </div>
     </div>
   );
