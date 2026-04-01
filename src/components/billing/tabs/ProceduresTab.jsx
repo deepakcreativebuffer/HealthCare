@@ -4,7 +4,7 @@ import { billingData } from "../../../data/billingData";
 
 const TableCell = ({ value, classes = "" }) => (
   <div
-    className={`px-4 py-2.5 rounded-lg border border-slate-100 bg-white min-h-[42px] flex items-center justify-center text-[13px] font-bold text-slate-700 transition-all hover:border-slate-200 shadow-sm ${classes}`}
+    className={`px-3 py-1.5 rounded border border-slate-100 bg-white min-h-[32px] flex items-center justify-center text-[11px] font-bold text-slate-700 transition-all hover:border-slate-200 shadow-sm ${classes}`}
   >
     {value || ""}
   </div>
@@ -19,20 +19,20 @@ const ProceduresTab = () => {
   );
 
   return (
-    <div className="p-8 space-y-8 animate-in fade-in duration-500">
+    <div className="p-4 space-y-4 animate-in fade-in duration-500">
       {/* Tab Level Header */}
-      <div className="flex items-center gap-3 text-[#009bf2] mb-2">
-        <Receipt size={20} className="stroke-[2.5]" />
-        <h2 className="text-[13px] font-extrabold uppercase tracking-tight">
+      <div className="flex items-center gap-2 text-[#009bf2] mb-1">
+        <Receipt size={16} className="stroke-[2.5]" />
+        <h2 className="text-[12px] font-extrabold uppercase tracking-tight">
           Procedures / Charges (CPT / HCPCS)
         </h2>
       </div>
 
-      <div className="space-y-6">
+      <div className="space-y-4">
         {/* Table Structure */}
-        <div className="bg-white rounded-[24px] border border-slate-100 shadow-sm overflow-hidden p-6 space-y-4">
+        <div className="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden p-4 space-y-3">
           {/* Headers */}
-          <div className="grid grid-cols-[1fr_1fr_1.5fr_1fr_1fr_1fr_1fr_1fr_1fr_40px] gap-3 px-2">
+          <div className="grid grid-cols-[1fr_1fr_1.5fr_1fr_1fr_1fr_1fr_1fr_1fr_40px] gap-2 px-1">
             {[
               "DOS From",
               "DOS To",
@@ -46,7 +46,7 @@ const ProceduresTab = () => {
             ].map((h) => (
               <span
                 key={h}
-                className="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center"
+                className="text-[9px] font-bold text-slate-400 uppercase tracking-widest text-center"
               >
                 {h}
               </span>
@@ -55,11 +55,11 @@ const ProceduresTab = () => {
           </div>
 
           {/* Rows */}
-          <div className="space-y-3">
+          <div className="space-y-2">
             {proceduresSection.map((item, idx) => (
               <div
                 key={idx}
-                className="grid grid-cols-[1fr_1fr_1.5fr_1fr_1fr_1fr_1fr_1fr_1fr_40px] gap-3 group items-center"
+                className="grid grid-cols-[1fr_1fr_1.5fr_1fr_1fr_1fr_1fr_1fr_1fr_40px] gap-2 group items-center"
               >
                 <TableCell value={item.dosFrom} />
                 <TableCell value={item.dosTo} />
@@ -78,15 +78,15 @@ const ProceduresTab = () => {
           </div>
 
           {/* Footer: Totals */}
-          <div className="pt-4 border-t border-slate-50 flex items-center justify-between px-2">
-            <span className="text-[13px] font-black text-slate-700">
+          <div className="pt-2 border-t border-slate-50 flex items-center justify-between px-1">
+            <span className="text-[11px] font-black text-slate-700">
               Total Charge Amount
             </span>
-            <div className="flex items-center gap-3">
-              <span className="text-[16px] font-black text-slate-800">
+            <div className="flex items-center gap-2">
+              <span className="text-[14px] font-black text-slate-800">
                 ${totalCharges.toFixed(2)}
               </span>
-              <span className="text-[11px] font-bold text-slate-300 uppercase tracking-widest">
+              <span className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">
                 (Auto)
               </span>
             </div>

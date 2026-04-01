@@ -14,56 +14,56 @@ const ClaimWorkspaceSidebar = () => {
   const { patientSnapshot } = billingData;
 
   return (
-    <div className="w-[280px] border-r border-slate-100 flex flex-col bg-white h-full overflow-y-auto no-scrollbar">
-      <div className="p-6 space-y-8">
+    <div className="w-[260px] border-r border-slate-100 flex flex-col bg-white h-full overflow-y-auto no-scrollbar">
+      <div className="p-4 space-y-4">
         {/* Claim Summary */}
         <section className="space-y-4">
-          <div className="flex items-center gap-2.5 text-blue-600">
-            <div className="w-6 h-6 rounded-lg bg-blue-50 flex items-center justify-center">
-              <FileText size={14} className="stroke-[2.5]" />
+          <div className="flex items-center gap-2 text-blue-600">
+            <div className="w-5 h-5 rounded bg-blue-50 flex items-center justify-center">
+              <FileText size={12} className="stroke-[2.5]" />
             </div>
-            <h3 className="text-[13px] font-bold text-slate-800 tracking-tight">
+            <h3 className="text-[12px] font-bold text-slate-800 tracking-tight uppercase">
               Claim Summary
             </h3>
           </div>
 
-          <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm space-y-4">
+          <div className="bg-white p-3 rounded-lg border border-slate-100 shadow-sm space-y-3">
             <div className="flex justify-between items-baseline">
-              <span className="text-[11px] font-bold text-slate-400">
+              <span className="text-[10px] font-bold text-slate-400 uppercase">
                 Claim ID
               </span>
-              <span className="text-[14px] font-extrabold text-slate-800">
+              <span className="text-[13px] font-extrabold text-slate-800">
                 $61,000
               </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-[11px] font-bold text-slate-400">
+              <span className="text-[10px] font-bold text-slate-400 uppercase">
                 Status
               </span>
-              <span className="px-2.5 py-1 rounded-lg bg-slate-100 text-[10px] font-bold text-slate-500 uppercase tracking-tighter border border-slate-200 shadow-sm">
+              <span className="px-2 py-0.5 rounded bg-slate-100 text-[9px] font-bold text-slate-500 uppercase tracking-tighter border border-slate-200">
                 {patientSnapshot.summary.status}
               </span>
             </div>
-            <div className="h-px bg-slate-50 my-1" />
-            <div className="flex justify-between items-baseline pt-1">
-              <span className="text-[11px] font-bold text-slate-400">
+            <div className="h-px bg-slate-50 my-0.5" />
+            <div className="flex justify-between items-baseline pt-0.5">
+              <span className="text-[10px] font-bold text-slate-400 uppercase">
                 Total Charge
               </span>
-              <span className="text-[14px] font-extrabold text-slate-800">
+              <span className="text-[13px] font-extrabold text-slate-800">
                 $350.00
               </span>
             </div>
             <div className="flex justify-between items-baseline">
-              <span className="text-[11px] font-bold text-slate-400">Paid</span>
-              <span className="text-[14px] font-extrabold text-slate-800">
+              <span className="text-[10px] font-bold text-slate-400 uppercase">Paid</span>
+              <span className="text-[13px] font-extrabold text-slate-800">
                 $0.00
               </span>
             </div>
             <div className="flex justify-between items-baseline">
-              <span className="text-[11px] font-bold text-slate-400">
+              <span className="text-[10px] font-bold text-slate-400 uppercase">
                 Patient Resp
               </span>
-              <span className="text-[14px] font-extrabold text-slate-800">
+              <span className="text-[13px] font-extrabold text-slate-800">
                 $0.00
               </span>
             </div>
@@ -72,25 +72,25 @@ const ClaimWorkspaceSidebar = () => {
 
         {/* Patient Info */}
         <section className="space-y-4">
-          <div className="flex items-center gap-2.5 text-blue-600">
-            <div className="w-6 h-6 rounded-lg bg-blue-50 flex items-center justify-center">
-              <User size={14} className="stroke-[2.5]" />
+          <div className="flex items-center gap-2 text-blue-600">
+            <div className="w-5 h-5 rounded bg-blue-50 flex items-center justify-center">
+              <User size={12} className="stroke-[2.5]" />
             </div>
-            <h3 className="text-[13px] font-bold text-slate-800 tracking-tight">
+            <h3 className="text-[12px] font-bold text-slate-800 tracking-tight uppercase">
               Patient Info
             </h3>
           </div>
 
-          <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm">
-            <div className="flex items-center gap-3 mb-5 pb-5 border-b border-slate-50">
-              <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center border border-slate-200">
-                <User size={20} className="text-slate-400" />
+          <div className="bg-white p-3 rounded-lg border border-slate-100 shadow-sm">
+            <div className="flex items-center gap-2 mb-3 pb-3 border-b border-slate-50">
+              <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center border border-slate-200">
+                <User size={16} className="text-slate-400" />
               </div>
               <div className="flex flex-col">
-                <span className="text-[14px] font-extrabold text-slate-800 leading-tight">
+                <span className="text-[13px] font-extrabold text-slate-800 leading-tight">
                   {patientSnapshot.name}
                 </span>
-                <span className="text-[10px] font-bold text-slate-400 mt-0.5 tracking-tight">
+                <span className="text-[9px] font-bold text-slate-400 mt-0.5 tracking-tight uppercase">
                   {patientSnapshot.id}
                 </span>
               </div>

@@ -80,7 +80,7 @@ const AdmitResidentModal = ({ isOpen, onClose, onResidentAdmitted }) => {
                 required
                 type="text"
                 placeholder="John Doe"
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm focus:ring-4 focus:ring-blue-100 focus:border-blue-600 outline-none transition-all"
+                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-4 focus:ring-blue-100 focus:border-blue-600 outline-none transition-all"
                 value={formData.name}
                 onChange={(e) =>
                   setFormData({ ...formData, name: e.target.value })

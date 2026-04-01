@@ -39,31 +39,31 @@ const ManageLocationsModal = ({ isOpen, onClose, locations, onUpdate }) => {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
-      <div className="bg-white w-full max-w-xl rounded-3xl shadow-2xl overflow-hidden border border-slate-200 animate-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]">
-        <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+      <div className="bg-white w-full max-w-xl rounded-xl shadow-2xl overflow-hidden border border-slate-200 animate-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]">
+        <div className="px-5 py-3 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-[#E3F2FD] flex items-center justify-center text-[#129FED]">
-              <Settings size={18} />
+            <div className="w-7 h-7 rounded-lg bg-[#E3F2FD] flex items-center justify-center text-[#129FED]">
+              <Settings size={14} />
             </div>
-            <h3 className="text-lg font-bold text-slate-800">
+            <h3 className="text-base font-bold text-slate-800">
               Manage Service Locations
             </h3>
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-slate-200/50 rounded-lg transition-all text-slate-400 hover:text-slate-600"
+            className="p-1.5 hover:bg-slate-200/50 rounded-lg transition-all text-slate-400 hover:text-slate-600"
           >
-            <X size={20} />
+            <X size={18} />
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-thin scrollbar-thumb-slate-200">
+        <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-slate-200">
           {!showAddForm ? (
             <button
               onClick={() => setShowAddForm(true)}
-              className="w-full py-4 border-2 border-dashed border-slate-200 rounded-xl flex items-center justify-center gap-2 text-slate-400 hover:text-[#129FED] hover:border-[#129FED]/50 hover:bg-[#E3F2FD]/10 transition-all font-bold text-sm tracking-widest uppercase font-mono"
+              className="w-full py-2 border-2 border-dashed border-slate-200 rounded-xl flex items-center justify-center gap-2 text-slate-400 hover:text-[#129FED] hover:border-[#129FED]/50 hover:bg-[#E3F2FD]/10 transition-all font-bold text-[12px] tracking-widest uppercase font-mono"
             >
-              <Plus size={18} />
+              <Plus size={16} />
               Add New Location
             </button>
           ) : (
@@ -163,11 +163,11 @@ const ManageLocationsModal = ({ isOpen, onClose, locations, onUpdate }) => {
             {localLocations.map((loc, idx) => (
               <div
                 key={idx}
-                className="group flex items-center justify-between p-4 bg-white border border-slate-100 rounded-xl hover:border-[#129FED]/30 hover:shadow-sm transition-all"
+                className="group flex items-center justify-between p-2.5 bg-white border border-slate-100 rounded-xl hover:border-[#129FED]/30 hover:shadow-sm transition-all"
               >
                 <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-[#E3F2FD] group-hover:text-[#129FED] transition-all">
-                    <MapPin size={20} />
+                  <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-[#E3F2FD] group-hover:text-[#129FED] transition-all">
+                    <MapPin size={16} />
                   </div>
                   <div>
                     <h5 className="text-sm font-bold text-slate-800 tracking-tight">
@@ -198,8 +198,8 @@ const ManageLocationsModal = ({ isOpen, onClose, locations, onUpdate }) => {
           </div>
         </div>
 
-        <div className="px-6 py-5 border-t border-slate-100 bg-slate-50/50 text-center">
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">
+        <div className="px-5 py-3 border-t border-slate-100 bg-slate-50/50 text-center">
+          <p className="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em]">
             Manage all billing service locations here
           </p>
         </div>
