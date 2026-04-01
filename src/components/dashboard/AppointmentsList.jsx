@@ -3,18 +3,18 @@ import { CalendarClock, Clock, User, ChevronDown } from 'lucide-react';
 import PanelCard from './PanelCard';
 import { mockData } from '../../data/mockData';
 
-const AppointmentsList = () => {
+const AppointmentsList = ({ onViewAll }) => {
   return (
     <PanelCard
-      title="Today's Appointments"
+      title="Total Appointments"
       icon={CalendarClock}
       badge={
-        <div className="flex items-center gap-1.5 bg-[#e9f7ef] text-[#27ae60] text-[10px] font-bold px-2 py-1 rounded-full ml-1">
-          <div className="w-1.5 h-1.5 bg-[#27ae60] rounded-full animate-pulse" />
-          4 Today
+        <div className="flex items-center gap-1.5 bg-blue-50 text-blue-600 text-[10px] font-bold px-2 py-1 rounded-full ml-1">
+          {mockData.appointments.length} Total
         </div>
       }
-      actionText="View Appointments"
+      actionText="View All Appointments"
+      onActionClick={() => onViewAll?.("Total Appointments")}
       showMore={false}
     >
       <div className="space-y-2">

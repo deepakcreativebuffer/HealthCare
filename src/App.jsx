@@ -1,44 +1,50 @@
-import React, { useEffect, useState } from 'react';
-import { User, Lock, Eye, EyeOff } from 'lucide-react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, Link } from 'react-router-dom';
-import ResidentLayout from './resident-panel/layouts/ResidentLayout';
-import Dashboard from './resident-panel/pages/Dashboard';
-import Profile from './resident-panel/pages/Profile';
+import React, { useEffect, useState } from "react";
+import { User, Lock, Eye, EyeOff } from "lucide-react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+  Link,
+} from "react-router-dom";
+import ResidentLayout from "./resident-panel/layouts/ResidentLayout";
+import Dashboard from "./resident-panel/pages/Dashboard";
+import Profile from "./resident-panel/pages/Profile";
 import Navbar from "./components/layout/Navbar";
 import SubNav from "./components/layout/SubNav";
 import MedicalDashboard from "./components/dashboard/MedicalDashboard";
 import BillingDashboard from "./components/billing/BillingDashboard";
-
+import DetailedStatsView from "./components/dashboard/DetailedStatsView";
+import { api } from "./data/api";
+import UserManagement from "./components/users/UserManagement";
 
 // Mock Login Page Component
 const MockLogin = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
-      // For simulator purposes, any email starting with 'admin' logs in as admin
-      const role = email.toLowerCase().includes('admin') ? 'admin' : 'resident';
-      const user = {
-        name: role === 'resident' ? 'Jimmy Chu' : 'Admin User',
-        role: role
-      };
-      localStorage.setItem('user', JSON.stringify(user));
+    try {
+      const response = await api.login(email, password);
+      const { user } = response;
 
-      if (role === 'admin') {
-        navigate('/admin');
+      if (user.role === "admin") {
+        navigate("/admin");
       } else {
-        navigate('/resident-dashboard');
+        navigate("/resident-dashboard");
       }
+    } catch (error) {
+      alert(error.message || "Invalid credentials");
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   return (
@@ -49,19 +55,28 @@ const MockLogin = () => {
 
       <div className="bg-white p-10 rounded-[32px] shadow-[0_20px_50px_rgba(0,114,206,0.1)] max-w-md w-full border border-blue-50 relative z-10">
         <div className="text-center mb-10">
-          <Link to="/" className="flex items-center space-x-2 justify-center mb-6">
+          <Link
+            to="/"
+            className="flex items-center space-x-2 justify-center mb-6"
+          >
             <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold" />
             <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">
               HealthCare
             </span>
           </Link>
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Welcome Back</h1>
-          <p className="text-gray-500 mt-2 font-medium text-sm">Please enter your details to sign in</p>
+          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
+            Welcome Back
+          </h1>
+          <p className="text-gray-500 mt-2 font-medium text-sm">
+            Please enter your details to sign in
+          </p>
         </div>
 
         <form onSubmit={handleLogin} className="space-y-6">
           <div className="space-y-2">
-            <label className="text-sm font-bold text-gray-700 ml-1">Email or Username</label>
+            <label className="text-sm font-bold text-gray-700 ml-1">
+              Email or Username
+            </label>
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-500 transition-colors">
                 <User size={18} />
@@ -69,7 +84,7 @@ const MockLogin = () => {
               <input
                 type="text"
                 required
-                className="w-full bg-gray-50/50 border border-gray-200 text-gray-900 text-sm rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-600 block pl-11 p-3.5 outline-none transition-all duration-300"
+                className="w-full bg-gray-50/50 border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-600 block pl-11 p-3.5 outline-none transition-all duration-300"
                 placeholder="email@oasisnotes.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -79,8 +94,15 @@ const MockLogin = () => {
 
           <div className="space-y-2">
             <div className="flex justify-between items-center px-1">
-              <label className="text-sm font-bold text-gray-700">Password</label>
-              <a href="#" className="text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors">Forgot Password?</a>
+              <label className="text-sm font-bold text-gray-700">
+                Password
+              </label>
+              <a
+                href="#"
+                className="text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors"
+              >
+                Forgot Password?
+              </a>
             </div>
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-500 transition-colors">
@@ -89,7 +111,7 @@ const MockLogin = () => {
               <input
                 type={showPassword ? "text" : "password"}
                 required
-                className="w-full bg-gray-50/50 border border-gray-200 text-gray-900 text-sm rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-600 block pl-11 p-3.5 pr-11 outline-none transition-all duration-300"
+                className="w-full bg-gray-50/50 border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-600 block pl-11 p-3.5 pr-11 outline-none transition-all duration-300"
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -110,7 +132,12 @@ const MockLogin = () => {
               type="checkbox"
               className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 cursor-pointer"
             />
-            <label htmlFor="remember" className="ml-2 text-sm font-medium text-gray-500 cursor-pointer select-none">Remember for 30 days</label>
+            <label
+              htmlFor="remember"
+              className="ml-2 text-sm font-medium text-gray-500 cursor-pointer select-none"
+            >
+              Remember for 30 days
+            </label>
           </div>
 
           <button
@@ -124,7 +151,19 @@ const MockLogin = () => {
               <>
                 Sign In
                 <div className="w-5 h-5 flex items-center justify-center group-hover:translate-x-1 transition-transform">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                  </svg>
                 </div>
               </>
             )}
@@ -133,7 +172,13 @@ const MockLogin = () => {
 
         <div className="mt-8 text-center">
           <p className="text-gray-500 text-sm font-medium">
-            Don't have an account? <a href="#" className="font-bold text-blue-600 hover:text-blue-700 transition-all">Request access</a>
+            Don't have an account?{" "}
+            <a
+              href="#"
+              className="font-bold text-blue-600 hover:text-blue-700 transition-all"
+            >
+              Request access
+            </a>
           </p>
         </div>
 
@@ -149,12 +194,19 @@ const MockLogin = () => {
 // Admin Mock Page
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("Dashboard");
+  const [activeDetailView, setActiveDetailView] = useState(null);
   const navigate = useNavigate();
+
+  // Reset detail view when switching tabs
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    setActiveDetailView(null);
+  };
   return (
     <div className="h-screen bg-[#f8fafc] flex flex-col overflow-hidden">
       {/* Fixed Sticky Header Block */}
       <header className="shrink-0 z-50 bg-white shadow-sm">
-        <Navbar activeTab={activeTab} onTabChange={setActiveTab} />
+        <Navbar activeTab={activeTab} onTabChange={handleTabChange} />
         <SubNav />
       </header>
 
@@ -162,18 +214,34 @@ const AdminDashboard = () => {
       <div className="flex-1 overflow-hidden flex flex-col">
         {activeTab === "Dashboard" ? (
           <main className="flex-1 overflow-y-auto p-8 scroll-smooth custom-scrollbar">
-            <MedicalDashboard />
+            {activeDetailView ? (
+              <DetailedStatsView
+                title={activeDetailView}
+                onBack={() => setActiveDetailView(null)}
+              />
+            ) : (
+              <MedicalDashboard
+                onStatClick={setActiveDetailView}
+                onViewAll={setActiveDetailView}
+              />
+            )}
           </main>
         ) : activeTab === "Billing & Claims" ? (
           <BillingDashboard />
+        ) : activeTab === "Users" ? (
+          <UserManagement />
         ) : (
           <main className="flex-1 overflow-y-auto flex items-center justify-center p-8 custom-scrollbar">
             <div className="text-center">
-              <h2 className="text-2xl font-bold text-slate-800">Section Under Construction</h2>
-              <p className="text-slate-500 mt-2">The {activeTab} module will be available soon.</p>
+              <h2 className="text-2xl font-bold text-slate-800">
+                Section Under Construction
+              </h2>
+              <p className="text-slate-500 mt-2">
+                The {activeTab} module will be available soon.
+              </p>
               <button
                 onClick={() => setActiveTab("Dashboard")}
-                className="mt-6 bg-blue-600 text-white px-6 py-2 rounded-xl font-bold shadow-lg shadow-blue-100 hover:bg-blue-700 transition-all"
+                className="mt-6 bg-blue-600 text-white px-6 py-2 rounded-lg font-bold shadow-lg shadow-blue-100 hover:bg-blue-700 transition-all"
               >
                 Back to Dashboard
               </button>
@@ -187,7 +255,7 @@ const AdminDashboard = () => {
 
 // Protected Route Component
 const ProtectedRoute = ({ children, allowedRole }) => {
-  const userStr = localStorage.getItem('user');
+  const userStr = localStorage.getItem("user");
 
   if (!userStr) {
     return <Navigate to="/" replace />;
@@ -196,7 +264,12 @@ const ProtectedRoute = ({ children, allowedRole }) => {
   const user = JSON.parse(userStr);
 
   if (user.role !== allowedRole) {
-    return <Navigate to={user.role === 'admin' ? '/admin' : '/resident-dashboard'} replace />;
+    return (
+      <Navigate
+        to={user.role === "admin" ? "/admin" : "/resident-dashboard"}
+        replace
+      />
+    );
   }
 
   return children;
@@ -204,8 +277,6 @@ const ProtectedRoute = ({ children, allowedRole }) => {
 
 // Main App Component
 function App() {
-
-
   return (
     <Router>
       <Routes>

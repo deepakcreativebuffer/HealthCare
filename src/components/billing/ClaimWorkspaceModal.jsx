@@ -71,7 +71,7 @@ const ClaimWorkspaceModal = ({ isOpen, onClose, claimId }) => {
         <div className="flex-1 overflow-hidden flex flex-col bg-[#f8fafc]">
           {/* 1. Full-Width Sub-Header Section */}
           <div className="px-6 py-4 shrink-0">
-            <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 flex items-center justify-between">
+            <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-4 flex items-center justify-between">
               <div className="flex items-center gap-6">
                 <button
                   onClick={onClose}

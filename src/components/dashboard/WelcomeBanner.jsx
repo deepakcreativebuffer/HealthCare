@@ -10,7 +10,7 @@ const WelcomeBanner = () => {
         <p className="text-white/90 text-[14px] sm:text-[16px] mb-6">How can we assist you today?</p>
         
         <div className="backdrop-blur-md bg-white/10 px-4 py-2 rounded-lg border border-white/20 inline-block w-fit mx-auto sm:mx-0">
-          <p className="text-[14px] font-medium">Welcome back to the Oasis Notes!</p>
+          <p className="text-[14px] font-medium">Welcome back to the Healthcare!</p>
         </div>
       </div>
 
