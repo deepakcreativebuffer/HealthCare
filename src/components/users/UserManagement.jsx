@@ -32,17 +32,17 @@ const UserStatCard = ({ label, value, icon: Icon, color }) => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-3xl border border-slate-100 flex items-center gap-4 hover:shadow-md transition-all shadow-sm group">
+    <div className="bg-white p-4 pt-3 rounded-3xl border border-slate-100 flex items-center gap-4 hover:shadow-md transition-all shadow-sm group">
       <div
-        className={`w-14 h-14 rounded-xl flex items-center justify-center shrink-0 border ${colorMap[color]}`}
+        className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 border ${colorMap[color]}`}
       >
-        <Icon size={24} strokeWidth={2.5} />
+        <Icon size={20} strokeWidth={2.5} />
       </div>
       <div>
-        <h4 className="text-2xl font-black text-slate-800 tracking-tight leading-none">
+        <h4 className="text-xl font-black text-slate-800 tracking-tight leading-none">
           {value}
         </h4>
-        <p className="text-[11px] font-bold text-slate-400 mt-2 uppercase tracking-widest">
+        <p className="text-[10px] font-bold text-slate-400 mt-1.5 uppercase tracking-widest">
           {label}
         </p>
       </div>
@@ -206,7 +206,7 @@ const UserManagement = () => {
   }
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500 p-8">
+    <div className="space-y-4 animate-in fade-in duration-500 p-5">
       {/* Top Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {userData.metrics.map((stat, idx) => (
@@ -255,7 +255,7 @@ const UserManagement = () => {
         )}
 
         {/* Table Header Filter Bar */}
-        <div className="p-6 border-b border-slate-100 flex flex-col md:flex-row items-center justify-between gap-4 bg-slate-50/30">
+        <div className="p-4 border-b border-slate-100 flex flex-col md:flex-row items-center justify-between gap-4 bg-slate-50/30">
           <div className="flex items-center gap-4 w-full md:w-auto">
             <div className="relative flex-1 md:w-80 group">
               <Search
@@ -307,7 +307,7 @@ const UserManagement = () => {
           <table className="w-full min-w-[900px]">
             <thead>
               <tr className="bg-slate-50/50">
-                <th className="px-8 py-5 text-left w-10">
+                <th className="px-8 py-3 text-left w-10">
                   <input
                     type="checkbox"
                     className="w-5 h-5 rounded-lg border-2 border-slate-200 text-[#129FED] focus:ring-[#129FED] transition-all cursor-pointer"
@@ -318,19 +318,19 @@ const UserManagement = () => {
                     onChange={toggleSelectAll}
                   />
                 </th>
-                <th className="px-4 py-5 text-left text-[11px] font-black text-slate-400 uppercase tracking-widest">
+                <th className="px-4 py-3 text-left text-[11px] font-black text-slate-400 uppercase tracking-widest">
                   User Details
                 </th>
-                <th className="px-8 py-5 text-left text-[11px] font-black text-slate-400 uppercase tracking-widest">
+                <th className="px-8 py-3 text-left text-[11px] font-black text-slate-400 uppercase tracking-widest">
                   Role
                 </th>
-                <th className="px-8 py-5 text-left text-[11px] font-black text-slate-400 uppercase tracking-widest">
+                <th className="px-8 py-3 text-left text-[11px] font-black text-slate-400 uppercase tracking-widest">
                   Status
                 </th>
-                <th className="px-8 py-5 text-left text-[11px] font-black text-slate-400 uppercase tracking-widest">
+                <th className="px-8 py-3 text-left text-[11px] font-black text-slate-400 uppercase tracking-widest">
                   Last Login
                 </th>
-                <th className="px-8 py-5 text-right text-[11px] font-black text-slate-400 uppercase tracking-widest">
+                <th className="px-8 py-3 text-right text-[11px] font-black text-slate-400 uppercase tracking-widest">
                   Actions
                 </th>
               </tr>
@@ -346,7 +346,7 @@ const UserManagement = () => {
                   }}
                 >
                   <td
-                    className="px-8 py-5"
+                    className="px-8 py-3"
                     onClick={(e) => toggleSelectUser(e, user.id)}
                   >
                     <input
@@ -356,7 +356,7 @@ const UserManagement = () => {
                       onChange={() => {}} // Controlled via row click
                     />
                   </td>
-                  <td className="px-4 py-5">
+                  <td className="px-4 py-3">
                     <div className="flex items-center gap-4">
                       <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-[#E3F2FD] group-hover:text-[#129FED] transition-all overflow-hidden border border-slate-200">
                         {user.name.charAt(0)}
@@ -371,7 +371,7 @@ const UserManagement = () => {
                       </div>
                     </div>
                   </td>
-                  <td className="px-8 py-5">
+                  <td className="px-8 py-3">
                     <div className="flex items-center gap-2">
                       <ShieldCheck
                         size={14}
@@ -386,7 +386,7 @@ const UserManagement = () => {
                       </span>
                     </div>
                   </td>
-                  <td className="px-8 py-5">
+                  <td className="px-8 py-3">
                     <span
                       className={`text-[10px] font-black px-3 py-1.5 rounded-full border uppercase tracking-wider ${
                         user.status === "Active"
@@ -397,12 +397,12 @@ const UserManagement = () => {
                       {user.status}
                     </span>
                   </td>
-                  <td className="px-8 py-5">
+                  <td className="px-8 py-3">
                     <span className="text-[12px] font-bold text-slate-500 italic tracking-tighter">
                       {user.lastLogin || "02/14/2025"}
                     </span>
                   </td>
-                  <td className="px-8 py-5">
+                  <td className="px-8 py-3">
                     <div className="flex items-center justify-end gap-2">
                       <button
                         onClick={(e) => {

@@ -20,7 +20,7 @@ const MedicalDashboard = ({ onStatClick, onViewAll }) => {
   };
 
   return (
-    <div className="max-w-full mx-auto w-full space-y-6">
+    <div className="max-w-full mx-auto w-full space-y-2">
       <AdmitResidentModal 
         isOpen={isAdmitModalOpen} 
         onClose={() => setIsAdmitModalOpen(false)} 
@@ -30,7 +30,7 @@ const MedicalDashboard = ({ onStatClick, onViewAll }) => {
       <WelcomeBanner />
 
       {/* Stats Section */}
-      <div className="space-y-2">
+      <div className="space-y-1">
         <h2 className="text-[18px] font-bold text-slate-800 ml-1">Overall Statistics</h2>
         <StatsGrid key={`stats-${refreshKey}`} onStatClick={onStatClick} />
       </div>
@@ -38,16 +38,16 @@ const MedicalDashboard = ({ onStatClick, onViewAll }) => {
       {/* Main Grid - Forced Equal Height */}
       <div className="space-y-4">
         <h2 className="text-[18px] font-bold text-slate-800 ml-1">Administrative Overview</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-start">
-          <div className="h-[500px]"><AppointmentsList onViewAll={onViewAll} /></div>
-          <div className="h-[500px]"><StaffSchedule onViewAll={onViewAll} /></div>
-          <div className="h-[500px]"><StatsList onViewAll={onViewAll} /></div>
-          <div className="h-[500px]"><QuickLinks onAdmitClick={() => setIsAdmitModalOpen(true)} /></div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 items-start">
+          <div className="h-[380px]"><AppointmentsList onViewAll={onViewAll} /></div>
+          <div className="h-[380px]"><StaffSchedule onViewAll={onViewAll} /></div>
+          <div className="h-[380px]"><StatsList onViewAll={onViewAll} /></div>
+          <div className="h-[380px]"><QuickLinks onAdmitClick={() => setIsAdmitModalOpen(true)} /></div>
 
-          <div className="h-[500px]"><ResidentRecords key={`residents-${refreshKey}`} onViewAll={onViewAll} /></div>
-          <div className="h-[500px]"><EmployeeRecords onViewAll={onViewAll} /></div>
-          <div className="h-[500px]"><SpecialNotes onViewAll={onViewAll} /></div>
-          <div className="h-[500px]"><ActivityLog key={`activity-${refreshKey}`} onViewAll={onViewAll} /></div>
+          <div className="h-[380px]"><ResidentRecords key={`residents-${refreshKey}`} onViewAll={onViewAll} /></div>
+          <div className="h-[380px]"><EmployeeRecords onViewAll={onViewAll} /></div>
+          <div className="h-[380px]"><SpecialNotes onViewAll={onViewAll} /></div>
+          <div className="h-[380px]"><ActivityLog key={`activity-${refreshKey}`} onViewAll={onViewAll} /></div>
         </div>
       </div>
     </div>
