@@ -179,10 +179,11 @@ export const mockData = {
     { value: "96%", label: "Documentation Compliance", color: "sky" }
   ],
   activityLogs: [
-    { userName: "Sarah Mitchell", action: "Updated medication for Resident #104", actionType: "Update", date: "2024-03-31", time: "10:30 AM", icon: "Edit", color: "blue" },
-    { userName: "Dr. Amanda Roberts", action: "Created new resident profile", actionType: "Create", date: "2024-03-31", time: "11:15 AM", icon: "UserPlus", color: "green" },
-    { userName: "Mike Ross", action: "Deleted outdated shift assignment", actionType: "Delete", date: "2024-03-31", time: "01:20 PM", icon: "Trash2", color: "red" },
-    { userName: "Admin Sarah Mitchell", action: "Assigned Nurse Amy to Night Shift", actionType: "Shift Assignment", date: "2024-03-31", time: "02:45 PM", icon: "CalendarRange", color: "indigo" }
+    { category: "Admission", action: "New resident Maria Johnson admitted to Room 101", status: "Approved", userName: "Admin Subodh", statusColor: "emerald", time: "1 hr ago", date: "2024-03-31" },
+    { category: "Payment", action: "Payment of $1250 received for Invoice INV001", status: "Created", userName: "System", statusColor: "blue", time: "2 hr ago", date: "2024-03-31" },
+    { category: "Clinical", action: "Progress note updated for James Williams", status: "Updated", userName: "Dr. Roberts", statusColor: "sky", time: "3 hr ago", date: "2024-03-31" },
+    { category: "Medication", action: "Medication reminder for Emily Davis (Room 301)", status: "Pending", userName: "Nurse Sarah", statusColor: "amber", time: "4 hr ago", date: "2024-03-31" },
+    { category: "Compliance", action: "Missing Notes (3) detected", status: "Missing Notes (3)", userName: "System", statusColor: "red", time: "5 hr ago", date: "2024-03-31" }
   ],
   staffSchedule: [
     { count: 12, facility: "Main", color: "blue" },

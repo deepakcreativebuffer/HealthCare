@@ -8,7 +8,7 @@ const ActivityLog = ({ onViewAll }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    api.getActivity().then(data => {
+    api.getActivity().then((data) => {
       setLogs(data);
       setIsLoading(false);
     });
@@ -36,17 +36,18 @@ const ActivityLog = ({ onViewAll }) => {
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-0.5">
                   <span className="text-[13px] font-bold text-slate-700 tracking-tight">
-                    {log.type}
+                    {log.action}
                   </span>
                   <span
-                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${log.status === "Approved"
+                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                      log.status === "Approved"
                         ? "bg-[#E9F7EF] text-[#27AE60]"
                         : log.status === "Created" || log.status === "Updated"
                           ? "bg-[#DEF3FF] text-[#129FED]"
                           : log.status === "Missing Notes (3)"
                             ? "bg-[#FFEBEE] text-[#D32F2F]"
                             : "bg-slate-100 text-slate-600"
-                      }`}
+                    }`}
                   >
                     {log.status}
                   </span>

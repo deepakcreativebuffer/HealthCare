@@ -40,7 +40,7 @@ const MetricCard = ({ label, value, icon: Icon, color, onClick }) => {
   return (
     <div
       onClick={onClick}
-      className={`bg-white p-5 rounded-xl border border-slate-100 flex items-center gap-4 hover:shadow-md transition-all shadow-sm group ${onClick ? "cursor-pointer" : ""} h-[100px]`}
+      className={`bg-white p-4 rounded-xl border border-slate-100 flex items-center gap-4 hover:shadow-md transition-all shadow-sm group ${onClick ? "cursor-pointer" : ""} h-[88px]`}
     >
       <div
         className={`w-12 h-12 rounded-lg flex items-center justify-center shrink-0 transition-transform group-hover:scale-105 border ${colorMap[color]}`}
@@ -278,7 +278,7 @@ const BillingDashboard = () => {
   };
 
   return (
-    <main className="flex-1 overflow-y-auto p-8 scroll-smooth custom-scrollbar bg-[#F8FAFC] relative">
+    <main className="flex-1 overflow-y-auto p-5 scroll-smooth custom-scrollbar bg-[#F8FAFC] relative">
       {refreshing && (
         <div className="absolute inset-0 bg-[#F8FAFC]/40 backdrop-blur-[1px] z-50 flex items-center justify-center p-8 pointer-events-none">
           <div className="bg-white px-6 py-3 rounded-xl shadow-xl border border-slate-100 flex items-center gap-3 animate-pulse pointer-events-auto">
@@ -290,7 +290,7 @@ const BillingDashboard = () => {
         </div>
       )}
       <div
-        className={`max-w-full mx-auto space-y-8 transition-opacity duration-300 ${refreshing ? "opacity-40" : "opacity-100"}`}
+        className={`max-w-full mx-auto space-y-4 transition-opacity duration-300 ${refreshing ? "opacity-40" : "opacity-100"}`}
       >
         {/* Row 1: Billing-Specific Navigation & Filters */}
         <div className="flex items-center justify-between">
@@ -415,7 +415,7 @@ const BillingDashboard = () => {
         </div>
 
         {/* Row 2: Top Metrics Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {metrics.map((stat, idx) => (
             <MetricCard
               key={idx}
@@ -427,7 +427,7 @@ const BillingDashboard = () => {
         </div>
 
         {/* Row 3: Main 2-Column Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 items-start">
           {/* Left Column (3/5) */}
           <div className="lg:col-span-3 space-y-8">
             <div className="grid grid-cols-2 gap-8">

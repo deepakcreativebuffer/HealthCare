@@ -15,7 +15,7 @@ const PanelCard = ({
 }) => {
   return (
     <div className="bg-white rounded-[10px] border border-[#E2E8F0] shadow-sm h-full group/panel flex flex-col overflow-hidden">
-      <div className="p-3 px-5 border-b border-gray-100 flex items-center justify-between shrink-0 h-[56px]">
+      <div className="p-2.5 px-4 border-b border-gray-100 flex items-center justify-between shrink-0 h-[48px]">
         <div className="flex items-center gap-2">
           {Icon && <Icon size={18} className="text-action-blue" />}
           <h3 className="text-sm font-bold text-slate-800 leading-tight">
@@ -34,13 +34,13 @@ const PanelCard = ({
       </div>
 
       <div
-        className={`flex-1 p-5 pt-4 overflow-y-auto scroll-smooth ${customScroll ? "custom-scrollbar" : "no-scrollbar"}`}
+        className={`flex-1 p-4 pt-3 overflow-y-auto scroll-smooth ${customScroll ? "custom-scrollbar" : "no-scrollbar"}`}
       >
         {children}
       </div>
 
       {showFooter && (
-        <div className="mt-auto px-5 py-3 border-t border-gray-100 flex items-center justify-center shrink-0 h-[48px]">
+        <div className="mt-auto px-4 py-2 border-t border-gray-100 flex items-center justify-center shrink-0 h-[40px]">
           <button
             onClick={onActionClick}
             className="text-action-blue hover:text-blue-700 font-bold text-[11px] flex items-center gap-1.5 active:translate-y-px transition-all group/btn"

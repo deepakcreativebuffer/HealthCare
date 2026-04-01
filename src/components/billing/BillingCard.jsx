@@ -8,7 +8,7 @@ const BillingCard = ({
   children,
   className = "",
   headerClassName = "",
-  bodyClassName = "p-6",
+  bodyClassName = "p-5 pt-3",
   showMore = false,
 }) => {
   return (
@@ -17,7 +17,7 @@ const BillingCard = ({
     >
       {/* Header */}
       <div
-        className={`px-6 py-5 border-b border-slate-100 flex items-center justify-between shrink-0 ${headerClassName}`}
+        className={`px-5 py-3 border-b border-slate-100 flex items-center justify-between shrink-0 ${headerClassName}`}
       >
         <div className="flex items-center gap-3">
           {Icon && (

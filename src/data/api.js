@@ -194,7 +194,7 @@ export const api = {
   },
 
   // Activity Log
-  getActivity: () => simulateAPI(getStoredData(KEYS.ACTIVITY, mockData.activityLog)),
+  getActivity: () => simulateAPI(getStoredData(KEYS.ACTIVITY, mockData.activityLogs)),
   getPTO: () => simulateAPI(getStoredData(KEYS.PTO, mockData.ptoRequests)),
   getSickLeave: () => simulateAPI(getStoredData(KEYS.SICK_LEAVE, mockData.sickLeave)),
   getAppointments: () => simulateAPI(getStoredData(KEYS.APPOINTMENTS, mockData.appointments)),

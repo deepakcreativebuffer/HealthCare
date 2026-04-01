@@ -213,7 +213,7 @@ const AdminDashboard = () => {
       {/* Conditional Dashboard Content */}
       <div className="flex-1 overflow-hidden flex flex-col">
         {activeTab === "Dashboard" ? (
-          <main className="flex-1 overflow-y-auto p-8 scroll-smooth custom-scrollbar">
+          <main className="flex-1 overflow-y-auto p-5 scroll-smooth custom-scrollbar">
             {activeDetailView ? (
               <DetailedStatsView
                 title={activeDetailView}
