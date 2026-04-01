@@ -11,34 +11,36 @@ import RecentDocuments from '../components/RecentDocuments';
 import BillingSummary from '../components/BillingSummary';
 
 const Dashboard = () => {
-  const { resident } = useOutletContext();
+  const { resident, refreshResident } = useOutletContext();
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <WelcomeBanner resident={resident} />
       
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
         {/* LEFT COLUMN */}
-        <div className="lg:col-span-4 space-y-6">
+        <div className="lg:col-span-4 space-y-4">
           <ProfileCard resident={resident} />
-          <QuickActions />
-          <Appointments />
-          <Vitals vitals={resident.vitalsHistory} />
+          <QuickActions resident={resident} refreshResident={refreshResident} />
+          <Appointments resident={resident} refreshResident={refreshResident} />
+          <Vitals vitals={resident.vitalsHistory} resident={resident} refreshResident={refreshResident} />
         </div>
         
         {/* CENTER COLUMN */}
-        <div className="lg:col-span-5 space-y-6">
+        <div className="lg:col-span-5 space-y-4">
           <ClinicalOverview 
-            diagnosisProblems={resident.diagnosisProblems} 
-            medications={resident.medicationsList} 
+            diagnosisProblems={resident.diagnosisProblems || []} 
+            medications={resident.medicationsList || []} 
+            resident={resident}
+            refreshResident={refreshResident}
           />
         </div>
         
         {/* RIGHT COLUMN */}
-        <div className="lg:col-span-3 space-y-6">
-          <AssignedForms />
-          <RecentDocuments />
-          <BillingSummary />
+        <div className="lg:col-span-3 space-y-4">
+          <AssignedForms resident={resident} refreshResident={refreshResident} />
+          <RecentDocuments resident={resident} refreshResident={refreshResident} />
+          <BillingSummary resident={resident} refreshResident={refreshResident} />
         </div>
       </div>
     </div>

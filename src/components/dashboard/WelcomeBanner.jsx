@@ -2,17 +2,17 @@ import React from "react";
 
 const WelcomeBanner = () => {
   return (
-    <div className="bg-gradient-to-r from-[#0088FF] to-[#20D5FE] rounded-[10px] p-5 sm:p-6 text-white relative overflow-hidden shadow-md min-h-[160px] sm:min-h-[180px]">
+    <div className="bg-gradient-to-r mb-3 from-[#0088FF] to-[#20D5FE] rounded-[10px] p-2.5 sm:p-3 text-white relative overflow-hidden shadow-sm min-h-[100px] sm:min-h-[110px]">
       <div className="relative z-10 max-w-full sm:max-w-2xl text-center sm:text-left flex flex-col justify-center h-full">
-        <h1 className="text-[22px] sm:text-[28px] font-bold mb-1 flex items-center justify-center sm:justify-start gap-2">
+        <h1 className="text-[18px] sm:text-[22px] font-bold mb-0.5 flex items-center justify-center sm:justify-start gap-1.5">
           Good Morning, Sarah! 👋
         </h1>
-        <p className="text-white/90 text-[13px] sm:text-[14px] mb-3">
+        <p className="text-white/90 text-[11px] sm:text-[12px] mb-2">
           How can we assist you today?
         </p>
 
-        <div className="backdrop-blur-md bg-white/10 px-4 py-2 rounded-lg border border-white/20 inline-block w-fit mx-auto sm:mx-0">
-          <p className="text-[14px] font-medium">
+        <div className="backdrop-blur-md bg-white/10 px-3 py-1 rounded-lg border border-white/20 inline-block w-fit mx-auto sm:mx-0">
+          <p className="text-[12px] font-medium">
             Welcome back to the Healthcare!
           </p>
         </div>

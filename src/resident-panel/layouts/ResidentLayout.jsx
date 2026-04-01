@@ -8,12 +8,16 @@ const ResidentLayout = () => {
   const [resident, setResident] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const fetchResident = () => {
     const user = JSON.parse(localStorage.getItem('user'));
     api.getResidentData(user?.id).then(data => {
       setResident(data);
       setLoading(false);
     });
+  };
+
+  useEffect(() => {
+    fetchResident();
   }, []);
 
   if (loading) {
@@ -28,7 +32,7 @@ const ResidentLayout = () => {
     <div className="min-h-screen bg-[#F8FAFC]">
       <Navbar resident={resident} />
       <main className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <Outlet context={{ resident }} />
+        <Outlet context={{ resident, refreshResident: fetchResident }} />
       </main>
     </div>
   );

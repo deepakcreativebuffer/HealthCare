@@ -44,8 +44,8 @@ const ResidentRecords = ({ onViewAll }) => {
           </div>
         ) : (
           residents.map((res, idx) => (
-            <div key={idx} className="flex items-center gap-3 p-2 rounded-[10px] hover:bg-gray-50 transition-colors cursor-pointer group border-b border-gray-100 last:border-0">
-              <div className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 text-[12px] font-bold ${
+            <div key={idx} className="flex items-center gap-2.5 p-1.5 rounded-[10px] hover:bg-gray-50 transition-colors cursor-pointer group border-b border-gray-100 last:border-0 relative">
+              <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-[10px] font-bold ${
                 res.color === 'orange' ? 'bg-[#FFF4E5] text-[#FF9800]' :
                 res.color === 'blue' ? 'bg-[#DEF3FF] text-[#129FED]' :
                 res.color === 'green' ? 'bg-[#E9F7EF] text-[#27AE60]' :
@@ -55,9 +55,9 @@ const ResidentRecords = ({ onViewAll }) => {
                 {res.initial}
               </div>
               
-              <div className="flex-1">
-                <h4 className="text-[14px] font-bold text-slate-800 leading-tight">{res.name}</h4>
-                <p className="text-[11px] text-slate-400 font-bold uppercase tracking-tight mt-0.5">
+              <div className="flex-1 min-w-0">
+                <h4 className="text-[13px] font-bold text-slate-800 leading-none truncate">{res.name}</h4>
+                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tight mt-1">
                   DOB • {res.dob}
                 </p>
               </div>

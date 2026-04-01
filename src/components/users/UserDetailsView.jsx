@@ -106,29 +106,29 @@ const UserDetailsView = ({ user, onBack, onUpdate, onDelete }) => {
   ];
 
   return (
-    <div className="space-y-10 animate-in fade-in duration-500 pb-20">
+    <div className="space-y-4 animate-in fade-in duration-500 pb-10 antialiased">
       {/* Header / Navigation */}
-      <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-        <div className="flex items-center gap-6">
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
           <button
             onClick={onBack}
-            className="w-12 h-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-800 hover:border-slate-800 transition-all shadow-sm hover:shadow-md"
+            className="w-10 h-10 rounded-lg bg-white border border-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-800 hover:border-slate-800 transition-all shadow-sm group"
           >
-            <ArrowLeft size={24} />
+            <ArrowLeft size={18} />
           </button>
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-[24px] bg-[#E3F2FD] border border-[#129FED]/20 flex items-center justify-center text-[#129FED] text-2xl font-black shadow-inner">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-lg bg-[#E3F2FD] border border-blue-600/10 flex items-center justify-center text-blue-600 text-xl font-bold shadow-sm">
               {user.name.charAt(0)}
             </div>
             <div>
-              <h2 className="text-3xl font-black text-slate-800 tracking-tighter italic uppercase">
+              <h2 className="text-[20px] font-black text-slate-800 tracking-tight leading-none uppercase">
                 {user.name}
               </h2>
-              <div className="flex items-center gap-3 mt-1">
-                <div className="flex items-center gap-1.5 px-3 py-1 bg-[#E3F2FD] text-[#129FED] rounded-full text-[10px] font-black uppercase tracking-widest border border-[#129FED]/10 italic">
-                  <Shield size={12} /> {user.role}
+              <div className="flex items-center gap-2 mt-1">
+                <div className="flex items-center gap-1 px-2 py-0.5 bg-blue-50 text-[#129FED] rounded-md text-[9px] font-bold uppercase tracking-widest border border-blue-100">
+                  <Shield size={10} /> {user.role}
                 </div>
-                <span className="text-[12px] font-black text-slate-300 uppercase tracking-widest ml-1">
+                <span className="text-[10px] font-bold text-slate-300 uppercase tracking-widest ml-1">
                   {user.email}
                 </span>
               </div>
@@ -136,91 +136,90 @@ const UserDetailsView = ({ user, onBack, onUpdate, onDelete }) => {
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <button
             onClick={() => onDelete(user)}
-            className="px-6 py-3.5 bg-red-50 text-red-600 rounded-xl text-[11px] font-black uppercase tracking-[0.2em] hover:bg-red-500 hover:text-white transition-all shadow-sm flex items-center gap-2 border border-red-100"
+            className="h-9 px-4 bg-white text-red-500 rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-red-50 transition-all flex items-center gap-2 border border-red-100"
           >
-            <Trash2 size={16} /> Terminate Access
+            <Trash2 size={14} /> Terminate Access
           </button>
-          <button className="px-10 py-4 bg-[#129FED] text-white rounded-xl text-[11px] font-black uppercase tracking-[0.2em] shadow-[0_16px_32px_-8px_rgba(18,159,237,0.45)] hover:bg-[#129FED]/90 transition-all flex items-center gap-2 shadow-blue-100">
-            <Save size={18} /> Update Profile
+          <button className="h-9 px-6 bg-[#129FED] text-white rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-[#0089d8] transition-all flex items-center gap-2 shadow-sm shadow-blue-100">
+            <Save size={14} /> Update Profile
           </button>
         </div>
       </div>
 
       {/* Grid Content */}
-      <div className="grid grid-cols-12 gap-10">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
         {/* Left Col - Brief Profile and Stats */}
-        <div className="col-span-12 lg:col-span-4 space-y-10">
-          <div className="bg-white rounded-[40px] border border-slate-100 p-8 shadow-sm">
-            <h4 className="text-[12px] font-black text-slate-400 uppercase tracking-[0.3em] mb-8 italic">
-              Quick Overview
+        <div className="col-span-12 md:col-span-4 space-y-4">
+          <div className="bg-white rounded-lg border border-slate-100 p-5 shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
+            <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-6">
+              Account Snapshot
             </h4>
 
-            <div className="space-y-6">
-              <div className="p-5 rounded-3xl bg-slate-50 border border-slate-100 flex items-center justify-between group cursor-pointer hover:border-[#129FED]/30 transition-all">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-lg bg-white border border-slate-100 flex items-center justify-center text-slate-400 group-hover:text-[#129FED] transition-all">
-                    <UserCheck size={20} />
+            <div className="space-y-3">
+              <div className="p-3.5 rounded-lg bg-slate-50/50 border border-slate-100 flex items-center justify-between group transition-all hover:bg-white hover:border-[#129FED]/20">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-white border border-slate-100 flex items-center justify-center text-slate-400 group-hover:text-[#129FED] transition-all">
+                    <UserCheck size={16} />
                   </div>
                   <div>
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">
-                      Status
+                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none">
+                      Current Status
                     </p>
-                    <p className="text-[14px] font-black text-slate-800 tracking-tight mt-1">
+                    <p className="text-[13px] font-bold text-slate-700 tracking-tight mt-1">
                       {user.status}
                     </p>
                   </div>
                 </div>
                 <ChevronRight
-                  size={18}
-                  className="text-slate-300 group-hover:text-[#129FED] transition-all"
+                  size={14}
+                  className="text-slate-200 group-hover:text-[#129FED] transition-all"
                 />
               </div>
 
-              <div className="p-5 rounded-3xl bg-slate-50 border border-slate-100 flex items-center justify-between group cursor-pointer hover:border-[#129FED]/30 transition-all">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-lg bg-white border border-slate-100 flex items-center justify-center text-slate-400 group-hover:text-[#129FED] transition-all">
-                    <Clock size={20} />
+              <div className="p-3.5 rounded-lg bg-slate-50/50 border border-slate-100 flex items-center justify-between group transition-all hover:bg-white hover:border-[#129FED]/20">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-white border border-slate-100 flex items-center justify-center text-slate-400 group-hover:text-[#129FED] transition-all">
+                    <Clock size={16} />
                   </div>
                   <div>
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">
-                      Joined On
+                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none">
+                      Joined Date
                     </p>
-                    <p className="text-[14px] font-black text-slate-800 tracking-tight mt-1">
+                    <p className="text-[13px] font-bold text-slate-700 tracking-tight mt-1">
                       {user.joinDate || "Jan 15, 2024"}
                     </p>
                   </div>
                 </div>
                 <ChevronRight
-                  size={18}
-                  className="text-slate-300 group-hover:text-[#129FED] transition-all"
+                  size={14}
+                  className="text-slate-200 group-hover:text-[#129FED] transition-all"
                 />
               </div>
             </div>
 
-            <div className="mt-10 p-6 bg-amber-50 rounded-3xl border border-amber-100/50 flex gap-4">
-              <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-amber-500 shadow-sm shrink-0 mt-1">
-                <AlertTriangle size={20} />
+            <div className="mt-6 p-4 bg-amber-50 rounded-lg border border-amber-100 flex gap-3">
+              <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-amber-500 shadow-sm shrink-0">
+                <AlertTriangle size={16} />
               </div>
-              <p className="text-[11px] font-bold text-amber-700 leading-relaxed uppercase tracking-tighter italic">
-                User has full administrative <br /> privileges and can modify{" "}
-                <br /> billing records without approval.
+              <p className="text-[10px] font-bold text-amber-700 leading-relaxed uppercase tracking-tighter">
+                Administrative privileges enabled. Account can modify billing without secondary approval.
               </p>
             </div>
           </div>
         </div>
 
         {/* Right Col - Tabbed Content */}
-        <div className="col-span-12 lg:col-span-8 flex flex-col space-y-8">
+        <div className="col-span-12 md:col-span-8 flex flex-col space-y-4">
           {/* Tab Switcher */}
-          <div className="flex items-center gap-2 p-1.5 bg-slate-100 w-full max-w-lg rounded-[24px] border border-slate-200 border-dashed">
+          <div className="flex items-center gap-1 p-1 bg-slate-50 w-full max-w-sm rounded-lg border border-slate-100">
             {tabs.map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`flex-1 py-3.5 rounded-[20px] text-[11px] font-black uppercase tracking-[0.2em] transition-all ${activeTab === tab ? "bg-white text-slate-800 shadow-xl" : "text-slate-400 hover:text-slate-600"}`}
+                className={`flex-1 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all ${activeTab === tab ? "bg-white text-slate-800 shadow-sm border border-slate-100" : "text-slate-400 hover:text-slate-600"}`}
               >
                 {tab}
               </button>
@@ -228,46 +227,46 @@ const UserDetailsView = ({ user, onBack, onUpdate, onDelete }) => {
           </div>
 
           {/* Tab Area Content */}
-          <div className="bg-white rounded-[48px] border border-slate-100 p-10 flex-1 shadow-sm">
+          <div className="bg-white rounded-lg border border-slate-100 p-6 flex-1 shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
             {activeTab === "Activity" && (
-              <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="flex items-center justify-between">
-                  <h5 className="text-[14px] font-black text-slate-800 uppercase tracking-[0.3em] italic">
-                    Timeline Activity
+              <div className="space-y-6 animate-in fade-in duration-500">
+                <div className="flex items-center justify-between px-1">
+                  <h5 className="text-[11px] font-bold text-slate-800 uppercase tracking-widest">
+                    Real-time Activity Log
                   </h5>
-                  <button className="flex items-center gap-2 text-[11px] font-black text-[#129FED] uppercase tracking-widest hover:underline italic">
-                    <History size={14} /> Full Log
+                  <button className="flex items-center gap-1.5 text-[10px] font-bold text-[#129FED] uppercase tracking-widest hover:underline">
+                    <History size={12} /> Full Log
                   </button>
                 </div>
 
-                <div className="space-y-8">
+                <div className="space-y-6">
                   {activities.map((activity) => (
                     <div
                       key={activity.id}
-                      className="flex gap-6 relative group"
+                      className="flex gap-4 relative group"
                     >
                       <div className="flex flex-col items-center">
                         <div
-                          className={`w-12 h-12 rounded-[18px] bg-white border-2 border-slate-100 flex items-center justify-center group-hover:scale-110 transition-transform ${
+                          className={`w-9 h-9 rounded-lg bg-white border border-slate-100 flex items-center justify-center group-hover:shadow-sm transition-all ${
                             activity.color === "blue"
-                              ? "text-blue-500 border-blue-100"
+                              ? "text-blue-500"
                               : activity.color === "orange"
-                                ? "text-orange-500 border-orange-100"
-                                : "text-green-500 border-green-100"
+                                ? "text-orange-500"
+                                : "text-green-500"
                           }`}
                         >
-                          <activity.icon size={20} strokeWidth={2.5} />
+                          <activity.icon size={16} strokeWidth={2.5} />
                         </div>
-                        <div className="w-[3px] h-full bg-slate-50 mt-2 rounded-full" />
+                        <div className="w-px h-full bg-slate-50 mt-1" />
                       </div>
-                      <div className="pb-8">
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                      <div className="pb-4">
+                        <p className="text-[9px] font-bold text-slate-300 uppercase tracking-widest leading-none">
                           {activity.time}
                         </p>
-                        <h6 className="text-[16px] font-black text-slate-800 tracking-tight mt-1 group-hover:text-[#129FED] transition-colors">
+                        <h6 className="text-[14px] font-bold text-slate-700 tracking-tight mt-1 group-hover:text-[#129FED] transition-colors leading-none">
                           {activity.type}
                         </h6>
-                        <p className="text-[13px] font-bold text-slate-500 mt-1 leading-relaxed">
+                        <p className="text-[11px] font-medium text-slate-500 mt-1 leading-relaxed">
                           {activity.message}
                         </p>
                       </div>
@@ -278,31 +277,31 @@ const UserDetailsView = ({ user, onBack, onUpdate, onDelete }) => {
             )}
 
             {activeTab === "Sessions" && (
-              <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <h5 className="text-[14px] font-black text-slate-800 uppercase tracking-[0.3em] italic">
-                  Active Login Sessions
+              <div className="space-y-6 animate-in fade-in duration-500">
+                <h5 className="text-[11px] font-bold text-slate-800 uppercase tracking-widest">
+                  Login History
                 </h5>
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {sessions.map((session) => (
                     <div
                       key={session.id}
-                      className="p-6 rounded-[32px] bg-slate-50 border border-slate-100 flex items-center justify-between group hover:border-[#129FED]/30 transition-all"
+                      className="p-4 rounded-lg bg-slate-50/50 border border-slate-100 flex items-center justify-between group hover:bg-white hover:border-[#129FED]/30 transition-all"
                     >
-                      <div className="flex items-center gap-5">
-                        <div className="w-14 h-14 rounded-[20px] bg-white border border-slate-100 flex items-center justify-center text-slate-400 group-hover:text-[#129FED] transition-all shadow-sm">
-                          <session.icon size={28} />
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-lg bg-white border border-slate-100 flex items-center justify-center text-slate-300 group-hover:text-[#129FED] transition-all shadow-sm">
+                          <session.icon size={20} />
                         </div>
                         <div>
-                          <h6 className="text-[15px] font-black text-slate-800 tracking-tight leading-none italic">
+                          <h6 className="text-[13px] font-bold text-slate-700 tracking-tight leading-none uppercase">
                             {session.device}
                           </h6>
-                          <p className="text-[11px] font-black text-slate-400 mt-2 uppercase tracking-widest">
+                          <p className="text-[10px] font-bold text-slate-300 mt-1 uppercase tracking-widest">
                             {session.location} • {session.ip}
                           </p>
                         </div>
                       </div>
                       <span
-                        className={`text-[10px] font-black px-4 py-2 rounded-full uppercase tracking-widest border ${session.status === "Current" ? "bg-green-50 text-green-600 border-green-200" : "bg-slate-200/50 text-slate-400 border-slate-300"}`}
+                        className={`text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-widest border ${session.status === "Current" ? "bg-green-50 text-green-600 border-green-100" : "bg-slate-100 text-slate-400 border-slate-200"}`}
                       >
                         {session.status}
                       </span>
@@ -313,76 +312,75 @@ const UserDetailsView = ({ user, onBack, onUpdate, onDelete }) => {
             )}
 
             {activeTab === "Permissions" && (
-              <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <h5 className="text-[14px] font-black text-slate-800 uppercase tracking-[0.3em] italic">
-                  Permission Sets & Access
+              <div className="space-y-6 animate-in fade-in duration-500">
+                <h5 className="text-[11px] font-bold text-slate-800 uppercase tracking-widest">
+                  Active Permission Sets
                 </h5>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {permissions.map((perm) => (
                     <div
                       key={perm.id}
-                      className="p-6 rounded-[32px] bg-slate-50 border border-slate-100 flex flex-col gap-4 group hover:border-[#129FED]/30 transition-all"
+                      className="p-4 rounded-lg bg-slate-50/50 border border-slate-100 flex flex-col gap-3 group hover:bg-white hover:border-[#129FED]/30 transition-all"
                     >
                       <div className="flex items-center justify-between">
-                        <span className="text-[13px] font-black text-slate-800 tracking-tight uppercase italic">
+                        <span className="text-[11px] font-bold text-slate-700 tracking-tight uppercase">
                           {perm.name}
                         </span>
                         <div
-                          className={`w-12 h-6 rounded-full relative transition-all cursor-pointer ${perm.status ? "bg-[#129FED]" : "bg-slate-300"}`}
+                          className={`w-8 h-4 rounded-full relative transition-all cursor-pointer ${perm.status ? "bg-blue-500" : "bg-slate-300"}`}
                         >
                           <div
-                            className={`w-4 h-4 rounded-full bg-white absolute top-1 transition-all ${perm.status ? "right-1" : "left-1"}`}
+                            className={`w-2.5 h-2.5 rounded-full bg-white absolute top-0.5 transition-all ${perm.status ? "right-0.5" : "left-0.5"}`}
                           />
                         </div>
                       </div>
-                      <p className="text-[11px] font-bold text-slate-400 leading-tight uppercase tracking-tighter">
+                      <p className="text-[10px] font-medium text-slate-400 leading-tight uppercase tracking-tight">
                         {perm.desc}
                       </p>
                     </div>
                   ))}
                 </div>
 
-                <div className="p-6 border-2 border-dashed border-slate-200 rounded-[32px] flex items-center justify-center gap-3 text-slate-400 hover:text-[#129FED] hover:border-[#129FED]/40 transition-all cursor-pointer">
-                  <Lock size={18} />
-                  <span className="text-[11px] font-black uppercase tracking-[0.3em]">
-                    Request Advanced Permissions
+                <div className="p-4 border border-dashed border-slate-200 rounded-lg flex items-center justify-center gap-2 text-slate-300 hover:text-[#129FED] hover:border-[#129FED]/40 transition-all cursor-pointer">
+                  <Lock size={14} />
+                  <span className="text-[10px] font-bold uppercase tracking-widest">
+                    Request elevated access
                   </span>
                 </div>
               </div>
             )}
 
             {activeTab === "Settings" && (
-              <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <h5 className="text-[14px] font-black text-slate-800 uppercase tracking-[0.3em] italic">
-                  System Account Settings
+              <div className="space-y-6 animate-in fade-in duration-500">
+                <h5 className="text-[11px] font-bold text-slate-800 uppercase tracking-widest">
+                  Departmental Access
                 </h5>
-                <div className="space-y-8">
+                <div className="space-y-6">
                   <div className="flex flex-col gap-2">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                    <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-0.5">
                       Assigned Department
                     </label>
-                    <select className="px-6 py-4 bg-slate-50 border border-slate-100 rounded-[20px] text-[13px] font-black text-slate-800 outline-none uppercase italic border-dashed">
+                    <select className="h-9 w-full rounded-lg border border-slate-100 bg-slate-50/50 px-3 text-[12px] font-bold text-slate-700 outline-none focus:bg-white focus:border-[#129FED]/30 transition-all">
                       <option>Clinical Services</option>
                       <option>Billing & Finance</option>
                       <option>Resident Care</option>
                     </select>
                   </div>
-                  <div className="p-6 bg-red-50 border border-red-100 rounded-[32px] flex items-center justify-between group cursor-pointer hover:bg-red-100 transition-all animate-pulse">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center text-red-500 shadow-sm shrink-0">
-                        <Lock size={20} />
+                  <div className="p-4 bg-red-50/50 border border-red-100 rounded-lg flex items-center justify-between group cursor-pointer hover:bg-red-50 transition-all">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-red-400 shadow-sm border border-red-50">
+                        <Lock size={18} />
                       </div>
                       <div className="space-y-0.5">
-                        <p className="text-xs font-black text-red-800 uppercase tracking-widest leading-none">
-                          Lock System Account
+                        <p className="text-[11px] font-bold text-red-800 uppercase tracking-widest leading-none">
+                          Freeze System Account
                         </p>
-                        <p className="text-[11px] font-medium text-red-600/80">
-                          Immediately restrict all API access and login
-                          sessions.
+                        <p className="text-[10px] font-medium text-red-600/80 uppercase tracking-tighter">
+                          Immediately restrict all sessions.
                         </p>
                       </div>
                     </div>
-                    <MoreHorizontal className="text-red-400" />
+                    <MoreHorizontal size={14} className="text-red-300" />
                   </div>
                 </div>
               </div>

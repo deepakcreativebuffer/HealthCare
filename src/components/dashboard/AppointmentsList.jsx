@@ -19,19 +19,19 @@ const AppointmentsList = ({ onViewAll }) => {
     >
       <div className="space-y-2">
         {mockData.appointments.map((apt, idx) => (
-          <div key={idx} className="bg-white border border-[#E2E8F0] rounded-[10px] px-3 py-2.5 flex gap-3 hover:shadow-sm transition-all group/apt cursor-pointer relative overflow-hidden">
+          <div key={idx} className="bg-white border border-[#E2E8F0] rounded-[10px] px-2.5 py-1.5 flex gap-2.5 hover:shadow-sm transition-all group/apt cursor-pointer relative overflow-hidden">
             {/* Left Icon with color indicator */}
-            <div className={`w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0 transition-colors ${idx === 0 ? 'bg-emerald-50 text-emerald-600' :
+            <div className={`w-8 h-8 rounded-[8px] flex items-center justify-center shrink-0 transition-colors ${idx === 0 ? 'bg-emerald-50 text-emerald-600' :
               idx === 1 ? 'bg-blue-50 text-blue-600' :
                 idx === 2 ? 'bg-red-50 text-red-600' :
                   'bg-orange-50 text-orange-600'
               }`}>
-              <CalendarClock size={18} />
+              <CalendarClock size={16} />
             </div>
 
             <div className="flex-1">
               <div className="flex items-center justify-between">
-                <h4 className="text-[14px] font-bold text-slate-800 tracking-tight">{apt.name}</h4>
+                <h4 className="text-[13px] font-bold text-slate-800 tracking-tight leading-tight">{apt.name}</h4>
               </div>
               <div className="flex items-center gap-2 mt-0.5">
                 <span className="text-[11px] text-slate-400 font-bold">{apt.doctor}</span>

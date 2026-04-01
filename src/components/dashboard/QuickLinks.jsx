@@ -70,13 +70,13 @@ const QuickLinks = ({ onAdmitClick }) => {
 
   return (
     <PanelCard title="Quick Links" icon={Zap} customScroll={true}>
-      <div className="space-y-2 max-h-[410px] overflow-y-auto no-scrollbar pr-1">
+      <div className="space-y-1.5 max-h-[410px] overflow-y-auto no-scrollbar pr-1">
         {linkItems.map((link, idx) => (
           <Link
             key={idx}
             to={link.path}
             onClick={(e) => handleLinkClick(e, link)}
-            className={`w-full flex items-center gap-3 p-3 rounded-[10px] border transition-all text-left group/link shrink-0 no-underline ${
+            className={`w-full flex items-center gap-2.5 p-1.5 rounded-[10px] border transition-all text-left group/link shrink-0 no-underline ${
               link.label === "Add New User" ? "cursor-pointer" : "cursor-default"
             } ${
               link.color === "green"
@@ -89,7 +89,7 @@ const QuickLinks = ({ onAdmitClick }) => {
             }`}
           >
             {/* White Circle for Icon */}
-            <div className="w-9 h-9 rounded-full bg-white flex items-center justify-center shrink-0 shadow-sm border border-white/50">
+            <div className="w-7 h-7 rounded-full bg-white flex items-center justify-center shrink-0 shadow-sm border border-white/50">
               <link.icon
                 size={16}
                 className={`${
@@ -105,10 +105,10 @@ const QuickLinks = ({ onAdmitClick }) => {
             </div>
 
             <div className="flex-1">
-              <h4 className="text-[13px] font-bold text-slate-800 leading-tight">
+              <h4 className="text-[12.5px] font-bold text-slate-800 leading-tight">
                 {link.label}
               </h4>
-              <p className="text-[11px] text-slate-500 font-medium mt-0.5 opacity-80">
+              <p className="text-[10px] text-slate-500 font-medium mt-0.5 opacity-80 leading-none">
                 {link.sub}
               </p>
             </div>

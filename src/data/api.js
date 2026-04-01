@@ -42,30 +42,106 @@ export const api = {
     setStoredData(KEYS.RESIDENTS, updated);
     return simulateAPI({ success: true, data: updated });
   },
+  deleteResident: (id) => {
+    const residents = getStoredData(KEYS.RESIDENTS, mockData.residents);
+    const updated = residents.filter(r => r.id !== id);
+    setStoredData(KEYS.RESIDENTS, updated);
+    return simulateAPI({ success: true, data: updated });
+  },
   getResidentData: (id) => {
     const residents = getStoredData(KEYS.RESIDENTS, mockData.residents);
     const resident = residents.find(r => r.id === id) || residents[0];
     
-    // Add medical records if not present in mockData.js structure for residents
-    const enrichedResident = {
-      ...resident,
-      diagnosisProblems: [
+    // Ensure nested data structures exist
+    if (!resident.diagnosisProblems) {
+      resident.diagnosisProblems = [
         { id: 1, name: "Depression", onset: "2023", status: "Active" },
         { id: 2, name: "Degenerative Arthritis", type: "Chronic", status: "Chronic" },
         { id: 3, name: "Skin Reactions", type: "Recurrent", status: "Recurrent" }
-      ],
-      medicationsList: [
+      ];
+    }
+    if (!resident.medicationsList) {
+      resident.medicationsList = [
         { id: 1, name: "Lisinopril", dose: "20 mg", details: "20 MG • Oral • Daily", status: "Active" },
-        { id: 2, name: "Metformin", dose: "500 mg", details: "500 MG • Oral • Daily", status: "Active" }
-      ],
-      vitalsHistory: {
+        { id: 2, name: "Metformin", dose: "500 mg", details: "500 MG • Oral • Daily", status: "Active" },
+        { id: 3, name: "Sertraline", dose: "50 mg", details: "50 MG • Oral • Daily", status: "Active" }
+      ];
+    }
+    if (!resident.vitalsHistory) {
+      resident.vitalsHistory = {
         bloodPressure: "120/80 mmHg",
         heartRate: "74 bpm",
         bmi: "17.1 lbs",
         respirationRate: "60 bpm"
+      };
+    }
+    if (!resident.appointments) {
+      resident.appointments = [
+        { id: 1, doctor: "Dr. Amanda Roberts", date: "Thursday, Apr 25", time: "10:30 AM", location: "Monterey Clinic" },
+        { id: 2, doctor: "Dr. James Williams", date: "Friday, Apr 26", time: "02:00 PM", location: "Oasis Center" }
+      ];
+    }
+    if (!resident.assignedForms) {
+      resident.assignedForms = [
+        { id: 1, name: "Annual Health Assessment", status: "Pending", lastUpdated: "04/2024" },
+        { id: 2, name: "Medication Consent Form", status: "Signed", lastUpdated: "03/2024" }
+      ];
+    }
+    if (!resident.recentDocuments) {
+      resident.recentDocuments = [
+        { id: 1, name: "Lab Report - December 10", date: "22 Feb 2024" },
+        { id: 2, name: "Insurance Documentation", date: "02 Jan 2024" }
+      ];
+    }
+    if (!resident.billingSummary) {
+      resident.billingSummary = {
+        balanceDue: 250.00,
+        lastPayment: { amount: 30.00, date: "20 Mar 2024" },
+        progress: 60
+      };
+    }
+    
+    return simulateAPI(resident);
+  },
+
+  updateResidentSubData: (residentId, key, itemId, updates) => {
+    const residents = getStoredData(KEYS.RESIDENTS, mockData.residents);
+    const updated = residents.map(r => {
+      if (r.id === residentId || (residentId === undefined && r.name === 'Maria Johnson')) {
+        const subData = Array.isArray(r[key]) ? r[key].map(item => item.id === itemId ? { ...item, ...updates } : item) : { ...r[key], ...updates };
+        return { ...r, [key]: subData };
       }
-    };
-    return simulateAPI(enrichedResident);
+      return r;
+    });
+    setStoredData(KEYS.RESIDENTS, updated);
+    return simulateAPI({ success: true });
+  },
+
+  addResidentSubData: (residentId, key, newItem) => {
+    const residents = getStoredData(KEYS.RESIDENTS, mockData.residents);
+    const updated = residents.map(r => {
+      if (r.id === residentId || (residentId === undefined && r.name === 'Maria Johnson')) {
+        const id = (r[key]?.length || 0) + 1;
+        const subData = [...(r[key] || []), { ...newItem, id }];
+        return { ...r, [key]: subData };
+      }
+      return r;
+    });
+    setStoredData(KEYS.RESIDENTS, updated);
+    return simulateAPI({ success: true });
+  },
+
+  deleteResidentSubData: (residentId, key, itemId) => {
+    const residents = getStoredData(KEYS.RESIDENTS, mockData.residents);
+    const updated = residents.map(r => {
+      if (r.id === residentId || (residentId === undefined && r.name === 'Maria Johnson')) {
+        const subData = r[key].filter(item => item.id !== itemId);
+        return { ...r, [key]: subData };
+      }
+      return r;
+    });
+    setStoredData(KEYS.RESIDENTS, updated);
+    return simulateAPI({ success: true });
   },
 
   // Staff

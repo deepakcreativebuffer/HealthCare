@@ -19,23 +19,23 @@ const EditProviderModal = ({ isOpen, onClose, provider, onSave }) => {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
-      <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden border border-slate-200 animate-in zoom-in-95 duration-200">
-        <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+      <div className="bg-white w-full max-w-md rounded-xl shadow-2xl overflow-hidden border border-slate-200 animate-in zoom-in-95 duration-200">
+        <div className="px-5 py-3 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-[#E3F2FD] flex items-center justify-center text-[#129FED]">
-              <User size={18} />
+            <div className="w-7 h-7 rounded-lg bg-[#E3F2FD] flex items-center justify-center text-[#129FED]">
+              <User size={14} />
             </div>
-            <h3 className="text-lg font-bold text-slate-800">Edit Provider</h3>
+            <h3 className="text-base font-bold text-slate-800">Edit Provider</h3>
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-slate-200/50 rounded-lg transition-all text-slate-400 hover:text-slate-600"
+            className="p-1.5 hover:bg-slate-200/50 rounded-lg transition-all text-slate-400 hover:text-slate-600"
           >
-            <X size={20} />
+            <X size={18} />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-5">
+        <form onSubmit={handleSubmit} className="p-4 space-y-3">
           <div className="space-y-2">
             <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider ml-1">
               Provider Name
@@ -73,7 +73,7 @@ const EditProviderModal = ({ isOpen, onClose, provider, onSave }) => {
                 onChange={(e) =>
                   setFormData({ ...formData, npi: e.target.value })
                 }
-                className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#129FED]/20 focus:border-[#129FED] transition-all"
+                className="w-full pl-11 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#129FED]/20 focus:border-[#129FED] transition-all"
                 placeholder="Enter NPI number"
                 required
               />
@@ -123,19 +123,19 @@ const EditProviderModal = ({ isOpen, onClose, provider, onSave }) => {
             </div>
           </div>
 
-          <div className="pt-4 flex items-center gap-3">
+          <div className="pt-2 flex items-center gap-3">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-3 border border-slate-200 rounded-lg text-sm font-bold text-slate-500 hover:bg-slate-50 transition-all font-mono uppercase tracking-widest"
+              className="flex-1 px-4 py-2 border border-slate-200 rounded-lg text-[12px] font-bold text-slate-500 hover:bg-slate-50 transition-all font-mono uppercase tracking-widest"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="flex-1 px-4 py-3 bg-[#129FED] text-white rounded-lg text-sm font-bold shadow-lg shadow-blue-100 hover:bg-[#129FED]/90 transition-all flex items-center justify-center gap-2 font-mono uppercase tracking-widest"
+              className="flex-1 px-4 py-2 bg-[#129FED] text-white rounded-lg text-[12px] font-bold shadow-lg shadow-blue-100 hover:bg-[#129FED]/90 transition-all flex items-center justify-center gap-2 font-mono uppercase tracking-widest"
             >
-              <Save size={16} />
+              <Save size={14} />
               Save Changes
             </button>
           </div>

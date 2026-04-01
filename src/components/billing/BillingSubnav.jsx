@@ -32,13 +32,13 @@ const BillingSubnav = () => {
   ];
 
   return (
-    <div className="bg-slate-50/50 pt-4 px-6 flex flex-col gap-6 shrink-0 border-b border-slate-100">
+    <div className="bg-slate-50/50 pt-2 px-6 flex flex-col gap-2 shrink-0 border-b border-slate-100">
       {/* Secondary App Tabs */}
       <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
         {secondaryTabs.map((tab) => (
           <button
             key={tab.label}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-[13px] font-bold transition-all border border-transparent ${
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[12px] font-bold transition-all border border-transparent ${
               tab.active
                 ? "bg-white text-blue-600 shadow-sm border-slate-100"
                 : "text-slate-400 hover:text-slate-600 hover:bg-white hover:border-slate-100"
@@ -51,13 +51,13 @@ const BillingSubnav = () => {
       </div>
 
       {/* Billing Context Header */}
-      <div className="flex items-center justify-between pb-4">
+      <div className="flex items-center justify-between pb-3">
         {/* Billing Tabs */}
         <div className="flex items-center gap-2 bg-slate-100/50 p-1 rounded-xl border border-slate-100">
           {billingTabs.map((tab) => (
             <button
               key={tab.label}
-              className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${
+              className={`px-3 py-1.5 rounded-lg text-[12px] font-bold transition-all ${
                 tab.active
                   ? "bg-blue-600 text-white shadow-md shadow-blue-200"
                   : "text-slate-400 hover:text-slate-600"
@@ -70,18 +70,18 @@ const BillingSubnav = () => {
 
         {/* Filters */}
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-3 bg-white px-4 py-2.5 rounded-xl border border-slate-100 shadow-sm">
-            <Calendar size={16} className="text-slate-400" />
-            <span className="text-[13px] font-bold text-slate-700">
+          <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-slate-100 shadow-sm">
+            <Calendar size={14} className="text-slate-400" />
+            <span className="text-[12px] font-bold text-slate-700">
               Sep 1, 2025 - Feb 28, 2025
             </span>
           </div>
 
-          <div className="flex items-center gap-2 bg-white px-4 py-2.5 rounded-xl border border-slate-100 shadow-sm cursor-pointer hover:bg-slate-50 transition-all">
-            <span className="text-[13px] font-bold text-slate-700">
+          <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-slate-100 shadow-sm cursor-pointer hover:bg-slate-50 transition-all">
+            <span className="text-[12px] font-bold text-slate-700">
               Last 6 months
             </span>
-            <ChevronDown size={16} className="text-slate-400" />
+            <ChevronDown size={14} className="text-slate-400" />
           </div>
         </div>
       </div>

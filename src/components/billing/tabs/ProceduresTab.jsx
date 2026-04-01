@@ -1,10 +1,10 @@
 import React from "react";
-import { Plus, Trash2, Info, Receipt } from "lucide-react";
+import { Plus, Trash2, Info, Receipt, Hash, DollarSign } from "lucide-react";
 import { billingData } from "../../../data/billingData";
 
 const TableCell = ({ value, classes = "" }) => (
   <div
-    className={`px-4 py-2.5 rounded-lg border border-slate-100 bg-white min-h-[42px] flex items-center justify-center text-[13px] font-bold text-slate-700 transition-all hover:border-slate-200 shadow-sm ${classes}`}
+    className={`px-2 py-1 rounded border border-slate-100 bg-white min-h-[28px] flex items-center justify-center text-[10px] font-bold text-slate-600 transition-all group-hover:border-[#129FED]/30 shadow-[0_1px_4px_rgba(0,0,0,0.01)] ${classes}`}
   >
     {value || ""}
   </div>
@@ -19,85 +19,92 @@ const ProceduresTab = () => {
   );
 
   return (
-    <div className="p-8 space-y-8 animate-in fade-in duration-500">
-      {/* Tab Level Header */}
-      <div className="flex items-center gap-3 text-[#009bf2] mb-2">
-        <Receipt size={20} className="stroke-[2.5]" />
-        <h2 className="text-[13px] font-extrabold uppercase tracking-tight">
-          Procedures / Charges (CPT / HCPCS)
-        </h2>
-      </div>
-
-      <div className="space-y-6">
+    <div className="p-6 space-y-6 animate-in fade-in duration-500 antialiased">
+      <div className="space-y-4">
         {/* Table Structure */}
-        <div className="bg-white rounded-[24px] border border-slate-100 shadow-sm overflow-hidden p-6 space-y-4">
+        <div className="bg-white rounded-lg border border-slate-100 shadow-[0_2px_12px_rgba(0,0,0,0.02)] overflow-hidden p-4 space-y-3">
           {/* Headers */}
-          <div className="grid grid-cols-[1fr_1fr_1.5fr_1fr_1fr_1fr_1fr_1fr_1fr_40px] gap-3 px-2">
+          <div className="grid grid-cols-[1fr_1fr_1.5fr_1fr_1fr_1fr_1fr_1fr_1fr_32px] gap-2 px-1">
             {[
-              "DOS From",
-              "DOS To",
-              "CPT",
-              "Mod1",
-              "Mod2",
-              "Units",
+              "From",
+              "To",
+              "CPT / Code",
+              "M1",
+              "M2",
+              "Qty",
               "Charge",
-              "Dx Ptr",
+              "Ptr",
               "POS",
             ].map((h) => (
               <span
                 key={h}
-                className="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center"
+                className="text-[9px] font-bold text-slate-400 uppercase tracking-widest text-center"
               >
                 {h}
               </span>
             ))}
-            <span className="w-10" />
+            <span className="w-8" />
           </div>
 
           {/* Rows */}
-          <div className="space-y-3">
+          <div className="space-y-1.5">
             {proceduresSection.map((item, idx) => (
               <div
                 key={idx}
-                className="grid grid-cols-[1fr_1fr_1.5fr_1fr_1fr_1fr_1fr_1fr_1fr_40px] gap-3 group items-center"
+                className="grid grid-cols-[1fr_1fr_1.5fr_1fr_1fr_1fr_1fr_1fr_1fr_32px] gap-2 group items-center"
               >
                 <TableCell value={item.dosFrom} />
                 <TableCell value={item.dosTo} />
-                <TableCell value={item.cpt} />
+                <TableCell value={item.cpt} classes="text-[#129FED]" />
                 <TableCell value={item.mod1} />
                 <TableCell value={item.mod2} />
                 <TableCell value={item.units} />
-                <TableCell value={item.charge} />
+                <TableCell value={`$${item.charge.toFixed(2)}`} classes="text-slate-900" />
                 <TableCell value={item.dxPtr} />
                 <TableCell value={item.pos} />
-                <button className="text-slate-300 hover:text-red-400 transition-colors flex items-center justify-center">
-                  <Trash2 size={18} />
+                <button className="text-slate-200 hover:text-red-400 transition-colors flex items-center justify-center">
+                  <Trash2 size={14} />
                 </button>
               </div>
             ))}
           </div>
 
           {/* Footer: Totals */}
-          <div className="pt-4 border-t border-slate-50 flex items-center justify-between px-2">
-            <span className="text-[13px] font-black text-slate-700">
-              Total Charge Amount
-            </span>
+          <div className="pt-3 mt-1 border-t border-slate-50 flex items-center justify-between px-1">
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 rounded bg-slate-50 flex items-center justify-center">
+                <Receipt size={12} className="text-slate-400" />
+              </div>
+              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-tight">
+                Claim Total
+              </span>
+            </div>
             <div className="flex items-center gap-3">
-              <span className="text-[16px] font-black text-slate-800">
-                ${totalCharges.toFixed(2)}
-              </span>
-              <span className="text-[11px] font-bold text-slate-300 uppercase tracking-widest">
-                (Auto)
-              </span>
+              <div className="flex items-baseline gap-1">
+                <span className="text-[10px] font-bold text-slate-400">$</span>
+                <span className="text-[16px] font-black text-slate-900 tracking-tighter italic">
+                  {totalCharges.toFixed(2)}
+                </span>
+              </div>
+              <div className="px-2 py-0.5 rounded bg-blue-50 text-[#129FED] text-[9px] font-bold uppercase tracking-widest border border-blue-50/50">
+                Validated
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Add Procedure Button */}
-        <button className="flex items-center gap-2 text-[#009bf2] font-black text-[13px] tracking-tight hover:underline transition-all px-2 py-2 rounded-lg hover:bg-blue-50">
-          <Plus size={18} className="stroke-[3]" />
-          Add Procedure
-        </button>
+        {/* Action Bar */}
+        <div className="flex items-center justify-between px-1">
+          <button className="flex items-center gap-1.5 text-[#129FED] font-bold text-[11px] uppercase tracking-wider hover:underline transition-all px-3 py-1.5 rounded-lg hover:bg-blue-50">
+            <Plus size={14} className="stroke-[2.5]" />
+            New Charge
+          </button>
+          
+          <div className="flex items-center gap-2 text-slate-300 text-[10px] uppercase font-bold tracking-widest">
+            <Info size={12} />
+            HCPCS / CPT Level II Support Active
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -13,6 +13,7 @@ import {
   FileText,
   Search,
   ClipboardList,
+  Sparkles,
 } from "lucide-react";
 import ClaimWorkspaceSidebar from "./ClaimWorkspaceSidebar";
 import PatientSnapshot from "./tabs/PatientSnapshot";
@@ -25,18 +26,14 @@ import ClaimDetailsTab from "./tabs/ClaimDetailsTab";
 import AuditComplianceTab from "./tabs/AuditComplianceTab";
 
 const tabs = [
-  { id: "Patient Snapshot", label: "Patient Snapshot", icon: UserCircle },
-  {
-    id: "Insurance & Subscriber",
-    label: "Insurance & Subscriber",
-    icon: ShieldCheck,
-  },
-  { id: "Providers & Location", label: "Providers & Location", icon: MapPin },
-  { id: "Visit / Encounter", label: "Visit / Encounter", icon: Calendar },
-  { id: "Diagnosis (ICD-10)", label: "Diagnosis (ICD-10)", icon: Activity },
-  { id: "Procedures / Charges", label: "Procedures / Charges", icon: FileText },
-  { id: "Claim Details", label: "Claim Details", icon: ClipboardList },
-  { id: "Audit & Compliance", label: "Audit & Compliance", icon: Search },
+  { id: "Patient Snapshot", label: "Patient", icon: UserCircle },
+  { id: "Insurance & Subscriber", label: "Insurance", icon: ShieldCheck },
+  { id: "Providers & Location", label: "Providers", icon: MapPin },
+  { id: "Visit / Encounter", label: "Visit", icon: Calendar },
+  { id: "Diagnosis (ICD-10)", label: "Diagnosis", icon: Activity },
+  { id: "Procedures / Charges", label: "Procedures", icon: FileText },
+  { id: "Claim Details", label: "Details", icon: ClipboardList },
+  { id: "Audit & Compliance", label: "Audit", icon: Search },
 ];
 
 const ClaimWorkspaceModal = ({ isOpen, onClose, claimId }) => {
@@ -45,121 +42,121 @@ const ClaimWorkspaceModal = ({ isOpen, onClose, claimId }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center sm:p-4 antialiased selection:bg-blue-100 p-0">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-300"
+        className="absolute inset-0 bg-slate-900/10 backdrop-blur-[2px] animate-in fade-in duration-500"
         onClick={onClose}
       />
 
       {/* Modal Container */}
-      <div className="relative bg-white w-full max-w-[1280px] h-[92vh] rounded-[32px] shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 fade-in duration-300">
+      <div className="relative bg-white w-full max-w-[1440px] h-full sm:h-[95vh] sm:rounded-lg shadow-[0_15px_40px_-10px_rgba(0,0,0,0.05)] flex flex-col overflow-hidden animate-in zoom-in-95 fade-in duration-300 border border-slate-100">
         {/* Top Title Bar */}
-        <header className="h-14 bg-white border-b border-slate-100 flex items-center justify-between px-6 shrink-0">
-          <h1 className="text-[15px] font-bold text-slate-800 tracking-tight">
-            Billing — Claim Workspace
-          </h1>
+        <header className="h-12 bg-white flex items-center justify-between px-4 sm:px-6 shrink-0 border-b border-slate-50">
+          <div className="flex items-center gap-3">
+            <div className="w-7 h-7 rounded-lg bg-blue-50 flex items-center justify-center border border-blue-50">
+              <Sparkles size={14} className="text-[#129FED]" />
+            </div>
+            <div className="flex items-baseline gap-2">
+              <h1 className="text-[13px] font-bold text-slate-800">Workspace</h1>
+              <span className="text-[10px] font-medium text-slate-300 uppercase tracking-widest hidden sm:inline">Electronic Filing</span>
+            </div>
+          </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-all"
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-900 hover:bg-slate-50 transition-all border border-transparent"
           >
-            <X size={20} />
+            <X size={18} />
           </button>
         </header>
 
         {/* Workspace Content Area */}
-        <div className="flex-1 overflow-hidden flex flex-col bg-[#f8fafc]">
-          {/* 1. Full-Width Sub-Header Section */}
-          <div className="px-6 py-4 shrink-0">
-            <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-4 flex items-center justify-between">
-              <div className="flex items-center gap-6">
+        <div className="flex-1 overflow-hidden flex flex-col">
+          {/* Sub-Header */}
+          <div className="px-4 sm:px-6 py-2 shrink-0 bg-white border-b border-slate-100">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex items-center gap-4 sm:gap-6">
                 <button
                   onClick={onClose}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 transition-all font-bold group shadow-sm"
+                  className="flex items-center gap-2 pr-4 sm:pr-6 border-r border-slate-100 group"
                 >
-                  <ArrowLeft
-                    size={16}
-                    className="text-slate-400 transition-transform group-hover:-translate-x-1"
-                  />
-                  <span className="text-[12px]">Back</span>
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-slate-50 text-slate-400 group-hover:text-[#129FED] transition-all border border-slate-50">
+                    <ArrowLeft size={16} />
+                  </div>
+                  <span className="text-[12px] font-bold text-slate-600 hidden sm:inline">Back</span>
                 </button>
 
                 <div className="flex flex-col">
-                  <h2 className="text-[17px] font-extrabold text-slate-800 tracking-tight">
-                    Billing — Claim Workspace
-                  </h2>
-                  <div className="flex items-center gap-2 mt-0.5">
-                    <span className="text-[11px] font-bold text-slate-400">
-                      Claim ID:{" "}
-                      <span className="text-slate-500">{claimId}</span>
-                    </span>
-                    <span className="text-slate-300">•</span>
-                    <span className="text-[11px] font-bold text-slate-400">
-                      Status: <span className="text-slate-500">Draft</span>
-                    </span>
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-[16px] sm:text-[18px] font-black text-slate-900 tracking-tight">
+                      {claimId}
+                    </h2>
+                    <div className="px-1.5 py-0.5 rounded bg-amber-50 text-amber-600 border border-amber-50">
+                      <span className="text-[9px] font-bold uppercase tracking-wider">Draft</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3">
-                <button className="px-6 py-2.5 rounded-lg border border-slate-200 text-slate-600 font-bold text-[13px] hover:bg-slate-50 transition-all shadow-sm">
-                  Save Draft
+              <div className="flex items-center gap-2">
+                <button className="h-9 px-4 rounded-lg border border-slate-100 text-slate-500 font-bold text-[11px] hover:bg-slate-50 transition-all">
+                  Snapshot
                 </button>
-                <button className="px-6 py-2.5 rounded-lg bg-[#009bf2] text-white font-bold text-[13px] shadow-lg shadow-blue-100 hover:bg-[#0089d8] transition-all">
-                  Validate & Submit
+                <button className="h-9 px-5 rounded-lg bg-[#129FED] text-white font-bold text-[11px] shadow-sm hover:bg-[#0089d8] transition-all flex items-center gap-2">
+                  <CheckCircle2 size={14} />
+                  Finish
                 </button>
               </div>
             </div>
           </div>
 
-          {/* 2. Split Body Section (Sidebar + Multi-tab Content) */}
-          <div className="flex-1 flex overflow-hidden px-6 pb-6 gap-6">
-            {/* Sidebar (Claim Summary, Patient Info, etc) */}
-            <div className="w-[280px] shrink-0 overflow-y-auto no-scrollbar">
+          <div className="flex-1 flex overflow-hidden">
+            {/* Sidebar (Hidden on mobile maybe? or collapsed) */}
+            <div className="hidden md:block shrink-0">
               <ClaimWorkspaceSidebar />
             </div>
 
-            {/* Main Workspace (Tabs + Tab Content) */}
-            <div className="flex-1 flex flex-col gap-6 overflow-hidden">
-              {/* Tab Navigation (Horizontal Row) */}
-              <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
-                {tabs.map((tab) => (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`min-w-[120px] px-4 py-3.5 rounded-lg text-[11px] font-bold transition-all border flex flex-col items-start gap-1 justify-center leading-tight shadow-sm ${
-                      activeTab === tab.id
-                        ? "bg-[#e5f6ff] text-[#009bf2] border-[#009bf2]"
-                        : "bg-white text-slate-500 border-slate-100 hover:border-slate-300"
-                    }`}
-                  >
-                    {tab.label.split(" & ").map((line, i) => (
-                      <span
-                        key={i}
-                        className="block last:text-[10px] last:opacity-80"
+            {/* Main Content */}
+            <div className="flex-1 flex flex-col overflow-hidden bg-[#FAFBFC]">
+              {/* Tabs Bar - More compact and scrollable */}
+              <div className="px-4 sm:px-6 border-b border-slate-100 bg-white sticky top-0 z-20">
+                <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-1.5">
+                  {tabs.map((tab) => {
+                    const Icon = tab.icon;
+                    return (
+                      <button
+                        key={tab.id}
+                        onClick={() => setActiveTab(tab.id)}
+                        className={`group flex items-center gap-2 px-4 h-9 rounded-lg transition-all duration-200 shrink-0 ${
+                          activeTab === tab.id
+                            ? "bg-[#129FED]/5 text-[#129FED]"
+                            : "text-slate-400 hover:text-slate-700 hover:bg-slate-50"
+                        }`}
                       >
-                        {line}
-                        {i === 0 && tab.label.includes(" & ") ? " &" : ""}
-                      </span>
-                    ))}
-                  </button>
-                ))}
+                        <Icon size={14} className={activeTab === tab.id ? "stroke-[2.5]" : "stroke-[2]"} />
+                        <span className={`text-[11px] font-bold whitespace-nowrap ${activeTab === tab.id ? "text-[#129FED]" : "text-slate-500 group-hover:text-slate-700"}`}>
+                          {tab.label}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
-              {/* Dynamic Tab Content Area (White Container) */}
-              <div className="flex-1 bg-white rounded-3xl border border-slate-100 shadow-sm overflow-y-auto no-scrollbar relative min-h-0">
-                {activeTab === "Patient Snapshot" && <PatientSnapshot />}
-                {activeTab === "Insurance & Subscriber" && (
-                  <InsuranceSubscriberTab />
-                )}
-                {activeTab === "Providers & Location" && (
-                  <ProvidersLocationTab />
-                )}
-                {activeTab === "Visit / Encounter" && <VisitEncounterTab />}
-                {activeTab === "Diagnosis (ICD-10)" && <DiagnosisTab />}
-                {activeTab === "Procedures / Charges" && <ProceduresTab />}
-                {activeTab === "Claim Details" && <ClaimDetailsTab />}
-                {activeTab === "Audit & Compliance" && <AuditComplianceTab />}
+              {/* Content Container */}
+              <div className="flex-1 overflow-hidden p-3 sm:p-5 relative">
+                <div className="h-full bg-white rounded-lg border border-slate-100 shadow-[0_2px_12px_rgba(0,0,0,0.02)] overflow-y-auto no-scrollbar relative z-1 p-0 animate-in slide-in-from-bottom-1 duration-300">
+                  <div className="min-h-full">
+                    {activeTab === "Patient Snapshot" && <PatientSnapshot />}
+                    {activeTab === "Insurance & Subscriber" && <InsuranceSubscriberTab />}
+                    {activeTab === "Providers & Location" && <ProvidersLocationTab />}
+                    {activeTab === "Visit / Encounter" && <VisitEncounterTab />}
+                    {activeTab === "Diagnosis (ICD-10)" && <DiagnosisTab />}
+                    {activeTab === "Procedures / Charges" && <ProceduresTab />}
+                    {activeTab === "Claim Details" && <ClaimDetailsTab />}
+                    {activeTab === "Audit & Compliance" && <AuditComplianceTab />}
+                  </div>
+                </div>
               </div>
             </div>
           </div>

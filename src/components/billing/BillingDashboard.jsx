@@ -40,18 +40,18 @@ const MetricCard = ({ label, value, icon: Icon, color, onClick }) => {
   return (
     <div
       onClick={onClick}
-      className={`bg-white p-4 rounded-xl border border-slate-100 flex items-center gap-4 hover:shadow-md transition-all shadow-sm group ${onClick ? "cursor-pointer" : ""} h-[88px]`}
+      className={`bg-white p-2.5 rounded-xl border border-slate-100 flex items-center gap-3 hover:shadow-md transition-all shadow-sm group ${onClick ? "cursor-pointer" : ""} h-[72px]`}
     >
       <div
-        className={`w-12 h-12 rounded-lg flex items-center justify-center shrink-0 transition-transform group-hover:scale-105 border ${colorMap[color]}`}
+        className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 transition-transform group-hover:scale-105 border ${colorMap[color]}`}
       >
-        <Icon size={20} strokeWidth={2.5} />
+        <Icon size={16} strokeWidth={2.5} />
       </div>
       <div className="flex flex-col">
-        <h4 className="text-2xl font-bold text-slate-800 tracking-tight leading-none">
+        <h4 className="text-xl font-bold text-slate-800 tracking-tight leading-none">
           {value}
         </h4>
-        <p className="text-[11px] font-bold text-slate-400 mt-2 uppercase tracking-tight line-clamp-1">
+        <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-tight line-clamp-1">
           {label}
         </p>
       </div>
@@ -236,23 +236,23 @@ const BillingDashboard = () => {
   // Filter recentClaims
   const recentClaims = claimsFilter
     ? data.recentClaims.filter((c) => {
-        if (claimsFilter === "Submitted" && c.status === "Submitted")
-          return true;
-        if (claimsFilter === "Pending" && c.status === "Pending") return true;
-        if (claimsFilter === "Rejected" && c.status === "Denied") return true;
-        return false;
-      })
+      if (claimsFilter === "Submitted" && c.status === "Submitted")
+        return true;
+      if (claimsFilter === "Pending" && c.status === "Pending") return true;
+      if (claimsFilter === "Rejected" && c.status === "Denied") return true;
+      return false;
+    })
     : data.recentClaims;
 
   // Filter submissionHistory
   const filteredSubmissions = claimsFilter
     ? data.submissionHistory.filter((s) => {
-        if (claimsFilter === "Submitted" && s.status === "Accepted")
-          return true;
-        if (claimsFilter === "Rejected" && s.status === "Rejected") return true;
-        if (claimsFilter === "Pending" && s.status === "Pending") return true;
-        return false;
-      })
+      if (claimsFilter === "Submitted" && s.status === "Accepted")
+        return true;
+      if (claimsFilter === "Rejected" && s.status === "Rejected") return true;
+      if (claimsFilter === "Pending" && s.status === "Pending") return true;
+      return false;
+    })
     : data.submissionHistory;
 
   const submissionHistory = filteredSubmissions;
@@ -278,7 +278,7 @@ const BillingDashboard = () => {
   };
 
   return (
-    <main className="flex-1 overflow-y-auto p-5 scroll-smooth custom-scrollbar bg-[#F8FAFC] relative">
+    <main className="flex-1 overflow-y-auto p-3 scroll-smooth custom-scrollbar bg-[#F8FAFC] relative">
       {refreshing && (
         <div className="absolute inset-0 bg-[#F8FAFC]/40 backdrop-blur-[1px] z-50 flex items-center justify-center p-8 pointer-events-none">
           <div className="bg-white px-6 py-3 rounded-xl shadow-xl border border-slate-100 flex items-center gap-3 animate-pulse pointer-events-auto">
@@ -290,7 +290,7 @@ const BillingDashboard = () => {
         </div>
       )}
       <div
-        className={`max-w-full mx-auto space-y-4 transition-opacity duration-300 ${refreshing ? "opacity-40" : "opacity-100"}`}
+        className={`max-w-full mx-auto space-y-3 transition-opacity duration-300 ${refreshing ? "opacity-40" : "opacity-100"}`}
       >
         {/* Row 1: Billing-Specific Navigation & Filters */}
         <div className="flex items-center justify-between">
@@ -299,13 +299,12 @@ const BillingDashboard = () => {
               <button
                 key={tab.label}
                 onClick={() => setActiveBillingTab(tab.label)}
-                className={`px-5 py-2.5 rounded-lg text-[13px] font-bold transition-all flex items-center gap-2 border ${
-                  activeBillingTab === tab.label
-                    ? "bg-[#129FED] text-white border-[#129FED] shadow-lg shadow-blue-100"
-                    : "bg-white text-slate-500 border-slate-200 hover:bg-slate-50"
-                }`}
+                className={`px-3.5 py-1.5 rounded-lg text-[12px] font-bold transition-all flex items-center gap-1.5 border ${activeBillingTab === tab.label
+                  ? "bg-[#129FED] text-white border-[#129FED] shadow-lg shadow-blue-100"
+                  : "bg-white text-slate-500 border-slate-200 hover:bg-slate-50"
+                  }`}
               >
-                <tab.icon size={16} strokeWidth={2.5} />
+                <tab.icon size={14} strokeWidth={2.5} />
                 {tab.label}
               </button>
             ))}
@@ -318,19 +317,19 @@ const BillingDashboard = () => {
                   setShowDateRangeDropdown(!showDateRangeDropdown);
                   setShowTimeframeDropdown(false);
                 }}
-                className={`flex items-center gap-3 bg-white px-5 py-2.5 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-slate-50 transition-all ${showDateRangeDropdown ? "border-[#129FED]" : ""}`}
+                className={`flex items-center gap-2.5 bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-slate-50 transition-all ${showDateRangeDropdown ? "border-[#129FED]" : ""}`}
               >
                 <Calendar
-                  size={16}
+                  size={14}
                   className={
                     showDateRangeDropdown ? "text-[#129FED]" : "text-slate-400"
                   }
                 />
-                <span className="text-[13px] font-bold text-slate-700">
+                <span className="text-[12px] font-bold text-slate-700">
                   {dateRange}
                 </span>
                 <ChevronDown
-                  size={16}
+                  size={14}
                   className={`text-slate-400 transition-transform ${showDateRangeDropdown ? "rotate-180" : ""}`}
                 />
               </div>
@@ -370,13 +369,13 @@ const BillingDashboard = () => {
                   setShowTimeframeDropdown(!showTimeframeDropdown);
                   setShowDateRangeDropdown(false);
                 }}
-                className={`flex items-center gap-2 bg-white px-5 py-2.5 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-slate-50 transition-all ${showTimeframeDropdown ? "border-[#129FED]" : ""}`}
+                className={`flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-slate-50 transition-all ${showTimeframeDropdown ? "border-[#129FED]" : ""}`}
               >
-                <span className="text-[13px] font-bold text-slate-700">
+                <span className="text-[12px] font-bold text-slate-700">
                   {timeframe}
                 </span>
                 <ChevronDown
-                  size={16}
+                  size={14}
                   className={`text-slate-400 transition-transform ${showTimeframeDropdown ? "rotate-180" : ""}`}
                 />
               </div>
@@ -429,8 +428,8 @@ const BillingDashboard = () => {
         {/* Row 3: Main 2-Column Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 items-start">
           {/* Left Column (3/5) */}
-          <div className="lg:col-span-3 space-y-8">
-            <div className="grid grid-cols-2 gap-8">
+          <div className="lg:col-span-3 space-y-4">
+            <div className="grid grid-cols-2 gap-4">
               {/* Billing Provider */}
               <BillingCard
                 title="Billing Provider"
@@ -446,7 +445,7 @@ const BillingDashboard = () => {
                   </button>
                 }
               >
-                <div className="grid grid-cols-1 gap-y-5">
+                <div className="grid grid-cols-1 gap-y-3">
                   {[
                     { label: "Name", value: provider.name },
                     { label: "NPI", value: provider.npi },
@@ -460,7 +459,7 @@ const BillingDashboard = () => {
                       <p className="text-[11px] font-bold text-slate-400 uppercase tracking-tight">
                         {field.label}
                       </p>
-                      <p className="text-[12px] font-bold text-slate-900 text-right max-w-[180px]">
+                      <p className="text-[12px] font-bold text-slate-900 text-right max-w-[150px]">
                         {field.value}
                       </p>
                     </div>
@@ -487,7 +486,7 @@ const BillingDashboard = () => {
                   {locations.map((loc, idx) => (
                     <div
                       key={idx}
-                      className="p-4 rounded-lg bg-[#F8FAFC] border border-slate-100 hover:border-[#129FED]/30 transition-all cursor-pointer group"
+                      className="p-2.5 rounded-lg bg-[#F8FAFC] border border-slate-100 hover:border-[#129FED]/30 transition-all cursor-pointer group"
                     >
                       <h4 className="text-[13px] font-bold text-slate-800">
                         {loc.name}
@@ -495,7 +494,7 @@ const BillingDashboard = () => {
                       <p className="text-[11px] font-medium text-slate-500 mt-1">
                         {loc.address}
                       </p>
-                      <div className="flex items-center gap-3 mt-3">
+                      <div className="flex items-center gap-3 mt-2">
                         <span className="text-[10px] font-bold text-slate-400 uppercase">
                           NPI: <span className="text-[#64748B]">{loc.npi}</span>
                         </span>
@@ -524,7 +523,7 @@ const BillingDashboard = () => {
                 </button>
               }
             >
-              <div className="grid grid-cols-2 gap-12">
+              <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-4">
                   {[
                     { label: "Patient", value: encounter.patient },
@@ -539,12 +538,12 @@ const BillingDashboard = () => {
                       <span className="text-[11px] font-bold text-slate-400 uppercase tracking-tight">
                         {row.label}
                       </span>
-                      <span className="text-[13px] font-bold text-slate-800">
+                      <span className="text-[12px] font-bold text-slate-800">
                         {row.value}
                       </span>
                     </div>
                   ))}
-                  <button className="flex items-center gap-1.5 text-[11px] font-bold text-[#129FED] mt-6 group">
+                  <button className="flex items-center gap-1.5 text-[10px] font-bold text-[#129FED] mt-4 group">
                     View Details
                     <ArrowRight
                       size={14}
@@ -554,16 +553,16 @@ const BillingDashboard = () => {
                 </div>
                 <div className="space-y-6">
                   <div>
-                    <p className="text-[11px] font-bold text-slate-400 uppercase tracking-tight mb-3">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight mb-2">
                       Diagnoses
                     </p>
-                    <div className="space-y-2">
+                    <div className="space-y-1.5">
                       {encounter.diagnoses.map((diag, idx) => (
-                        <div key={idx} className="flex gap-3">
-                          <span className="text-[11px] font-bold text-[#129FED] shrink-0">
+                        <div key={idx} className="flex gap-2">
+                          <span className="text-[12px] font-bold text-[#129FED] shrink-0">
                             {diag.code}
                           </span>
-                          <span className="text-[11px] font-bold text-slate-500 leading-tight">
+                          <span className="text-[12px] font-bold text-slate-500 leading-tight line-clamp-1">
                             {diag.description}
                           </span>
                         </div>
@@ -571,24 +570,24 @@ const BillingDashboard = () => {
                     </div>
                   </div>
                   <div>
-                    <p className="text-[11px] font-bold text-slate-400 uppercase tracking-tight mb-3">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight mb-2">
                       Procedures
                     </p>
-                    <div className="space-y-3">
+                    <div className="space-y-2">
                       {encounter.procedures.map((proc, idx) => (
                         <div
                           key={idx}
                           className="flex items-center justify-between"
                         >
-                          <div className="flex items-center gap-2">
-                            <span className="text-[11px] font-bold text-[#129FED]">
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-[10px] font-bold text-[#129FED]">
                               {proc.code}
                             </span>
-                            <span className="text-[11px] font-bold text-slate-400">
+                            <span className="text-[10px] font-bold text-slate-400">
                               × {proc.qty}
                             </span>
                           </div>
-                          <span className="text-[13px] font-bold text-slate-800">
+                          <span className="text-[12px] font-bold text-slate-800">
                             {proc.amount}
                           </span>
                         </div>
@@ -610,11 +609,10 @@ const BillingDashboard = () => {
                     <button
                       key={tab}
                       onClick={() => setActiveTableTab(tab)}
-                      className={`py-4 text-[13px] font-bold transition-all relative ${
-                        activeTableTab === tab
-                          ? "text-[#129FED] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-[#129FED]"
-                          : "text-slate-400 hover:text-slate-600"
-                      }`}
+                      className={`py-2 text-[12px] font-bold transition-all relative ${activeTableTab === tab
+                        ? "text-[#129FED] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-[#129FED]"
+                        : "text-slate-400 hover:text-slate-600"
+                        }`}
                     >
                       {tab}
                     </button>
@@ -638,31 +636,31 @@ const BillingDashboard = () => {
               </div>
 
               {activeTableTab === "Claims" ? (
-                <div className="p-6">
+                <div className="p-3">
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-lg bg-[#E3F2FD] flex items-center justify-center text-[#129FED]">
-                        <FileText size={16} />
+                      <div className="w-7 h-7 rounded-lg bg-[#E3F2FD] flex items-center justify-center text-[#129FED]">
+                        <FileText size={14} />
                       </div>
-                      <h3 className="text-[15px] font-bold text-slate-800">
+                      <h3 className="text-[14px] font-bold text-slate-800">
                         Recent Claims
                       </h3>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2">
                       <div className="relative">
-                        <select className="appearance-none bg-white px-4 py-2 pr-10 rounded-lg text-[11px] font-bold text-slate-500 border border-slate-200 outline-none cursor-pointer">
+                        <select className="appearance-none bg-white px-3 py-1.5 pr-8 rounded-lg text-[10px] font-bold text-slate-500 border border-slate-200 outline-none cursor-pointer">
                           <option>Filter by Status</option>
                         </select>
                         <ChevronDown
-                          size={14}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400"
+                          size={12}
+                          className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400"
                         />
                       </div>
                       <button
                         onClick={() => setIsNewClaimModalOpen(true)}
-                        className="bg-[#129FED] text-white px-4 py-2 rounded-lg text-[11px] font-bold hover:opacity-90 transition-all flex items-center gap-2 shadow-sm shadow-blue-100"
+                        className="bg-[#129FED] text-white px-3 py-1.5 rounded-lg text-[10px] font-bold hover:opacity-90 transition-all flex items-center gap-1.5 shadow-sm shadow-blue-100"
                       >
-                        <Plus size={14} /> New Claim
+                        <Plus size={12} /> New Claim
                       </button>
                     </div>
                   </div>
@@ -671,22 +669,22 @@ const BillingDashboard = () => {
                     <table className="w-full">
                       <thead>
                         <tr className="bg-[#F8FAFC]">
-                          <th className="px-6 py-4 text-left text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                          <th className="px-3 py-2 text-left text-[9px] font-bold text-slate-400 uppercase tracking-widest">
                             Claim ID
                           </th>
-                          <th className="px-6 py-4 text-left text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                          <th className="px-3 py-2 text-left text-[9px] font-bold text-slate-400 uppercase tracking-widest">
                             Patient
                           </th>
-                          <th className="px-6 py-4 text-left text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                          <th className="px-3 py-2 text-left text-[9px] font-bold text-slate-400 uppercase tracking-widest">
                             Payer
                           </th>
-                          <th className="px-6 py-4 text-left text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                          <th className="px-3 py-2 text-left text-[9px] font-bold text-slate-400 uppercase tracking-widest">
                             Amount
                           </th>
-                          <th className="px-6 py-4 text-left text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                          <th className="px-3 py-2 text-left text-[9px] font-bold text-slate-400 uppercase tracking-widest">
                             Status
                           </th>
-                          <th className="px-6 py-4 text-left text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                          <th className="px-3 py-2 text-left text-[9px] font-bold text-slate-400 uppercase tracking-widest">
                             Actions
                           </th>
                         </tr>
@@ -698,38 +696,37 @@ const BillingDashboard = () => {
                             onClick={() => openClaimModal(claim.id)}
                             className="hover:bg-[#E3F2FD]/20 transition-all cursor-pointer group"
                           >
-                            <td className="px-6 py-4 text-[11px] font-bold text-[#129FED]">
+                            <td className="px-3 py-2 text-[10px] font-bold text-[#129FED]">
                               {claim.id}
                             </td>
-                            <td className="px-6 py-4 text-[11px] font-bold text-slate-800">
+                            <td className="px-3 py-2 text-[10px] font-bold text-slate-800">
                               {claim.patient}
                             </td>
-                            <td className="px-6 py-4 text-[11px] font-bold text-slate-500">
+                            <td className="px-3 py-2 text-[10px] font-bold text-slate-500">
                               {claim.payer}
                             </td>
-                            <td className="px-6 py-4 text-[11px] font-bold text-slate-800">
+                            <td className="px-3 py-2 text-[10px] font-bold text-slate-800">
                               {claim.amount}
                             </td>
-                            <td className="px-6 py-4">
+                            <td className="px-3 py-2">
                               <span
-                                className={`text-[10px] font-bold px-3 py-1 rounded-full border ${
-                                  claim.status === "Submitted"
-                                    ? "bg-[#E3F2FD] text-[#129FED] border-[#129FED]/30"
-                                    : claim.status === "Paid"
-                                      ? "bg-[#E9F7EF] text-[#27AE60] border-[#27AE60]/30"
-                                      : claim.status === "Denied"
-                                        ? "bg-[#FEF2F2] text-[#EF4444] border-[#EF4444]/30"
-                                        : "bg-[#FFF7ED] text-[#F97316] border-[#F97316]/30"
-                                }`}
+                                className={`text-[9px] font-bold px-2 py-0.5 rounded-full border ${claim.status === "Submitted"
+                                  ? "bg-[#E3F2FD] text-[#129FED] border-[#129FED]/30"
+                                  : claim.status === "Paid"
+                                    ? "bg-[#E9F7EF] text-[#27AE60] border-[#27AE60]/30"
+                                    : claim.status === "Denied"
+                                      ? "bg-[#FEF2F2] text-[#EF4444] border-[#EF4444]/30"
+                                      : "bg-[#FFF7ED] text-[#F97316] border-[#F97316]/30"
+                                  }`}
                               >
                                 {claim.status}
                               </span>
                             </td>
-                            <td className="px-6 py-4">
+                            <td className="px-3 py-2">
                               {claim.status !== "Paid" && (
                                 <button
                                   onClick={(e) => handleMarkAsPaid(e, claim.id)}
-                                  className="text-[10px] font-bold text-[#27AE60] hover:underline"
+                                  className="text-[9px] font-bold text-[#27AE60] hover:underline"
                                 >
                                   Mark Paid
                                 </button>
@@ -742,38 +739,38 @@ const BillingDashboard = () => {
                   </div>
                 </div>
               ) : (
-                <div className="p-6">
+                <div className="p-3">
                   {/* Submissions Section */}
-                  <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-lg bg-[#E3F2FD] flex items-center justify-center text-[#129FED]">
-                        <Clock size={16} />
+                      <div className="w-7 h-7 rounded-lg bg-[#E3F2FD] flex items-center justify-center text-[#129FED]">
+                        <Clock size={14} />
                       </div>
-                      <h3 className="text-[15px] font-bold text-slate-800">
+                      <h3 className="text-[14px] font-bold text-slate-800">
                         Submission History
                       </h3>
                     </div>
-                    <button className="text-slate-500 hover:text-slate-800 text-[11px] font-bold flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200">
-                      <Activity size={14} className="rotate-90" /> Refresh
+                    <button className="text-slate-500 hover:text-slate-800 text-[10px] font-bold flex items-center gap-1.5 px-2 py-1 rounded-lg border border-slate-200">
+                      <Activity size={12} className="rotate-90" /> Refresh
                     </button>
                   </div>
                   <div className="overflow-x-auto no-scrollbar rounded-lg border border-slate-100">
                     <table className="w-full">
                       <thead>
                         <tr className="bg-[#F8FAFC]">
-                          <th className="px-6 py-4 text-left text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                          <th className="px-3 py-2 text-left text-[9px] font-bold text-slate-400 uppercase tracking-widest">
                             Claim ID
                           </th>
-                          <th className="px-6 py-4 text-left text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                          <th className="px-3 py-2 text-left text-[9px] font-bold text-slate-400 uppercase tracking-widest">
                             Patient
                           </th>
-                          <th className="px-6 py-4 text-left text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                          <th className="px-3 py-2 text-left text-[9px] font-bold text-slate-400 uppercase tracking-widest">
                             Payer
                           </th>
-                          <th className="px-6 py-4 text-left text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                          <th className="px-3 py-2 text-left text-[9px] font-bold text-slate-400 uppercase tracking-widest">
                             Submitted
                           </th>
-                          <th className="px-6 py-4 text-left text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                          <th className="px-3 py-2 text-left text-[9px] font-bold text-slate-400 uppercase tracking-widest">
                             Status
                           </th>
                         </tr>
@@ -785,25 +782,24 @@ const BillingDashboard = () => {
                             onClick={() => openClaimModal(sub.id)}
                             className="hover:bg-[#E3F2FD]/20 transition-all cursor-pointer"
                           >
-                            <td className="px-6 py-4 text-[11px] font-bold text-[#129FED]">
+                            <td className="px-3 py-2 text-[10px] font-bold text-[#129FED]">
                               {sub.id}
                             </td>
-                            <td className="px-6 py-4 text-[11px] font-bold text-slate-800">
+                            <td className="px-3 py-2 text-[10px] font-bold text-slate-800">
                               {sub.patient}
                             </td>
-                            <td className="px-6 py-4 text-[11px] font-bold text-slate-500">
+                            <td className="px-3 py-2 text-[10px] font-bold text-slate-500">
                               {sub.payer}
                             </td>
-                            <td className="px-6 py-4 text-[11px] font-bold text-slate-500">
+                            <td className="px-3 py-2 text-[10px] font-bold text-slate-500">
                               {sub.submitted}
                             </td>
-                            <td className="px-6 py-4">
+                            <td className="px-3 py-2">
                               <span
-                                className={`text-[10px] font-bold px-3 py-1 rounded-full border ${
-                                  sub.status === "Accepted"
-                                    ? "bg-[#E9F7EF] text-[#27AE60] border-[#27AE60]/30"
-                                    : "bg-[#FEF2F2] text-[#EF4444] border-[#EF4444]/30"
-                                }`}
+                                className={`text-[9px] font-bold px-2 py-0.5 rounded-full border ${sub.status === "Accepted"
+                                  ? "bg-[#E9F7EF] text-[#27AE60] border-[#27AE60]/30"
+                                  : "bg-[#FEF2F2] text-[#EF4444] border-[#EF4444]/30"
+                                  }`}
                               >
                                 {sub.status}
                               </span>
@@ -819,15 +815,15 @@ const BillingDashboard = () => {
           </div>
 
           {/* RIGHT COLUMN (2/5) */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-2 space-y-4">
             {/* Revenue Trend Area */}
             <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col hover:shadow-md transition-all">
-              <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
+              <div className="px-4 py-2 border-b border-slate-100 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-[#E3F2FD] flex items-center justify-center text-[#129FED]">
-                    <TrendingUp size={16} />
+                  <div className="w-7 h-7 rounded-lg bg-[#E3F2FD] flex items-center justify-center text-[#129FED]">
+                    <TrendingUp size={14} />
                   </div>
-                  <h3 className="text-[15px] font-bold text-slate-800">
+                  <h3 className="text-[13px] font-bold text-slate-800">
                     Revenue Trend
                   </h3>
                 </div>
@@ -836,37 +832,37 @@ const BillingDashboard = () => {
                 </div>
               </div>
 
-              <div className="p-6">
-                <div className="grid grid-cols-2 gap-4 mb-8">
-                  <div className="p-4 rounded-lg border border-slate-100 bg-white relative">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="w-10 h-10 rounded-lg bg-[#E9F7EF] flex items-center justify-center text-[#27AE60]">
-                        <DollarSign size={20} />
+              <div className="p-4">
+                <div className="grid grid-cols-2 gap-3 mb-6">
+                  <div className="p-2.5 rounded-lg border border-slate-100 bg-white relative">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="w-8 h-8 rounded-lg bg-[#E9F7EF] flex items-center justify-center text-[#27AE60]">
+                        <DollarSign size={16} />
                       </div>
-                      <span className="text-[10px] font-bold text-[#27AE60] bg-[#E9F7EF] px-2 py-0.5 rounded-lg border border-[#27AE60]/20">
+                      <span className="text-[9px] font-bold text-[#27AE60] bg-[#E9F7EF] px-1.5 py-0.5 rounded-lg border border-[#27AE60]/20">
                         {revenueTrend.totalTrend}
                       </span>
                     </div>
-                    <h4 className="text-2xl font-bold text-slate-800 leading-none">
+                    <h4 className="text-xl font-bold text-slate-800 leading-none">
                       {revenueTrend.totalRevenue}
                     </h4>
-                    <p className="text-[10px] font-bold text-slate-400 mt-2 uppercase">
+                    <p className="text-[9px] font-bold text-slate-400 mt-1.5 uppercase">
                       Total Revenue
                     </p>
                   </div>
-                  <div className="p-4 rounded-lg border border-slate-100 bg-white relative">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="w-10 h-10 rounded-lg bg-[#FFF7ED] flex items-center justify-center text-[#F97316]">
-                        <Clock3 size={20} />
+                  <div className="p-2.5 rounded-lg border border-slate-100 bg-white relative">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="w-8 h-8 rounded-lg bg-[#FFF7ED] flex items-center justify-center text-[#F97316]">
+                        <Clock3 size={16} />
                       </div>
-                      <span className="text-[10px] font-bold text-[#F97316] bg-[#FFF7ED] px-2 py-0.5 rounded-lg border border-[#F97316]/20">
+                      <span className="text-[9px] font-bold text-[#F97316] bg-[#FFF7ED] px-1.5 py-0.5 rounded-lg border border-[#F97316]/20">
                         {revenueTrend.outstandingTrend}
                       </span>
                     </div>
-                    <h4 className="text-2xl font-bold text-slate-800 leading-none">
+                    <h4 className="text-xl font-bold text-slate-800 leading-none">
                       {revenueTrend.outstanding}
                     </h4>
-                    <p className="text-[10px] font-bold text-slate-400 mt-2 uppercase">
+                    <p className="text-[9px] font-bold text-slate-400 mt-1.5 uppercase">
                       Outstanding
                     </p>
                   </div>
@@ -898,7 +894,7 @@ const BillingDashboard = () => {
                     </div>
                   </div>
 
-                  <div className="h-44 w-full relative group/chart mt-4">
+                  <div className="h-36 w-full relative group/chart mt-3">
                     <svg
                       viewBox="0 0 100 40"
                       className="w-full h-full overflow-visible"
@@ -996,7 +992,7 @@ const BillingDashboard = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-4 px-6 pb-6 mt-10">
+              <div className="grid grid-cols-3 gap-3 px-4 pb-4 mt-6">
                 {[
                   { label: "Submitted Today", value: "14", color: "green" },
                   { label: "Pending Review", value: "12", color: "orange" },
@@ -1005,14 +1001,14 @@ const BillingDashboard = () => {
                   <div
                     key={idx}
                     onClick={() => handleStatClick(item.label)}
-                    className={`p-4 rounded-lg flex flex-col items-center justify-center border cursor-pointer hover:shadow-sm transition-all ${item.color === "green" ? "bg-[#E9F7EF] border-[#27AE60]/10 hover:border-[#27AE60]/30" : item.color === "orange" ? "bg-[#FFF7ED] border-[#F97316]/10 hover:border-[#F97316]/30" : "bg-[#FEF2F2] border-[#EF4444]/10 hover:border-[#EF4444]/30"}`}
+                    className={`p-2.5 rounded-lg flex flex-col items-center justify-center border cursor-pointer hover:shadow-sm transition-all ${item.color === "green" ? "bg-[#E9F7EF] border-[#27AE60]/10 hover:border-[#27AE60]/30" : item.color === "orange" ? "bg-[#FFF7ED] border-[#F97316]/10 hover:border-[#F97316]/30" : "bg-[#FEF2F2] border-[#EF4444]/10 hover:border-[#EF4444]/30"}`}
                   >
                     <span
-                      className={`text-xl font-bold ${item.color === "green" ? "text-[#27AE60]" : item.color === "orange" ? "text-[#F97316]" : "text-[#EF4444]"}`}
+                      className={`text-lg font-bold ${item.color === "green" ? "text-[#27AE60]" : item.color === "orange" ? "text-[#F97316]" : "text-[#EF4444]"}`}
                     >
                       {item.value}
                     </span>
-                    <span className="text-[9px] font-bold text-slate-500 uppercase mt-1 text-center leading-tight">
+                    <span className="text-[8px] font-bold text-slate-500 uppercase mt-0.5 text-center leading-tight">
                       {item.label}
                     </span>
                   </div>
@@ -1021,13 +1017,13 @@ const BillingDashboard = () => {
             </div>
 
             {/* Claims Status Breakdown */}
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 hover:shadow-md transition-all">
-              <div className="flex items-center justify-between mb-8">
+            <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 hover:shadow-md transition-all">
+              <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-[#E3F2FD] flex items-center justify-center text-[#129FED]">
-                    <Activity size={16} />
+                  <div className="w-7 h-7 rounded-lg bg-[#E3F2FD] flex items-center justify-center text-[#129FED]">
+                    <Activity size={14} />
                   </div>
-                  <h3 className="text-[15px] font-bold text-slate-800">
+                  <h3 className="text-[13px] font-bold text-slate-800">
                     Claims Status Breakdown
                   </h3>
                 </div>
@@ -1070,7 +1066,7 @@ const BillingDashboard = () => {
               </div>
 
               <div className="flex items-center justify-around">
-                <div className="relative w-44 h-44">
+                <div className="relative w-32 h-32">
                   <svg
                     viewBox="0 0 100 100"
                     className="w-full h-full -rotate-90"
@@ -1125,10 +1121,10 @@ const BillingDashboard = () => {
                     />
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <span className="text-[11px] font-bold text-slate-700">
+                    <span className="text-[10px] font-bold text-slate-700">
                       Pending : 18
                     </span>
-                    <Activity size={14} className="text-[#129FED] mt-1" />
+                    <Activity size={12} className="text-[#129FED] mt-0.5" />
                   </div>
                 </div>
 

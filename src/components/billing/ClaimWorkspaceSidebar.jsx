@@ -7,150 +7,103 @@ import {
   ShieldCheck,
   CreditCard,
   DollarSign,
+  TrendingUp,
+  Clock,
 } from "lucide-react";
 import { billingData } from "../../data/billingData";
+
+const SidebarSectionHeader = ({ icon: Icon, title }) => (
+  <div className="flex items-center gap-2 mb-2.5 px-1">
+    <Icon size={12} className="text-slate-400 stroke-[2.5]" />
+    <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.05em]">
+      {title}
+    </h3>
+  </div>
+);
+
+const ValueRow = ({ label, value, isLast }) => (
+  <div className={`flex justify-between items-center py-2 ${!isLast ? "border-b border-slate-50" : ""}`}>
+    <span className="text-[10px] font-medium text-slate-400">
+      {label}
+    </span>
+    <span className="text-[11px] font-bold text-slate-700 tracking-tight">
+      {value}
+    </span>
+  </div>
+);
 
 const ClaimWorkspaceSidebar = () => {
   const { patientSnapshot } = billingData;
 
   return (
-    <div className="w-[280px] border-r border-slate-100 flex flex-col bg-white h-full overflow-y-auto no-scrollbar">
-      <div className="p-6 space-y-8">
+    <div className="w-[260px] border-r border-slate-100 flex flex-col bg-white h-full overflow-y-auto no-scrollbar antialiased">
+      <div className="p-5 space-y-7">
         {/* Claim Summary */}
-        <section className="space-y-4">
-          <div className="flex items-center gap-2.5 text-blue-600">
-            <div className="w-6 h-6 rounded-lg bg-blue-50 flex items-center justify-center">
-              <FileText size={14} className="stroke-[2.5]" />
+        <section>
+          <SidebarSectionHeader icon={TrendingUp} title="Financials" />
+          <div className="bg-white p-4 rounded-lg border border-slate-100 shadow-[0_2px_12px_rgba(0,0,0,0.03)] transition-all hover:shadow-[0_4px_20px_rgba(0,0,0,0.05)]">
+            <div className="mb-3">
+              <span className="text-[9px] font-bold text-blue-500 uppercase tracking-widest">Status</span>
+              <div className="flex items-center gap-2 mt-0.5">
+                <div className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                <span className="text-[12px] font-heavy text-slate-800 uppercase tracking-tighter italic">
+                  {patientSnapshot.summary.status}
+                </span>
+              </div>
             </div>
-            <h3 className="text-[13px] font-bold text-slate-800 tracking-tight">
-              Claim Summary
-            </h3>
-          </div>
 
-          <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm space-y-4">
-            <div className="flex justify-between items-baseline">
-              <span className="text-[11px] font-bold text-slate-400">
-                Claim ID
-              </span>
-              <span className="text-[14px] font-extrabold text-slate-800">
-                $61,000
-              </span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-[11px] font-bold text-slate-400">
-                Status
-              </span>
-              <span className="px-2.5 py-1 rounded-lg bg-slate-100 text-[10px] font-bold text-slate-500 uppercase tracking-tighter border border-slate-200 shadow-sm">
-                {patientSnapshot.summary.status}
-              </span>
-            </div>
-            <div className="h-px bg-slate-50 my-1" />
-            <div className="flex justify-between items-baseline pt-1">
-              <span className="text-[11px] font-bold text-slate-400">
-                Total Charge
-              </span>
-              <span className="text-[14px] font-extrabold text-slate-800">
-                $350.00
-              </span>
-            </div>
-            <div className="flex justify-between items-baseline">
-              <span className="text-[11px] font-bold text-slate-400">Paid</span>
-              <span className="text-[14px] font-extrabold text-slate-800">
-                $0.00
-              </span>
-            </div>
-            <div className="flex justify-between items-baseline">
-              <span className="text-[11px] font-bold text-slate-400">
-                Patient Resp
-              </span>
-              <span className="text-[14px] font-extrabold text-slate-800">
-                $0.00
-              </span>
+            <div className="space-y-0.5">
+              <ValueRow label="Total Charge" value="$350.00" />
+              <ValueRow label="Patient Resp" value="$0.00" />
+              <ValueRow label="Balance" value="$350.00" isLast />
             </div>
           </div>
         </section>
 
-        {/* Patient Info */}
-        <section className="space-y-4">
-          <div className="flex items-center gap-2.5 text-blue-600">
-            <div className="w-6 h-6 rounded-lg bg-blue-50 flex items-center justify-center">
-              <User size={14} className="stroke-[2.5]" />
-            </div>
-            <h3 className="text-[13px] font-bold text-slate-800 tracking-tight">
-              Patient Info
-            </h3>
-          </div>
-
-          <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm">
-            <div className="flex items-center gap-3 mb-5 pb-5 border-b border-slate-50">
-              <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center border border-slate-200">
-                <User size={20} className="text-slate-400" />
+        {/* Patient Overview */}
+        <section>
+          <SidebarSectionHeader icon={User} title="Patient" />
+          <div className="bg-white p-4 rounded-lg border border-slate-100 shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center border border-slate-100">
+                <User size={18} className="text-slate-300" />
               </div>
-              <div className="flex flex-col">
-                <span className="text-[14px] font-extrabold text-slate-800 leading-tight">
+              <div className="flex flex-col min-w-0">
+                <span className="text-[13px] font-bold text-slate-800 leading-none truncate">
                   {patientSnapshot.name}
                 </span>
-                <span className="text-[10px] font-bold text-slate-400 mt-0.5 tracking-tight">
+                <span className="text-[10px] font-medium text-slate-400 mt-1.5 uppercase tracking-wider">
                   {patientSnapshot.id}
                 </span>
               </div>
             </div>
 
-            <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <span className="text-[11px] font-bold text-slate-400">
-                  DOB
-                </span>
-                <span className="text-[11px] font-extrabold text-slate-800">
-                  {patientSnapshot.dob}
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-[11px] font-bold text-slate-400">
-                  Payer
-                </span>
-                <span className="text-[11px] font-extrabold text-slate-800">
-                  $0.00
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-[11px] font-bold text-slate-400">
-                  Member ID
-                </span>
-                <span className="text-[11px] font-extrabold text-slate-800 uppercase tracking-tighter">
-                  {patientSnapshot.memberId}
-                </span>
-              </div>
+            <div className="space-y-0.5">
+              <ValueRow label="DOB" value={patientSnapshot.dob} />
+              <ValueRow label="Member ID" value={patientSnapshot.memberId} isLast />
             </div>
           </div>
         </section>
 
-        {/* History & Audit */}
-        <section className="space-y-4">
-          <div className="flex items-center gap-2.5 text-blue-600">
-            <div className="w-6 h-6 rounded-lg bg-blue-50 flex items-center justify-center">
-              <History size={14} className="stroke-[2.5]" />
-            </div>
-            <h3 className="text-[13px] font-bold text-slate-800 tracking-tight">
-              History & Audit
-            </h3>
-          </div>
-          <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold text-slate-800">
-                Created —
-              </span>
-              <span className="text-[11px] font-bold text-slate-400">
-                Just now
-              </span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold text-slate-800">
-                Last Modified —
-              </span>
-              <span className="text-[11px] font-bold text-slate-400">
-                Just now
-              </span>
+        {/* Timeline */}
+        <section>
+          <SidebarSectionHeader icon={Clock} title="Timeline" />
+          <div className="bg-white p-4 rounded-lg border border-slate-100 shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+            <div className="relative pl-4 space-y-4 before:absolute before:left-0 before:top-2 before:bottom-2 before:w-px before:bg-slate-100">
+              <div className="relative">
+                <div className="absolute -left-[18.5px] top-1.5 w-2 h-2 rounded-full bg-blue-500 border-2 border-white shadow-sm" />
+                <div className="flex flex-col">
+                  <span className="text-[11px] font-bold text-slate-700 leading-none">Created</span>
+                  <span className="text-[9px] font-medium text-slate-400 mt-1 uppercase">Today, 10:45 AM</span>
+                </div>
+              </div>
+              <div className="relative">
+                <div className="absolute -left-[18.5px] top-1.5 w-2 h-2 rounded-full bg-slate-200 border-2 border-white shadow-sm" />
+                <div className="flex flex-col">
+                  <span className="text-[11px] font-bold text-slate-700 leading-none">Last Edit</span>
+                  <span className="text-[9px] font-medium text-slate-400 mt-1 uppercase">2 minutes ago</span>
+                </div>
+              </div>
             </div>
           </div>
         </section>
