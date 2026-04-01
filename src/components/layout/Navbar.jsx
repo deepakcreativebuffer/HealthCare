@@ -54,7 +54,7 @@ const Navbar = ({ activeTab, onTabChange }) => {
     : { name: "Sarah Mitchell", email: "sarah.mitchell@oasisnotes.com" };
 
   return (
-    <nav className="bg-white border-b border-gray-100 px-4 sm:px-6 py-3 flex items-center justify-between">
+    <nav className="bg-white border-b border-gray-100 px-4 sm:px-6 py-1.5 flex items-center justify-between">
       <div className="flex items-center gap-4 lg:gap-8 shrink-0">
         {/* Logo */}
         <div
@@ -62,8 +62,8 @@ const Navbar = ({ activeTab, onTabChange }) => {
           onClick={() => onTabChange("Dashboard")}
         >
           <Link to="/" className="flex items-center space-x-2 justify-center">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold" />
-            <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">
+            <div className="w-7 h-7 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold" />
+            <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">
               HealthCare
             </span>
           </Link>

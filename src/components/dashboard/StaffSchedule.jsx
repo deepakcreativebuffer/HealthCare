@@ -39,11 +39,11 @@ const StaffSchedule = ({ onViewAll }) => {
           schedule?.map((shift, idx) => (
             <div
               key={idx}
-              className="bg-white border border-[#E2E8F0] rounded-[10px] px-3 py-3 flex items-center gap-3 hover:shadow-sm transition-all group/shift cursor-pointer relative overflow-hidden"
+              className="bg-white border border-[#E2E8F0] rounded-[10px] px-2.5 py-1.5 flex items-center gap-2.5 hover:shadow-sm transition-all group/shift cursor-pointer relative overflow-hidden"
             >
               {/* Left Icon square */}
               <div
-                className={`w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0 transition-colors ${
+                className={`w-8 h-8 rounded-[8px] flex items-center justify-center shrink-0 transition-colors ${
                   shift.color === "blue"
                     ? "bg-[#DEF3FF] text-[#129FED]"
                     : shift.color === "green"
@@ -51,13 +51,13 @@ const StaffSchedule = ({ onViewAll }) => {
                       : "bg-[#FFF4E5] text-[#FF9800]"
                 }`}
               >
-                <CalendarRange size={18} />
+                <CalendarRange size={16} />
               </div>
 
               <div className="flex-1 flex items-center justify-between">
                 <div>
                   <div className="flex items-baseline gap-2">
-                    <span className="text-[18px] font-bold text-slate-800 leading-none">
+                    <span className="text-[16px] font-bold text-slate-800 leading-none">
                       {shift.count}
                     </span>
                   </div>

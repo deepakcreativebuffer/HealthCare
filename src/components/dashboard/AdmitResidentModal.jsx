@@ -45,32 +45,32 @@ const AdmitResidentModal = ({ isOpen, onClose, onResidentAdmitted }) => {
         onClick={onClose}
       />
 
-      <div className="bg-white rounded-[24px] shadow-2xl w-full max-w-lg relative z-10 overflow-hidden animate-in zoom-in-95 duration-200">
+      <div className="bg-white rounded-[12px] shadow-2xl w-full max-w-lg relative z-10 overflow-hidden animate-in zoom-in-95 duration-200">
         {/* Header */}
-        <div className="px-8 py-6 border-b border-slate-100 flex items-center justify-between bg-white sticky top-0">
+        <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-white sticky top-0">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
-              <User size={20} />
+            <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+              <User size={16} />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-slate-800">
+              <h2 className="text-lg font-bold text-slate-800">
                 Admit New Resident
               </h2>
-              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">
                 Register a new profile
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="w-10 h-10 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 transition-colors"
+            className="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 transition-colors"
           >
-            <X size={20} />
+            <X size={18} />
           </button>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-8 space-y-6">
+        <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div className="space-y-4">
             <div className="space-y-1.5">
               <label className="text-[11px] font-bold text-slate-500 uppercase tracking-tight ml-1">
@@ -94,7 +94,7 @@ const AdmitResidentModal = ({ isOpen, onClose, onResidentAdmitted }) => {
                   Gender
                 </label>
                 <select
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm focus:ring-4 focus:ring-blue-100 focus:border-blue-600 outline-none transition-all"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-4 focus:ring-blue-100 focus:border-blue-600 outline-none transition-all"
                   value={formData.gender}
                   onChange={(e) =>
                     setFormData({ ...formData, gender: e.target.value })
@@ -112,7 +112,7 @@ const AdmitResidentModal = ({ isOpen, onClose, onResidentAdmitted }) => {
                 <input
                   required
                   type="date"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm focus:ring-4 focus:ring-blue-100 focus:border-blue-600 outline-none transition-all"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-4 focus:ring-blue-100 focus:border-blue-600 outline-none transition-all"
                   value={formData.admissionDate}
                   onChange={(e) =>
                     setFormData({ ...formData, admissionDate: e.target.value })
@@ -129,7 +129,7 @@ const AdmitResidentModal = ({ isOpen, onClose, onResidentAdmitted }) => {
                 <input
                   type="text"
                   placeholder="204A"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm focus:ring-4 focus:ring-blue-100 focus:border-blue-600 outline-none transition-all"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-4 focus:ring-blue-100 focus:border-blue-600 outline-none transition-all"
                   value={formData.room}
                   onChange={(e) =>
                     setFormData({ ...formData, room: e.target.value })
@@ -143,7 +143,7 @@ const AdmitResidentModal = ({ isOpen, onClose, onResidentAdmitted }) => {
                 <input
                   type="text"
                   placeholder="Blue Cross"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm focus:ring-4 focus:ring-blue-100 focus:border-blue-600 outline-none transition-all"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-4 focus:ring-blue-100 focus:border-blue-600 outline-none transition-all"
                   value={formData.insurance}
                   onChange={(e) =>
                     setFormData({ ...formData, insurance: e.target.value })
@@ -157,14 +157,14 @@ const AdmitResidentModal = ({ isOpen, onClose, onResidentAdmitted }) => {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 bg-slate-100 text-slate-600 font-bold py-3.5 rounded-lg hover:bg-slate-200 transition-all text-sm"
+              className="flex-1 bg-slate-100 text-slate-600 font-bold py-2.5 rounded-lg hover:bg-slate-200 transition-all text-sm"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 bg-blue-600 text-white font-bold py-3.5 rounded-lg hover:bg-blue-700 transition-all text-sm shadow-lg shadow-blue-200 disabled:opacity-70 flex items-center justify-center gap-2"
+              className="flex-1 bg-blue-600 text-white font-bold py-2.5 rounded-lg hover:bg-blue-700 transition-all text-sm shadow-lg shadow-blue-200 disabled:opacity-70 flex items-center justify-center gap-2"
             >
               {loading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />

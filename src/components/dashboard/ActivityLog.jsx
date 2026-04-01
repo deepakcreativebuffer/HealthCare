@@ -31,11 +31,11 @@ const ActivityLog = ({ onViewAll }) => {
           logs.map((log, idx) => (
             <div
               key={idx}
-              className="flex items-center gap-3 p-2 rounded-[10px] hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-0 group cursor-pointer"
+              className="flex items-center gap-2.5 p-1 rounded-[10px] hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-0 group cursor-pointer relative"
             >
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-0.5">
-                  <span className="text-[13px] font-bold text-slate-700 tracking-tight">
+                  <span className="text-[12px] font-bold text-slate-700 tracking-tight leading-none">
                     {log.action}
                   </span>
                   <span
@@ -52,15 +52,15 @@ const ActivityLog = ({ onViewAll }) => {
                     {log.status}
                   </span>
                 </div>
-                <p className="text-[11px] font-bold text-slate-400">
+                <p className="text-[10px] font-bold text-slate-400 mt-0.5 leading-none">
                   Action by{" "}
-                  <span className="text-slate-500 font-bold ml-1">
+                  <span className="text-slate-500 font-bold ml-1 uppercase text-[9px]">
                     • {log.user}
                   </span>
                 </p>
               </div>
 
-              <div className="text-[11px] text-slate-400 font-bold whitespace-nowrap">
+              <div className="text-[10px] text-slate-400 font-bold whitespace-nowrap">
                 {log.time}
               </div>
             </div>

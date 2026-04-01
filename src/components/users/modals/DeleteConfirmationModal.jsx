@@ -18,7 +18,7 @@ const DeleteConfirmationModal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md animate-in fade-in duration-500">
+    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-md animate-in fade-in duration-500">
       <div className="bg-white w-full max-w-sm rounded-[40px] shadow-[0_32px_64px_-12px_rgba(239,68,68,0.25)] overflow-hidden border border-red-100 animate-in zoom-in-95 duration-300">
         {/* Warning Banner */}
         <div className="h-2 bg-gradient-to-r from-red-400 via-red-500 to-red-400" />
@@ -33,11 +33,11 @@ const DeleteConfirmationModal = ({
             </div>
           </div>
 
-          <h3 className="text-2xl font-black text-slate-800 tracking-tighter mb-3 uppercase italic">
+          <h3 className="text-2xl font-black text-gray-800 tracking-tighter mb-3 uppercase italic">
             {title || "Confirm Deletion"}
           </h3>
 
-          <p className="text-[14px] font-bold text-slate-400 leading-relaxed uppercase tracking-widest px-4">
+          <p className="text-[14px] font-bold text-gray-400 leading-relaxed uppercase tracking-widest px-4">
             {message ||
               `Are you sure you want to permanently delete this user? This action cannot be reversed.`}
           </p>
@@ -54,7 +54,7 @@ const DeleteConfirmationModal = ({
           )}
         </div>
 
-        <div className="px-10 py-8 bg-slate-50/50 flex flex-col gap-3">
+        <div className="px-10 py-8 bg-gray-50/50 flex flex-col gap-3">
           <button
             onClick={() => {
               onConfirm();
@@ -67,7 +67,7 @@ const DeleteConfirmationModal = ({
 
           <button
             onClick={onClose}
-            className="w-full py-4 text-slate-400 font-bold hover:text-slate-800 rounded-xl transition-all uppercase tracking-widest text-[11px] font-mono"
+            className="w-full py-4 text-gray-400 font-bold hover:text-gray-800 rounded-xl transition-all uppercase tracking-widest text-[11px] font-mono"
           >
             Cancel and Go Back
           </button>

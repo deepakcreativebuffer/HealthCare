@@ -204,21 +204,21 @@ const DetailedStatsView = ({ title, onBack }) => {
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
         <div className="flex items-center gap-4">
           <button
             onClick={onBack}
-            className="p-2.5 rounded-lg bg-white border border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-blue-600 transition-all shadow-sm group"
+            className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-blue-600 transition-all shadow-sm group"
           >
             <ArrowLeft
-              size={20}
+              size={18}
               className="group-hover:-translate-x-1 transition-transform"
             />
           </button>
           <div>
-            <div className="flex items-center gap-2 mb-1">
-              <Icon size={18} className="text-blue-600" />
-              <h1 className="text-2xl font-bold text-slate-900">{title}</h1>
+            <div className="flex items-center gap-2 mb-0.5">
+              <Icon size={16} className="text-blue-600" />
+              <h1 className="text-xl font-bold text-slate-900">{title}</h1>
             </div>
           </div>
         </div>
@@ -235,7 +235,7 @@ const DetailedStatsView = ({ title, onBack }) => {
                 placeholder="Search records..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 w-full md:w-64 transition-all"
+                className="pl-10 pr-4 py-1.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 w-full md:w-64 transition-all"
               />
             </div>
           )}
@@ -320,7 +320,7 @@ const DetailedStatsView = ({ title, onBack }) => {
             title !== "Activity Log" && (
               <button
                 onClick={handleExport}
-                className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-100"
+                className="flex items-center gap-2 px-4 py-1.5 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-100"
               >
                 <Download size={18} />
                 <span className="hidden sm:inline">Export</span>
@@ -330,11 +330,11 @@ const DetailedStatsView = ({ title, onBack }) => {
       </div>
 
       {/* Content */}
-      <div className="bg-white rounded-[24px] border border-slate-200 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-[12px] border border-slate-200 shadow-sm overflow-hidden">
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center py-32">
-            <Loader2 className="w-12 h-12 text-blue-500 animate-spin mb-4" />
-            <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">
+          <div className="flex flex-col items-center justify-center py-20">
+            <Loader2 className="w-8 h-8 text-blue-500 animate-spin mb-3" />
+            <p className="text-slate-500 font-bold uppercase tracking-widest text-[10px]">
               Loading records...
             </p>
           </div>
@@ -356,55 +356,55 @@ const DetailedStatsView = ({ title, onBack }) => {
               <thead>
                 <tr className="bg-slate-50/50 border-b border-slate-100">
                   {title === "Special Notes" && (
-                    <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                    <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                       Status
                     </th>
                   )}
                   {title === "Activity Log" && (
                     <>
-                      <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                      <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                         Activity
                       </th>
-                      <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest text-center">
+                      <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">
                         Status
                       </th>
-                      <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                      <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                         Action By
                       </th>
-                      <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest text-right">
+                      <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-right">
                         Time
                       </th>
                     </>
                   )}
                   {title !== "Activity Log" && (
-                    <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                    <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                       Name
                     </th>
                   )}
                   {title === "Special Notes" && (
                     <>
-                      <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                      <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                         Note Content
                       </th>
-                      <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                      <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                         Update Date
                       </th>
                     </>
                   )}
                   {title === "Staff Schedule" && (
-                    <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                    <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                       Shift Details
                     </th>
                   )}
                   {title === "Total Appointments" && (
                     <>
-                      <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                      <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                         Contact Number
                       </th>
-                      <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                      <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                         Reason for Visit
                       </th>
-                      <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                      <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                         Date
                       </th>
                     </>
@@ -412,31 +412,31 @@ const DetailedStatsView = ({ title, onBack }) => {
                   {(title.includes("Resident") ||
                     title.includes("Employee")) && (
                     <>
-                      <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                      <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                         Email
                       </th>
-                      <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                      <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                         Phone Number
                       </th>
                     </>
                   )}
                   {title === "Total Employees" && (
-                    <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                    <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                       Role
                     </th>
                   )}
                   {(title === "Pending PTO" || title === "Sick Time") && (
-                    <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                    <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                       Dates
                     </th>
                   )}
                   {title === "Appointments Today" && (
-                    <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                    <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                       Time
                     </th>
                   )}
                   {title === "Claims Pending" && (
-                    <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                    <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                       Amount
                     </th>
                   )}
@@ -445,17 +445,17 @@ const DetailedStatsView = ({ title, onBack }) => {
                     title !== "Activity Log" && (
                       <>
                         {title !== "Special Notes" && (
-                          <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest text-center">
+                          <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">
                             Status
                           </th>
                         )}
-                        <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest text-right">
+                        <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-right">
                           Actions
                         </th>
                       </>
                     )}
                   {title === "Staff Schedule" && (
-                    <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest text-center">
+                    <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">
                       Shift Type
                     </th>
                   )}
@@ -468,7 +468,7 @@ const DetailedStatsView = ({ title, onBack }) => {
                     className="hover:bg-slate-50/50 transition-colors group"
                   >
                     {title === "Special Notes" && (
-                      <td className="px-6 py-4">
+                      <td className="px-3 py-2">
                         <span
                           className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest italic border ${
                             item.color === "red"
@@ -483,13 +483,13 @@ const DetailedStatsView = ({ title, onBack }) => {
                       </td>
                     )}
                     {title !== "Activity Log" && (
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-bold text-sm select-none">
+                      <td className="px-2 py-1.5">
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-bold text-[11px] select-none shrink-0">
                             {(item.name || item.patient || "U")[0]}
                           </div>
                           <div>
-                            <p className="text-[14px] font-bold text-slate-800">
+                            <p className="text-[12px] font-bold text-slate-800">
                               {title === "Special Notes"
                                 ? item.patient
                                 : item.name ||
@@ -504,12 +504,12 @@ const DetailedStatsView = ({ title, onBack }) => {
 
                     {title === "Activity Log" && (
                       <>
-                        <td className="px-6 py-4">
-                          <p className="text-[14px] font-bold text-slate-800">
+                        <td className="px-3 py-2">
+                          <p className="text-[12px] font-bold text-slate-800">
                             {item.name}
                           </p>
                         </td>
-                        <td className="px-6 py-4 text-center">
+                        <td className="px-3 py-2 text-center">
                           <span
                             className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border transition-all ${
                               item.statusColor === "emerald"
@@ -526,17 +526,17 @@ const DetailedStatsView = ({ title, onBack }) => {
                             {item.status}
                           </span>
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-3 py-2">
                           <div className="flex items-center gap-2">
                             <div className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-500">
                               {item.userName?.[0]}
                             </div>
-                            <p className="text-[13px] font-bold text-slate-600">
+                            <p className="text-[12px] font-bold text-slate-600">
                               {item.userName}
                             </p>
                           </div>
                         </td>
-                        <td className="px-6 py-4 text-right">
+                        <td className="px-3 py-2 text-right">
                           <p className="text-[12px] font-black text-slate-400 uppercase tracking-widest">
                             {item.time}
                           </p>
@@ -546,17 +546,17 @@ const DetailedStatsView = ({ title, onBack }) => {
 
                     {title === "Special Notes" && (
                       <>
-                        <td className="px-6 py-4">
-                          <p className="text-[13px] font-bold text-slate-600 line-clamp-1">
+                        <td className="px-3 py-2">
+                          <p className="text-[12px] font-bold text-slate-600 line-clamp-1">
                             {item.name}
                           </p>
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-3 py-2">
                           <div className="space-y-0.5">
                             <p className="text-[12px] font-black text-slate-600 uppercase tracking-widest leading-none italic">
                               {item.date}
                             </p>
-                            <p className="text-[11px] font-bold text-blue-600 tracking-wider bg-blue-50/50 px-2 py-0.5 rounded w-fit">
+                            <p className="text-[10px] font-bold text-blue-600 tracking-wider bg-blue-50/50 px-2 py-0.5 rounded w-fit">
                               {item.time}
                             </p>
                           </div>
@@ -565,12 +565,12 @@ const DetailedStatsView = ({ title, onBack }) => {
                     )}
 
                     {title === "Staff Schedule" && (
-                      <td className="px-6 py-4">
+                      <td className="px-3 py-2">
                         <div className="space-y-0.5">
-                          <p className="text-[13px] font-black text-slate-700 uppercase italic leading-none">
+                          <p className="text-[12px] font-black text-slate-700 uppercase italic leading-none">
                             {item.day}, {item.date}
                           </p>
-                          <p className="text-[11px] font-bold text-blue-600 tracking-wider bg-blue-50/50 px-2.5 py-1 rounded w-fit">
+                          <p className="text-[10px] font-bold text-blue-600 tracking-wider bg-blue-50/50 px-2.5 py-1 rounded w-fit">
                             {item.time}
                           </p>
                         </div>
@@ -579,13 +579,13 @@ const DetailedStatsView = ({ title, onBack }) => {
 
                     {title === "Total Appointments" && (
                       <>
-                        <td className="px-6 py-4 text-[13px] font-medium text-slate-500">
+                        <td className="px-3 py-2 text-[12px] font-medium text-slate-500">
                           {item.phone || "N/A"}
                         </td>
-                        <td className="px-6 py-4 text-[13px] font-bold text-slate-600">
+                        <td className="px-3 py-2 text-[12px] font-bold text-slate-600">
                           {item.reason || item.type}
                         </td>
-                        <td className="px-6 py-4 text-[13px] font-medium text-blue-600 font-bold">
+                        <td className="px-3 py-2 text-[12px] font-medium text-blue-600 font-bold">
                           {item.date}
                         </td>
                       </>
@@ -594,36 +594,36 @@ const DetailedStatsView = ({ title, onBack }) => {
                     {(title.includes("Resident") ||
                       title.includes("Employee")) && (
                       <>
-                        <td className="px-6 py-4 text-[13px] font-medium text-slate-500">
+                        <td className="px-3 py-2 text-[12px] font-medium text-slate-500">
                           {item.email || item.contact || "N/A"}
                         </td>
-                        <td className="px-6 py-4 text-[13px] font-medium text-slate-500">
+                        <td className="px-3 py-2 text-[12px] font-medium text-slate-500">
                           {item.phone || "N/A"}
                         </td>
                       </>
                     )}
 
                     {title === "Total Employees" && (
-                      <td className="px-6 py-4">
-                        <span className="text-[13px] font-bold text-slate-600">
+                      <td className="px-3 py-2">
+                        <span className="text-[12px] font-bold text-slate-600">
                           {item.role || "Employee"}
                         </span>
                       </td>
                     )}
                     {(title === "Pending PTO" || title === "Sick Time") && (
-                      <td className="px-6 py-4 text-[13px] font-bold text-slate-600">
+                      <td className="px-3 py-2 text-[12px] font-bold text-slate-600">
                         {item.startDate
                           ? `${item.startDate} to ${item.endDate}`
                           : item.date}
                       </td>
                     )}
                     {title === "Appointments Today" && (
-                      <td className="px-6 py-4 text-[13px] font-bold text-slate-600">
+                      <td className="px-3 py-2 text-[12px] font-bold text-slate-600">
                         {item.time}
                       </td>
                     )}
                     {title === "Claims Pending" && (
-                      <td className="px-6 py-4 text-[13px] font-bold text-slate-800">
+                      <td className="px-3 py-2 text-[12px] font-bold text-slate-800">
                         {item.amount}
                       </td>
                     )}
@@ -632,7 +632,7 @@ const DetailedStatsView = ({ title, onBack }) => {
                       title !== "Staff Schedule" &&
                       title !== "Special Notes" &&
                       title !== "Activity Log" && (
-                        <td className="px-6 py-4 text-center">
+                        <td className="px-3 py-2 text-center">
                           <span
                             className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
                               item.status === "Active" ||
@@ -655,7 +655,7 @@ const DetailedStatsView = ({ title, onBack }) => {
                         </td>
                       )}
                     {title === "Staff Schedule" && (
-                      <td className="px-6 py-4 text-center">
+                      <td className="px-3 py-2 text-center">
                         <span className="px-3 py-1 bg-indigo-50 text-indigo-600 border border-indigo-100 rounded-full text-[10px] font-black uppercase tracking-widest italic">
                           {item.status}
                         </span>
@@ -664,7 +664,7 @@ const DetailedStatsView = ({ title, onBack }) => {
                     {title !== "Total Appointments" &&
                       title !== "Staff Schedule" &&
                       title !== "Activity Log" && (
-                        <td className="px-6 py-4 text-right">
+                        <td className="px-3 py-2 text-right">
                           <button
                             onClick={() => setSelectedDetail(item)}
                             className="p-2 rounded-lg text-slate-400 hover:bg-blue-50 hover:text-blue-600 transition-all border border-transparent hover:border-blue-100"
@@ -688,7 +688,7 @@ const DetailedStatsView = ({ title, onBack }) => {
             className="w-full max-w-md h-full bg-white shadow-2xl animate-in slide-in-from-right duration-300 p-8 flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold text-slate-800 uppercase tracking-tight italic">
                 Record Details
               </h2>
@@ -700,12 +700,12 @@ const DetailedStatsView = ({ title, onBack }) => {
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto space-y-8 pr-2 custom-scrollbar">
-              <div className="flex flex-col items-center text-center pb-8 border-b border-slate-100">
-                <div className="w-24 h-24 rounded-[32px] bg-blue-50 text-blue-600 flex items-center justify-center text-3xl font-black mb-4 shadow-inner">
+            <div className="flex-1 overflow-y-auto space-y-4 pr-2 custom-scrollbar">
+              <div className="flex flex-col items-center text-center pb-4 border-b border-slate-100">
+                <div className="w-16 h-16 rounded-[20px] bg-blue-50 text-blue-600 flex items-center justify-center text-2xl font-black mb-3 shadow-inner">
                   {(selectedDetail.name || "U")[0]}
                 </div>
-                <h3 className="text-2xl font-black text-slate-800 tracking-tighter uppercase italic">
+                <h3 className="text-xl font-black text-slate-800 tracking-tighter uppercase italic">
                   {selectedDetail.name ||
                     selectedDetail.residentName ||
                     selectedDetail.staffName}
@@ -750,7 +750,7 @@ const DetailedStatsView = ({ title, onBack }) => {
                 </div>
 
                 <div className="space-y-4">
-                  <h4 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.3em] italic">
+                  <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] italic">
                     Contact Information
                   </h4>
                   <div className="space-y-3">
@@ -836,7 +836,7 @@ const DetailedStatsView = ({ title, onBack }) => {
               )}
               <button
                 onClick={() => setSelectedDetail(null)}
-                className="w-full py-4 bg-slate-800 text-white font-black rounded-2xl tracking-[0.2em] uppercase text-[11px] hover:bg-slate-900 transition-all shadow-xl shadow-slate-100 active:scale-95"
+                className="w-full py-2 bg-slate-800 text-white font-black rounded-2xl tracking-[0.2em] uppercase text-[10px] hover:bg-slate-900 transition-all shadow-xl shadow-slate-100 active:scale-95"
               >
                 Close Details
               </button>

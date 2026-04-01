@@ -27,20 +27,20 @@ const EditUserModal = ({ isOpen, onClose, userData, onSave, onDelete }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
-      <div className="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden border border-slate-200 animate-in zoom-in-95 duration-200">
-        <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-in fade-in duration-300">
+      <div className="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden border border-gray-200 animate-in zoom-in-95 duration-200">
+        <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-[#E3F2FD] flex items-center justify-center text-[#129FED]">
+            <div className="w-8 h-8 rounded-lg bg-[#E3F2FD] flex items-center justify-center text-blue-600">
               <UserCheck size={18} />
             </div>
-            <h3 className="text-lg font-bold text-slate-800">
+            <h3 className="text-lg font-bold text-gray-800">
               Edit System User
             </h3>
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-slate-200/50 rounded-lg transition-all text-slate-400 hover:text-slate-600"
+            className="p-2 hover:bg-gray-200/50 rounded-lg transition-all text-gray-400 hover:text-gray-600"
           >
             <X size={20} />
           </button>
@@ -49,18 +49,18 @@ const EditUserModal = ({ isOpen, onClose, userData, onSave, onDelete }) => {
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-1.5">
-              <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider ml-1">
+              <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">
                 Full Name
               </label>
               <div className="relative group">
                 <User
                   size={16}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300"
                 />
                 <input
                   type="text"
                   required
-                  className="w-full pl-11 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold text-slate-700 outline-none focus:border-[#129FED] transition-all"
+                  className="flex h-8 w-full rounded-lg border border-gray-200 bg-gray-50/50 px-2 py-1 text-[13px] ring-offset-white placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 w-full pl-11 pr-4"
                   value={formData.name}
                   onChange={(e) =>
                     setFormData({ ...formData, name: e.target.value })
@@ -70,16 +70,16 @@ const EditUserModal = ({ isOpen, onClose, userData, onSave, onDelete }) => {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider ml-1">
+              <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">
                 Role / Permissions
               </label>
               <div className="relative group">
                 <Shield
                   size={16}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300"
                 />
                 <select
-                  className="w-full pl-11 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold text-slate-700 outline-none focus:border-[#129FED] transition-all appearance-none"
+                  className="flex h-8 w-full rounded-lg border border-gray-200 bg-gray-50/50 px-2 py-1 text-[13px] ring-offset-white placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 w-full pl-11 pr-4"
                   value={formData.role}
                   onChange={(e) =>
                     setFormData({ ...formData, role: e.target.value })
@@ -96,18 +96,18 @@ const EditUserModal = ({ isOpen, onClose, userData, onSave, onDelete }) => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-1.5">
-              <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider ml-1">
+              <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">
                 Email Address
               </label>
               <div className="relative group">
                 <Mail
                   size={16}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300"
                 />
                 <input
                   type="email"
                   required
-                  className="w-full pl-11 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold text-slate-700 outline-none focus:border-[#129FED] transition-all"
+                  className="flex h-8 w-full rounded-lg border border-gray-200 bg-gray-50/50 px-2 py-1 text-[13px] ring-offset-white placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 w-full pl-11 pr-4"
                   value={formData.email}
                   onChange={(e) =>
                     setFormData({ ...formData, email: e.target.value })
@@ -117,7 +117,7 @@ const EditUserModal = ({ isOpen, onClose, userData, onSave, onDelete }) => {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider ml-1">
+              <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">
                 Account Status
               </label>
               <div className="flex items-center gap-2 pt-1 font-mono tracking-widest text-[11px] uppercase">
@@ -128,8 +128,8 @@ const EditUserModal = ({ isOpen, onClose, userData, onSave, onDelete }) => {
                     onClick={() => setFormData({ ...formData, status })}
                     className={`flex-1 py-2 rounded-lg font-bold border transition-all ${
                       formData.status === status
-                        ? "bg-[#129FED] text-white border-[#129FED] shadow-lg shadow-blue-100 scale-105"
-                        : "bg-white text-slate-400 border-slate-200 hover:bg-slate-50"
+                        ? "bg-blue-600 text-white border-blue-600 shadow-lg shadow-blue-100 scale-105"
+                        : "bg-white text-gray-400 border-gray-200 hover:bg-gray-50"
                     }`}
                   >
                     {status}
@@ -166,13 +166,13 @@ const EditUserModal = ({ isOpen, onClose, userData, onSave, onDelete }) => {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-3.5 border border-slate-200 rounded-lg text-sm font-bold text-slate-500 hover:bg-slate-50 transition-all font-mono uppercase tracking-widest"
+              className="flex-1 px-4 py-3.5 border border-gray-200 rounded-lg text-sm font-bold text-gray-500 hover:bg-gray-50 transition-all font-mono uppercase tracking-widest"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="flex-1 px-4 py-3.5 bg-[#129FED] text-white rounded-lg text-sm font-bold shadow-lg shadow-blue-100 hover:bg-[#129FED]/90 transition-all flex items-center justify-center gap-2 font-mono uppercase tracking-widest"
+              className="flex-1 px-4 py-3.5 bg-blue-600 text-white rounded-lg text-sm font-bold shadow-lg shadow-blue-100 hover:bg-blue-600/90 transition-all flex items-center justify-center gap-2 font-mono uppercase tracking-widest"
             >
               <Save size={18} />
               Save Changes

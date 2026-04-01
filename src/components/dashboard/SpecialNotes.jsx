@@ -28,7 +28,7 @@ const SpecialNotes = ({ onViewAll }) => {
         {mockData.specialNotes?.map((note, idx) => (
           <div
             key={idx}
-            className="flex gap-3 p-2 rounded-[10px] hover:bg-gray-50 transition-colors cursor-pointer group relative border-b border-gray-100 last:border-0"
+            className="flex gap-2.5 p-1 rounded-[10px] hover:bg-gray-50 transition-colors cursor-pointer group relative border-b border-gray-100 last:border-0"
           >
             <div
               className={`w-2.5 h-2.5 rounded-full mt-2.5 shrink-0 ${
@@ -44,7 +44,7 @@ const SpecialNotes = ({ onViewAll }) => {
 
             <div className="flex-1">
               <div className="flex items-center justify-between">
-                <h4 className="text-[12px] font-bold text-slate-500 uppercase tracking-wide">
+                <h4 className="text-[11px] font-bold text-slate-500 uppercase tracking-tight">
                   {note.category}{" "}
                   <span className="text-slate-400 font-normal ml-1">—</span>{" "}
                   <span className="text-slate-800 normal-case font-bold ml-1">
@@ -55,7 +55,7 @@ const SpecialNotes = ({ onViewAll }) => {
                   {note.time}
                 </span>
               </div>
-              <p className="text-[12px] font-medium text-slate-500 line-clamp-1 mt-0.5 leading-relaxed opacity-80">
+              <p className="text-[11px] font-medium text-slate-500 line-clamp-1 mt-0.5 leading-none opacity-80">
                 {note.note}
               </p>
             </div>
