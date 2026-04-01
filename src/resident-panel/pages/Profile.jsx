@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import { useOutletContext } from "react-router-dom";
+import { api } from "../../data/api";
 import {
   Card,
   Input,
@@ -26,12 +27,47 @@ import {
 } from "lucide-react";
 
 const Profile = () => {
-  const { resident } = useOutletContext();
+  const { resident, refreshResident } = useOutletContext();
   const [twoFactor, setTwoFactor] = useState(true);
   const [profileImage, setProfileImage] = useState(null);
   const [companyLogo, setCompanyLogo] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
+
+  const [formData, setFormData] = useState({
+    firstName: resident?.name?.split(" ")[0] || "",
+    lastName: resident?.name?.split(" ").slice(1).join(" ") || "",
+    email: resident?.email || "",
+    gender: resident?.gender || "Female",
+    phone: resident?.phone || "(555) 555-0199",
+    city: "Dallas",
+    state: "TX",
+    zipCode: "75201"
+  });
+
+  React.useEffect(() => {
+    if (resident) {
+      setFormData(prev => ({
+        ...prev,
+        firstName: resident.name.split(" ")[0] || "",
+        lastName: resident.name.split(" ").slice(1).join(" ") || "",
+        email: resident.email || "",
+        gender: resident.gender || "Female",
+        phone: resident.phone || "(555) 555-0199"
+      }));
+    }
+  }, [resident]);
+
+  const handleSaveProfile = async () => {
+    await api.updateResident(resident.id, {
+      name: `${formData.firstName} ${formData.lastName}`.trim(),
+      email: formData.email,
+      gender: formData.gender,
+      phone: formData.phone
+    });
+    if (refreshResident) refreshResident();
+    setIsEditing(false);
+  };
 
   const profileInputRef = useRef(null);
   const logoInputRef = useRef(null);
@@ -58,12 +94,12 @@ const Profile = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">My Profile</h1>
-          <p className="text-gray-500 text-sm">
+          <h1 className="text-xl font-bold text-gray-900">My Profile</h1>
+          <p className="text-gray-500 text-[12px]">
             Manage your account settings, facilities, and subscription
           </p>
         </div>
@@ -72,15 +108,15 @@ const Profile = () => {
             <>
               <Button
                 variant="outline"
-                className="flex items-center gap-2 border-gray-200"
+                className="flex items-center gap-1.5 border-gray-200 h-9 text-[13px]"
                 onClick={() => setIsEditing(false)}
               >
                 <X className="w-4 h-4" /> Cancel
               </Button>
               <Button
                 variant="primary"
-                className="flex items-center gap-2 shadow-lg shadow-blue-200"
-                onClick={() => setIsEditing(false)}
+                className="flex items-center gap-1.5 shadow-lg shadow-blue-200 h-9 text-[13px]"
+                onClick={handleSaveProfile}
               >
                 <Check className="w-4 h-4" /> Save Changes
               </Button>
@@ -88,7 +124,7 @@ const Profile = () => {
           ) : (
             <Button
               variant="outline"
-              className="flex items-center gap-2 font-semibold"
+              className="flex items-center gap-1.5 font-semibold h-9 text-[13px]"
               onClick={() => setIsEditing(true)}
             >
               <Edit2 className="w-4 h-4" /> Edit Profile
@@ -99,8 +135,8 @@ const Profile = () => {
 
       {/* Profile Header Banner */}
       <Card className="p-0 overflow-hidden">
-        <div className="h-32 bg-gradient-to-r from-[#00AEEF] to-[#0072CE]" />
-        <div className="px-8 pb-8 flex flex-col md:flex-row md:items-end gap-6 -mt-12">
+        <div className="h-24 bg-gradient-to-r from-[#00AEEF] to-[#0072CE]" />
+        <div className="px-5 pb-4 flex flex-col md:flex-row md:items-end gap-4 -mt-10">
           <div className="relative">
             <input
               type="file"
@@ -109,7 +145,7 @@ const Profile = () => {
               className="hidden"
               accept="image/*"
             />
-            <div className="w-32 h-32 rounded-full border-4 border-white overflow-hidden bg-blue-600 flex items-center justify-center text-white text-4xl font-bold shadow-lg">
+            <div className="w-24 h-24 rounded-full border-4 border-white overflow-hidden bg-blue-600 flex items-center justify-center text-white text-3xl font-bold shadow-md">
               {profileImage ? (
                 <img
                   src={profileImage}
@@ -122,52 +158,53 @@ const Profile = () => {
             </div>
             <button
               onClick={() => profileInputRef.current.click()}
-              className="absolute bottom-1 right-1 p-2 bg-white rounded-full shadow-md border border-gray-100 hover:bg-gray-50 transition-colors"
+              className="absolute bottom-0.5 right-0.5 p-1.5 bg-white rounded-full shadow-sm border border-gray-100 hover:bg-gray-50 transition-colors"
             >
-              <Camera className="w-4 h-4 text-gray-500" />
+              <Camera className="w-3.5 h-3.5 text-gray-500" />
             </button>
           </div>
 
-          <div className="flex-1 pb-2">
-            <div className="flex items-center gap-3">
-              <h2 className="text-2xl font-bold text-gray-900">
+          <div className="flex-1 pb-1">
+            <div className="flex items-center gap-2">
+              <h2 className="text-xl font-bold text-gray-900">
                 {resident.name}
               </h2>
               <Badge
                 variant="primary"
-                className="bg-blue-100 text-blue-700 font-semibold px-3"
+                className="bg-blue-100 text-blue-700 font-semibold px-2 py-0 text-[10px]"
               >
                 Resident
               </Badge>
             </div>
-            <p className="text-gray-500 text-sm mt-1">{resident.email}</p>
+            <p className="text-gray-500 text-[12px] mt-0.5">{resident.email}</p>
           </div>
 
-          <div className="flex flex-col md:flex-row gap-4 md:gap-8 pb-2 text-sm text-gray-500 font-medium">
-            <div className="flex items-center gap-2">
-              <Calendar className="w-4 h-4" /> Joined Jan 15, 2025
+          <div className="flex flex-col md:flex-row gap-3 md:gap-6 pb-1 text-[12px] text-gray-500 font-medium">
+            <div className="flex items-center gap-1.5">
+              <Calendar className="w-3.5 h-3.5" /> Joined Jan 15, 2025
             </div>
-            <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4" /> Last login Mar 1, 2026 at 9:32 AM
+            <div className="flex items-center gap-1.5">
+              <Clock className="w-3.5 h-3.5" /> Last login Mar 1, 2026 at 9:32 AM
             </div>
           </div>
         </div>
       </Card>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
         {/* Left Column */}
-        <div className="lg:col-span-8 space-y-6">
+        <div className="lg:col-span-8 space-y-4">
           {/* Personal Information */}
-          <Card className="space-y-6">
-            <div className="flex items-center gap-2 pb-4 border-b border-gray-100">
-              <User className="w-5 h-5 text-blue-500" />
-              <h3 className="font-bold text-gray-900">Personal Information</h3>
+          <Card className="space-y-4 p-3">
+            <div className="flex items-center gap-2 pb-2 border-b border-gray-100 mb-2">
+              <User className="w-4 h-4 text-blue-500" />
+              <h3 className="font-bold text-gray-900 text-[14px]">Personal Information</h3>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <Input
                 label="First Name"
-                defaultValue={resident.name.split(" ")[0]}
+                value={formData.firstName}
+                onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
                 readOnly={!isEditing}
               />
               <Input
@@ -177,7 +214,8 @@ const Profile = () => {
               />
               <Input
                 label="Last Name"
-                defaultValue={resident.name.split(" ").slice(1).join(" ")}
+                value={formData.lastName}
+                onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
                 readOnly={!isEditing}
               />
             </div>
@@ -186,10 +224,11 @@ const Profile = () => {
               <Select
                 label="Gender"
                 options={[
-                  { value: "male", label: "Male" },
-                  { value: "female", label: "Female" },
+                  { value: "Male", label: "Male" },
+                  { value: "Female", label: "Female" },
                 ]}
-                defaultValue={resident.gender.toLowerCase()}
+                value={formData.gender}
+                onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
                 disabled={!isEditing}
               />
               <Select
@@ -206,12 +245,14 @@ const Profile = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Input
                 label="Phone"
-                defaultValue="(555) 555-0199"
+                value={formData.phone}
+                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                 readOnly={!isEditing}
               />
               <Input
                 label="Email"
-                defaultValue={resident.email}
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 readOnly={!isEditing}
               />
             </div>
@@ -222,18 +263,23 @@ const Profile = () => {
                 defaultValue="123 Healthcare Blvd"
                 readOnly={!isEditing}
               />
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <Input
                   label="City"
-                  defaultValue="Dallas"
+                  value={formData.city}
+                  onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                   readOnly={!isEditing}
                 />
-                <Input label="State" defaultValue="TX" readOnly={!isEditing} />
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Input
+                  label="State"
+                  value={formData.state}
+                  onChange={(e) => setFormData({ ...formData, state: e.target.value })}
+                  readOnly={!isEditing}
+                />
                 <Input
                   label="ZIP Code"
-                  defaultValue="75201"
+                  value={formData.zipCode}
+                  onChange={(e) => setFormData({ ...formData, zipCode: e.target.value })}
                   readOnly={!isEditing}
                 />
               </div>
@@ -247,11 +293,11 @@ const Profile = () => {
           </Card>
 
           {/* Insurance & Payer Information */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="space-y-4">
-              <div className="flex items-center gap-2 pb-4 border-b border-gray-100">
-                <Shield className="w-5 h-5 text-blue-500" />
-                <h3 className="font-bold text-gray-900">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Card className="space-y-3 p-3">
+              <div className="flex items-center gap-2 pb-2 border-b border-gray-100">
+                <Shield className="w-4 h-4 text-blue-500" />
+                <h3 className="font-bold text-gray-900 text-[14px]">
                   Insurance Information
                 </h3>
               </div>
@@ -266,10 +312,10 @@ const Profile = () => {
               />
             </Card>
 
-            <Card className="space-y-4">
-              <div className="flex items-center gap-2 pb-4 border-b border-gray-100">
-                <CreditCard className="w-5 h-5 text-blue-500" />
-                <h3 className="font-bold text-gray-900">Payer Information</h3>
+            <Card className="space-y-3 p-3">
+              <div className="flex items-center gap-2 pb-2 border-b border-gray-100">
+                <CreditCard className="w-4 h-4 text-blue-500" />
+                <h3 className="font-bold text-gray-900 text-[14px]">Payer Information</h3>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <Input
@@ -287,10 +333,10 @@ const Profile = () => {
           </div>
 
           {/* Policy Details */}
-          <Card className="space-y-6">
-            <div className="flex items-center gap-2 pb-4 border-b border-gray-100">
-              <FileText className="w-5 h-5 text-blue-500" />
-              <h3 className="font-bold text-gray-900">Policy Details</h3>
+          <Card className="space-y-4 p-3">
+            <div className="flex items-center gap-2 pb-2 border-b border-gray-100">
+              <FileText className="w-4 h-4 text-blue-500" />
+              <h3 className="font-bold text-gray-900 text-[14px]">Policy Details</h3>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <Input
@@ -317,14 +363,14 @@ const Profile = () => {
         </div>
 
         {/* Right Column */}
-        <div className="lg:col-span-4 space-y-6">
+        <div className="lg:col-span-4 space-y-4">
           {/* Company Info */}
-          <Card className="space-y-6">
-            <div className="flex items-center gap-2 pb-4 border-b border-gray-100">
-              <Building2 className="w-5 h-5 text-blue-500" />
-              <h3 className="font-bold text-gray-900">Company Info</h3>
+          <Card className="space-y-4 p-3">
+            <div className="flex items-center gap-2 pb-2 border-b border-gray-100">
+              <Building2 className="w-4 h-4 text-blue-500" />
+              <h3 className="font-bold text-gray-900 text-[14px]">Company Info</h3>
             </div>
-            <div className="flex flex-col items-center py-6 gap-4 bg-gray-50/50 rounded-lg border border-gray-100">
+            <div className="flex flex-col items-center py-4 gap-3 bg-gray-50/50 rounded-lg border border-gray-100">
               {/* Logo Display */}
               <input
                 type="file"
@@ -333,7 +379,7 @@ const Profile = () => {
                 className="hidden"
                 accept="image/*"
               />
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 px-4 py-4 bg-white border border-gray-200 rounded-lg">
                 {companyLogo ? (
                   <img
                     src={companyLogo}
@@ -363,7 +409,7 @@ const Profile = () => {
             </div>
             <Button
               variant="outline"
-              className="w-full text-gray-600 gap-2 h-11 bg-gray-50/50 border-gray-200"
+              className="w-full text-gray-600 gap-2 h-8 text-[13px] bg-gray-50/50 border-gray-200"
               onClick={() => logoInputRef.current.click()}
             >
               <Camera className="w-4 h-4" /> Change Logo
@@ -371,10 +417,10 @@ const Profile = () => {
           </Card>
 
           {/* Security */}
-          <Card className="space-y-6">
-            <div className="flex items-center gap-2 pb-4 border-b border-gray-100">
-              <Shield className="w-5 h-5 text-blue-500" />
-              <h3 className="font-bold text-gray-900">Security</h3>
+          <Card className="space-y-4 p-3">
+            <div className="flex items-center gap-2 pb-2 border-b border-gray-100">
+              <Shield className="w-4 h-4 text-blue-500" />
+              <h3 className="font-bold text-gray-900 text-[14px]">Security</h3>
             </div>
             <div className="space-y-4">
               <div>
@@ -391,7 +437,7 @@ const Profile = () => {
 
               <Button
                 variant="outline"
-                className="w-full text-gray-600 gap-2 h-11 bg-gray-50/50 border-gray-200"
+                className="w-full text-gray-600 gap-2 h-8 text-[13px] bg-gray-50/50 border-gray-200"
                 onClick={() => setShowPasswordModal(true)}
               >
                 <Lock className="w-4 h-4" /> Change Password
@@ -439,7 +485,10 @@ const Profile = () => {
             <Button
               variant="primary"
               className="flex-1 shadow-lg shadow-blue-200"
-              onClick={() => setShowPasswordModal(false)}
+              onClick={() => {
+                alert("Password updated successfully!");
+                setShowPasswordModal(false);
+              }}
             >
               Update Password
             </Button>

@@ -11,6 +11,8 @@ import {
 import ResidentLayout from "./resident-panel/layouts/ResidentLayout";
 import Dashboard from "./resident-panel/pages/Dashboard";
 import Profile from "./resident-panel/pages/Profile";
+import Intake from "./resident-panel/pages/Intake";
+import ProgressChart from "./resident-panel/pages/ProgressChart";
 import Navbar from "./components/layout/Navbar";
 import SubNav from "./components/layout/SubNav";
 import MedicalDashboard from "./components/dashboard/MedicalDashboard";
@@ -303,6 +305,8 @@ function App() {
         >
           <Route index element={<Dashboard />} />
           <Route path="profile" element={<Profile />} />
+          <Route path="intake" element={<Intake />} />
+          <Route path="progress-chart" element={<ProgressChart />} />
         </Route>
 
         {/* Catch all */}
