@@ -8,6 +8,7 @@ import {
   UserCheck,
   Trash2,
   AlertCircle,
+  ChevronDown,
 } from "lucide-react";
 
 const EditUserModal = ({ isOpen, onClose, userData, onSave, onDelete }) => {
@@ -27,40 +28,38 @@ const EditUserModal = ({ isOpen, onClose, userData, onSave, onDelete }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-in fade-in duration-300">
-      <div className="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden border border-gray-200 animate-in zoom-in-95 duration-200">
-        <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-[#E3F2FD] flex items-center justify-center text-blue-600">
-              <UserCheck size={18} />
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-[2px] animate-in fade-in duration-300 antialiased">
+      <div className="bg-white w-full max-w-md rounded-lg shadow-xl overflow-hidden border border-slate-100 animate-in zoom-in-95 duration-200">
+        <div className="px-5 py-3.5 border-b border-slate-50 flex items-center justify-between bg-white">
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-lg bg-blue-50 flex items-center justify-center text-[#129FED]">
+              <UserCheck size={14} strokeWidth={2.5} />
             </div>
-            <h3 className="text-lg font-bold text-gray-800">
-              Edit System User
-            </h3>
+            <h3 className="text-[14px] font-bold text-slate-800 uppercase tracking-tight">Modify Identity</h3>
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-200/50 rounded-lg transition-all text-gray-400 hover:text-gray-600"
+            className="p-1.5 hover:bg-slate-50 rounded-md transition-all text-slate-300 hover:text-slate-500"
           >
-            <X size={20} />
+            <X size={16} />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <form onSubmit={handleSubmit} className="p-5 space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             <div className="space-y-1.5">
-              <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">
+              <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-0.5">
                 Full Name
               </label>
               <div className="relative group">
                 <User
-                  size={16}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300"
+                  size={14}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#129FED] transition-colors"
                 />
                 <input
                   type="text"
                   required
-                  className="flex h-8 w-full rounded-lg border border-gray-200 bg-gray-50/50 px-2 py-1 text-[13px] ring-offset-white placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 w-full pl-11 pr-4"
+                  className="w-full pl-9 pr-3 py-2 bg-slate-50/50 border border-slate-100 rounded-lg text-[12px] font-bold text-slate-700 outline-none focus:bg-white focus:border-[#129FED]/30 transition-all"
                   value={formData.name}
                   onChange={(e) =>
                     setFormData({ ...formData, name: e.target.value })
@@ -70,16 +69,16 @@ const EditUserModal = ({ isOpen, onClose, userData, onSave, onDelete }) => {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">
-                Role / Permissions
+              <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-0.5">
+                Role Tier
               </label>
               <div className="relative group">
                 <Shield
-                  size={16}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300"
+                  size={14}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#129FED] transition-colors"
                 />
                 <select
-                  className="flex h-8 w-full rounded-lg border border-gray-200 bg-gray-50/50 px-2 py-1 text-[13px] ring-offset-white placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 w-full pl-11 pr-4"
+                  className="w-full pl-9 pr-8 py-2 bg-slate-50/50 border border-slate-100 rounded-lg text-[12px] font-bold text-slate-700 outline-none focus:bg-white focus:border-[#129FED]/30 transition-all appearance-none cursor-pointer"
                   value={formData.role}
                   onChange={(e) =>
                     setFormData({ ...formData, role: e.target.value })
@@ -90,24 +89,25 @@ const EditUserModal = ({ isOpen, onClose, userData, onSave, onDelete }) => {
                   <option value="Billing">Billing</option>
                   <option value="Provider">Provider</option>
                 </select>
+                <ChevronDown size={12} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none" />
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             <div className="space-y-1.5">
-              <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">
+              <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-0.5">
                 Email Address
               </label>
               <div className="relative group">
                 <Mail
-                  size={16}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300"
+                  size={14}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#129FED] transition-colors"
                 />
                 <input
                   type="email"
                   required
-                  className="flex h-8 w-full rounded-lg border border-gray-200 bg-gray-50/50 px-2 py-1 text-[13px] ring-offset-white placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 w-full pl-11 pr-4"
+                  className="w-full pl-9 pr-3 py-2 bg-slate-50/50 border border-slate-100 rounded-lg text-[12px] font-bold text-slate-700 outline-none focus:bg-white focus:border-[#129FED]/30 transition-all"
                   value={formData.email}
                   onChange={(e) =>
                     setFormData({ ...formData, email: e.target.value })
@@ -117,19 +117,19 @@ const EditUserModal = ({ isOpen, onClose, userData, onSave, onDelete }) => {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">
-                Account Status
+              <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-0.5">
+                Status
               </label>
-              <div className="flex items-center gap-2 pt-1 font-mono tracking-widest text-[11px] uppercase">
-                {["Active", "Suspended", "Pending"].map((status) => (
+              <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-100 p-1 rounded-lg">
+                {["Active", "Suspended"].map((status) => (
                   <button
                     key={status}
                     type="button"
                     onClick={() => setFormData({ ...formData, status })}
-                    className={`flex-1 py-2 rounded-lg font-bold border transition-all ${
+                    className={`flex-1 py-1 rounded-md text-[10px] font-bold transition-all ${
                       formData.status === status
-                        ? "bg-blue-600 text-white border-blue-600 shadow-lg shadow-blue-100 scale-105"
-                        : "bg-white text-gray-400 border-gray-200 hover:bg-gray-50"
+                        ? "bg-white text-slate-800 shadow-sm border border-slate-100"
+                        : "text-slate-400 hover:text-slate-600"
                     }`}
                   >
                     {status}
@@ -140,42 +140,41 @@ const EditUserModal = ({ isOpen, onClose, userData, onSave, onDelete }) => {
           </div>
 
           <div
-            className="p-4 bg-red-50 border border-red-100 rounded-xl flex items-center justify-between group cursor-pointer hover:bg-red-100 transition-all"
+            className="p-3 bg-red-50/50 border border-red-50 rounded-lg flex items-center justify-between group cursor-pointer hover:bg-red-50 transition-all"
             onClick={() => onDelete()}
           >
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-red-500 shadow-sm shrink-0">
-                <Trash2 size={18} />
+              <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-red-400 shadow-sm shrink-0 border border-red-50">
+                <Trash2 size={16} />
               </div>
               <div className="space-y-0.5">
-                <p className="text-xs font-bold text-red-800 uppercase tracking-widest leading-none">
-                  Restrict User Access
+                <p className="text-[11px] font-bold text-red-800 uppercase tracking-widest leading-none">
+                  Revoke Credentials
                 </p>
-                <p className="text-[11px] font-medium text-red-600/80">
-                  Terminating or Deleting accounts cannot be undone.
+                <p className="text-[9px] font-medium text-red-600/80 uppercase">
+                  Account termination is immediate.
                 </p>
               </div>
             </div>
             <AlertCircle
-              size={18}
-              className="text-red-400 group-hover:scale-110 transition-transform"
+              size={14}
+              className="text-red-300 group-hover:scale-110 transition-transform"
             />
           </div>
 
-          <div className="pt-6 flex items-center gap-3">
+          <div className="pt-2 flex items-center gap-2">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-3.5 border border-gray-200 rounded-lg text-sm font-bold text-gray-500 hover:bg-gray-50 transition-all font-mono uppercase tracking-widest"
+              className="flex-1 h-9 px-4 border border-slate-100 rounded-lg text-[11px] font-bold text-slate-400 hover:bg-slate-50 transition-all uppercase tracking-wider"
             >
-              Cancel
+              Discard
             </button>
             <button
               type="submit"
-              className="flex-1 px-4 py-3.5 bg-blue-600 text-white rounded-lg text-sm font-bold shadow-lg shadow-blue-100 hover:bg-blue-600/90 transition-all flex items-center justify-center gap-2 font-mono uppercase tracking-widest"
+              className="flex-1 h-9 px-4 bg-[#129FED] text-white rounded-lg text-[11px] font-bold shadow-sm hover:bg-[#0089d8] transition-all flex items-center justify-center gap-2 uppercase tracking-tight"
             >
-              <Save size={18} />
-              Save Changes
+              <Save size={14} /> Commit Changes
             </button>
           </div>
         </form>
