@@ -11,7 +11,7 @@ const PanelCard = ({
   showFooter = true,
   showMore = true,
   customScroll = false,
-  onAction,
+  onActionClick,
 }) => {
   return (
     <div className="bg-white rounded-[10px] border border-[#E2E8F0] shadow-sm h-full group/panel flex flex-col overflow-hidden">
@@ -42,7 +42,7 @@ const PanelCard = ({
       {showFooter && (
         <div className="mt-auto px-5 py-3 border-t border-gray-100 flex items-center justify-center shrink-0 h-[48px]">
           <button
-            onClick={onAction}
+            onClick={onActionClick}
             className="text-action-blue hover:text-blue-700 font-bold text-[11px] flex items-center gap-1.5 active:translate-y-px transition-all group/btn"
           >
             {actionText}

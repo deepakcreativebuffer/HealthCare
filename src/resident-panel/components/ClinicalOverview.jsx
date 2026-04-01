@@ -1,9 +1,8 @@
 import React from 'react';
 import { Card, Badge, Button } from './ui';
 import { Activity, Pill, MoreHorizontal, Link, Clock } from 'lucide-react';
-import { diagnosisProblems, medications } from '../data/mockData';
 
-const ClinicalOverview = () => {
+const ClinicalOverview = ({ diagnosisProblems, medications }) => {
   return (
     <Card className="h-full flex flex-col">
       <div className="flex items-center justify-between pb-2 border-b border-gray-100 mb-6">

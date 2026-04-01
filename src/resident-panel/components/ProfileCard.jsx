@@ -1,20 +1,21 @@
 import React from 'react';
-import { Card, Avatar, Button, Badge } from './ui';
+import { Card, Avatar, Badge } from './ui';
 import { Heart, Activity, AlertCircle } from 'lucide-react';
-import { mockUser } from '../data/mockData';
 import { Link } from 'react-router-dom';
 
-const ProfileCard = () => {
+const ProfileCard = ({ resident }) => {
+  const initial = resident.name.split(' ').map(n => n[0]).join('').slice(0, 2);
+
   return (
     <Card className="flex flex-col">
       <div className="flex items-start justify-between">
         <div className="flex gap-4">
-          <Avatar size="md" initial="J" className="bg-blue-100 text-blue-600" />
+          <Avatar size="md" initial={initial} className="bg-blue-100 text-blue-600" />
           <div>
             <h2 className="text-md font-bold flex items-center gap-2">
-              {mockUser.name}
+              {resident.name}
             </h2>
-            <p className="text-gray-500 text-xs mt-1">Age {mockUser.age} • MRN {mockUser.mrn}</p>
+            <p className="text-gray-500 text-xs mt-1">Age 32 • MRN MRN-882736</p>
           </div>
         </div>
         <Badge variant="success" className="bg-emerald-100 text-emerald-800">
