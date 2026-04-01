@@ -51,7 +51,8 @@ const StatsGrid = ({ onStatClick }) => {
         return (
           <div 
             key={idx} 
-            className="bg-white rounded-[10px] border border-[#E2E8F0] shadow-sm p-4 group flex flex-col h-full duration-200"
+            onClick={() => onStatClick?.(stat.title)}
+            className="bg-white rounded-[10px] border border-[#E2E8F0] shadow-sm p-4 hover:shadow-md hover:border-blue-200 transition-all group cursor-pointer flex flex-col h-full active:scale-95 duration-200"
           >
             <div className="flex items-center gap-3 mb-2">
               <div className={`${IconConfig.bg} ${IconConfig.color} w-10 h-10 rounded-[10px] flex items-center justify-center group-hover:scale-105 transition-transform shrink-0`}>

@@ -100,14 +100,12 @@ const DetailedStatsView = ({ title, onBack }) => {
           );
           break;
         case "Activity Log":
-          result = await api.getActivityLogs();
-          result = result.map((l, i) => ({
-            id: `LOG-${i + 1}`,
-            name: l.userName,
-            userName: l.userName,
-            action: l.action,
-            actionType: l.actionType,
-            date: l.date,
+          result = await api.getActivity();
+          result = result.map((l) => ({
+            id: `LOG-${l.id}`,
+            name: l.message,
+            status: l.status,
+            user: l.user,
             time: l.time,
           }));
           break;
@@ -359,21 +357,8 @@ const DetailedStatsView = ({ title, onBack }) => {
                     </th>
                   )}
                   <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
-                    {title === "Activity Log" ? "Action By" : "Name"}
+                    Name
                   </th>
-                  {title === "Activity Log" && (
-                    <>
-                      <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
-                        Notes
-                      </th>
-                      <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest text-center">
-                        Action Type
-                      </th>
-                      <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest text-right">
-                        Log Time
-                      </th>
-                    </>
-                  )}
                   {title === "Special Notes" && (
                     <>
                       <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
@@ -433,10 +418,19 @@ const DetailedStatsView = ({ title, onBack }) => {
                       Amount
                     </th>
                   )}
-                  {(title !== "Total Appointments" && title !== "Staff Schedule" && title !== "Activity Log") && (
-                    <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest text-right">
-                      Actions
-                    </th>
+                  {(title !== "Total Appointments" &&
+                    title !== "Staff Schedule" &&
+                    title !== "Activity Log") && (
+                    <>
+                      {title !== "Special Notes" && (
+                        <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest text-center">
+                          Status
+                        </th>
+                      )}
+                      <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest text-right">
+                        Actions
+                      </th>
+                    </>
                   )}
                   {title === "Staff Schedule" && (
                     <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest text-center">
@@ -465,7 +459,7 @@ const DetailedStatsView = ({ title, onBack }) => {
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-bold text-sm select-none">
-                          {(item.name || item.patient || item.userName || "U")[0]}
+                          {(item.name || item.patient || "U")[0]}
                         </div>
                         <div>
                           <p className="text-[14px] font-bold text-slate-800">
@@ -485,7 +479,6 @@ const DetailedStatsView = ({ title, onBack }) => {
                             item.actionType === 'Update' ? 'bg-blue-50 text-blue-600 border-blue-100' :
                             item.actionType === 'Delete' ? 'bg-red-50 text-red-600 border-red-100' :
                             item.actionType === 'Create' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
-                            item.actionType === 'Approved' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
                             'bg-indigo-50 text-indigo-600 border-indigo-100'
                           }`}>
                             {item.actionType}
