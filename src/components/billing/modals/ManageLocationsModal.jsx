@@ -61,7 +61,7 @@ const ManageLocationsModal = ({ isOpen, onClose, locations, onUpdate }) => {
           {!showAddForm ? (
             <button
               onClick={() => setShowAddForm(true)}
-              className="w-full py-2 border-2 border-dashed border-slate-200 rounded-xl flex items-center justify-center gap-2 text-slate-400 hover:text-[#129FED] hover:border-[#129FED]/50 hover:bg-[#E3F2FD]/10 transition-all font-bold text-[12px] tracking-widest uppercase font-mono"
+              className="w-full py-2 border-2 border-dashed border-slate-200 rounded-xl flex items-center justify-center gap-2 text-slate-400 hover:text-[#129FED] hover:border-[#129FED]/50 hover:bg-[#E3F2FD]/10 transition-all font-bold text-[12px]  uppercase font-mono"
             >
               <Plus size={16} />
               Add New Location
@@ -141,13 +141,13 @@ const ManageLocationsModal = ({ isOpen, onClose, locations, onUpdate }) => {
                 <button
                   type="button"
                   onClick={() => setShowAddForm(false)}
-                  className="flex-1 px-4 py-2.5 text-slate-500 font-bold hover:bg-slate-100 rounded-lg transition-all font-mono tracking-widest text-[11px] uppercase"
+                  className="flex-1 px-4 py-2.5 text-slate-500 font-bold hover:bg-slate-100 rounded-lg transition-all font-mono  text-[11px] uppercase"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 px-4 py-2.5 bg-[#129FED] text-white font-bold rounded-lg shadow-lg shadow-blue-100 hover:bg-[#129FED]/90 transition-all flex items-center justify-center gap-2 font-mono tracking-widest text-[11px] uppercase"
+                  className="flex-1 px-4 py-2.5 bg-[#129FED] text-white font-bold rounded-lg shadow-lg shadow-blue-100 hover:bg-[#129FED]/90 transition-all flex items-center justify-center gap-2 font-mono  text-[11px] uppercase"
                 >
                   <Check size={16} />
                   Confirm Add
@@ -157,7 +157,7 @@ const ManageLocationsModal = ({ isOpen, onClose, locations, onUpdate }) => {
           )}
 
           <div className="space-y-3">
-            <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1 mb-2">
+            <h4 className="text-[11px] font-bold text-slate-400 uppercase  ml-1 mb-2">
               Current Locations ({localLocations.length})
             </h4>
             {localLocations.map((loc, idx) => (

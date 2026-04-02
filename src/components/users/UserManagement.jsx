@@ -42,7 +42,7 @@ const UserStatCard = ({ label, value, icon: Icon, color }) => {
         <h4 className="text-[16px] font-black text-slate-800 tracking-tight leading-none">
           {value}
         </h4>
-        <p className="text-[9px] font-bold text-slate-400 mt-1 uppercase tracking-widest leading-none">
+        <p className="text-[9px] font-bold text-slate-400 mt-1 uppercase  leading-none">
           {label}
         </p>
       </div>
@@ -63,7 +63,7 @@ const UserManagement = () => {
   // Custom Confirmation Modal State
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteConfig, setDeleteConfig] = useState({
-    onConfirm: () => {},
+    onConfirm: () => { },
     title: "",
     message: "",
     count: 1,
@@ -226,24 +226,24 @@ const UserManagement = () => {
         {selectedUsers.length > 0 && (
           <div className="absolute top-0 left-0 right-0 bg-[#129FED] px-4 py-2 z-10 flex items-center justify-between text-white animate-in slide-in-from-top duration-300 shadow-lg">
             <div className="flex items-center gap-4">
-              <span className="text-[11px] font-bold uppercase tracking-widest">
+              <span className="text-[11px] font-bold uppercase ">
                 {selectedUsers.length} Selected
               </span>
               <div className="h-4 w-px bg-white/20" />
-              <button className="text-[10px] font-bold uppercase tracking-widest hover:bg-white/10 px-2.5 py-1 rounded-md transition-all border border-white/20">
+              <button className="text-[10px] font-bold uppercase  hover:bg-white/10 px-2.5 py-1 rounded-md transition-all border border-white/20">
                 Suspend
               </button>
             </div>
             <div className="flex items-center gap-3">
               <button
                 onClick={handleBulkDelete}
-                className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest bg-red-500 px-3 py-1.5 rounded-md hover:bg-red-600 transition-all shadow-sm"
+                className="flex items-center gap-1.5 text-[10px] font-black uppercase  bg-red-500 px-3 py-1.5 rounded-md hover:bg-red-600 transition-all shadow-sm"
               >
                 <Trash2 size={12} /> Delete
               </button>
               <button
                 onClick={() => setSelectedUsers([])}
-                className="text-[10px] font-bold uppercase tracking-widest text-white/70 hover:text-white"
+                className="text-[10px] font-bold uppercase  text-white/70 hover:text-white"
               >
                 Cancel
               </button>
@@ -311,19 +311,19 @@ const UserManagement = () => {
                     onChange={toggleSelectAll}
                   />
                 </th>
-                <th className="px-3 py-2 text-left text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-50">
+                <th className="px-3 py-2 text-left text-[10px] font-bold text-slate-400 uppercase  border-b border-slate-50">
                   Staff Member
                 </th>
-                <th className="px-3 py-2 text-left text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-50">
+                <th className="px-3 py-2 text-left text-[10px] font-bold text-slate-400 uppercase  border-b border-slate-50">
                   Role
                 </th>
-                <th className="px-3 py-2 text-left text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-50 text-center">
+                <th className="px-3 py-2 text-left text-[10px] font-bold text-slate-400 uppercase  border-b border-slate-50 text-center">
                   Status
                 </th>
-                <th className="px-3 py-2 text-left text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-50">
+                <th className="px-3 py-2 text-left text-[10px] font-bold text-slate-400 uppercase  border-b border-slate-50">
                   Last Login
                 </th>
-                <th className="px-4 py-2 text-right text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-50">
+                <th className="px-4 py-2 text-right text-[10px] font-bold text-slate-400 uppercase  border-b border-slate-50">
                   Actions
                 </th>
               </tr>
@@ -346,7 +346,7 @@ const UserManagement = () => {
                       type="checkbox"
                       className="w-4 h-4 rounded border-slate-200 text-[#129FED] focus:ring-[#129FED] transition-all cursor-pointer"
                       checked={selectedUsers.includes(user.id)}
-                      onChange={() => {}}
+                      onChange={() => { }}
                     />
                   </td>
                   <td className="px-3 py-2">
@@ -381,11 +381,10 @@ const UserManagement = () => {
                   </td>
                   <td className="px-3 py-2 text-center">
                     <span
-                      className={`text-[9px] font-bold px-2 py-0.5 rounded-full border uppercase tracking-wider ${
-                        user.status === "Active"
+                      className={`text-[9px] font-bold px-2 py-0.5 rounded-full border uppercase tracking-wider ${user.status === "Active"
                           ? "bg-green-50 text-green-600 border-green-100"
                           : "bg-amber-50 text-amber-600 border-amber-100"
-                      }`}
+                        }`}
                     >
                       {user.status}
                     </span>
@@ -432,11 +431,11 @@ const UserManagement = () => {
               ))}
             </tbody>
           </table>
-          
+
           {!filteredUsers.length && (
             <div className="py-12 text-center">
               <Users className="w-8 h-8 text-slate-100 mx-auto mb-2" />
-              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+              <p className="text-[11px] font-bold text-slate-400 uppercase ">
                 No matching personnel
               </p>
             </div>
@@ -445,7 +444,7 @@ const UserManagement = () => {
 
         {/* Table Footer */}
         <div className="px-4 py-3 border-t border-slate-50 bg-slate-50/10 flex items-center justify-between shrink-0">
-          <span className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">
+          <span className="text-[10px] font-bold text-slate-300 uppercase ">
             {filteredUsers.length} records active
           </span>
           <div className="flex items-center gap-1">

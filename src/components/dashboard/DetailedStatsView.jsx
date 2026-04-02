@@ -248,36 +248,36 @@ const DetailedStatsView = ({ title, onBack }) => {
               <div className="flex items-center gap-2">
                 {(title.includes("Appointment") ||
                   title.includes("Activity")) && (
-                  <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-lg px-3 py-1.5 shadow-sm">
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">
-                      Range:
-                    </span>
-                    <input
-                      type="date"
-                      value={startDate}
-                      onChange={(e) => setStartDate(e.target.value)}
-                      className="text-xs font-bold text-slate-600 focus:outline-none focus:text-blue-600 bg-transparent"
-                    />
-                    <span className="text-slate-300">-</span>
-                    <input
-                      type="date"
-                      value={endDate}
-                      onChange={(e) => setEndDate(e.target.value)}
-                      className="text-xs font-bold text-slate-600 focus:outline-none focus:text-blue-600 bg-transparent"
-                    />
-                    {(startDate || endDate) && (
-                      <button
-                        onClick={() => {
-                          setStartDate("");
-                          setEndDate("");
-                        }}
-                        className="text-[10px] font-bold text-blue-600 hover:text-blue-700 ml-1"
-                      >
-                        Clear
-                      </button>
-                    )}
-                  </div>
-                )}
+                    <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-lg px-3 py-1.5 shadow-sm">
+                      <span className="text-[10px] font-black text-slate-400 uppercase  whitespace-nowrap">
+                        Range:
+                      </span>
+                      <input
+                        type="date"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                        className="text-xs font-bold text-slate-600 focus:outline-none focus:text-blue-600 bg-transparent"
+                      />
+                      <span className="text-slate-300">-</span>
+                      <input
+                        type="date"
+                        value={endDate}
+                        onChange={(e) => setEndDate(e.target.value)}
+                        className="text-xs font-bold text-slate-600 focus:outline-none focus:text-blue-600 bg-transparent"
+                      />
+                      {(startDate || endDate) && (
+                        <button
+                          onClick={() => {
+                            setStartDate("");
+                            setEndDate("");
+                          }}
+                          className="text-[10px] font-bold text-blue-600 hover:text-blue-700 ml-1"
+                        >
+                          Clear
+                        </button>
+                      )}
+                    </div>
+                  )}
 
                 <div className="relative">
                   <button
@@ -289,7 +289,7 @@ const DetailedStatsView = ({ title, onBack }) => {
 
                   {showFilterMenu && (
                     <div className="absolute right-0 mt-2 w-48 bg-white border border-slate-200 rounded-xl shadow-xl z-50 py-2 animate-in fade-in slide-in-from-top-2 duration-200">
-                      <p className="px-4 py-1.5 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                      <p className="px-4 py-1.5 text-[10px] font-black text-slate-400 uppercase ">
                         Filter By
                       </p>
                       {getFilterOptions().map((option) => (
@@ -334,7 +334,7 @@ const DetailedStatsView = ({ title, onBack }) => {
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-20">
             <Loader2 className="w-8 h-8 text-blue-500 animate-spin mb-3" />
-            <p className="text-slate-500 font-bold uppercase tracking-widest text-[10px]">
+            <p className="text-slate-500 font-bold uppercase  text-[10px]">
               Loading records...
             </p>
           </div>
@@ -356,87 +356,87 @@ const DetailedStatsView = ({ title, onBack }) => {
               <thead>
                 <tr className="bg-slate-50/50 border-b border-slate-100">
                   {title === "Special Notes" && (
-                    <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                    <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase ">
                       Status
                     </th>
                   )}
                   {title === "Activity Log" && (
                     <>
-                      <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                      <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase ">
                         Activity
                       </th>
-                      <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">
+                      <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase  text-center">
                         Status
                       </th>
-                      <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                      <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase ">
                         Action By
                       </th>
-                      <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-right">
+                      <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase  text-right">
                         Time
                       </th>
                     </>
                   )}
                   {title !== "Activity Log" && (
-                    <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                    <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase ">
                       Name
                     </th>
                   )}
                   {title === "Special Notes" && (
                     <>
-                      <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                      <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase ">
                         Note Content
                       </th>
-                      <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                      <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase ">
                         Update Date
                       </th>
                     </>
                   )}
                   {title === "Staff Schedule" && (
-                    <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                    <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase ">
                       Shift Details
                     </th>
                   )}
                   {title === "Total Appointments" && (
                     <>
-                      <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                      <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase ">
                         Contact Number
                       </th>
-                      <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                      <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase ">
                         Reason for Visit
                       </th>
-                      <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                      <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase ">
                         Date
                       </th>
                     </>
                   )}
                   {(title.includes("Resident") ||
                     title.includes("Employee")) && (
-                    <>
-                      <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                        Email
-                      </th>
-                      <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                        Phone Number
-                      </th>
-                    </>
-                  )}
+                      <>
+                        <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase ">
+                          Email
+                        </th>
+                        <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase ">
+                          Phone Number
+                        </th>
+                      </>
+                    )}
                   {title === "Total Employees" && (
-                    <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                    <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase ">
                       Role
                     </th>
                   )}
                   {(title === "Pending PTO" || title === "Sick Time") && (
-                    <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                    <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase ">
                       Dates
                     </th>
                   )}
                   {title === "Appointments Today" && (
-                    <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                    <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase ">
                       Time
                     </th>
                   )}
                   {title === "Claims Pending" && (
-                    <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                    <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase ">
                       Amount
                     </th>
                   )}
@@ -445,17 +445,17 @@ const DetailedStatsView = ({ title, onBack }) => {
                     title !== "Activity Log" && (
                       <>
                         {title !== "Special Notes" && (
-                          <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">
+                          <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase  text-center">
                             Status
                           </th>
                         )}
-                        <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-right">
+                        <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase  text-right">
                           Actions
                         </th>
                       </>
                     )}
                   {title === "Staff Schedule" && (
-                    <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">
+                    <th className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase  text-center">
                       Shift Type
                     </th>
                   )}
@@ -470,13 +470,12 @@ const DetailedStatsView = ({ title, onBack }) => {
                     {title === "Special Notes" && (
                       <td className="px-3 py-2">
                         <span
-                          className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest italic border ${
-                            item.color === "red"
+                          className={`px-3 py-1 rounded-full text-[10px] font-black uppercase  italic border ${item.color === "red"
                               ? "bg-red-50 text-red-600 border-red-100"
                               : item.color === "orange"
                                 ? "bg-amber-50 text-amber-600 border-amber-100"
                                 : "bg-teal-50 text-teal-600 border-teal-100"
-                          }`}
+                            }`}
                         >
                           {item.status}
                         </span>
@@ -493,9 +492,9 @@ const DetailedStatsView = ({ title, onBack }) => {
                               {title === "Special Notes"
                                 ? item.patient
                                 : item.name ||
-                                  item.residentName ||
-                                  item.staffName ||
-                                  item.userName}
+                                item.residentName ||
+                                item.staffName ||
+                                item.userName}
                             </p>
                           </div>
                         </div>
@@ -511,8 +510,7 @@ const DetailedStatsView = ({ title, onBack }) => {
                         </td>
                         <td className="px-3 py-2 text-center">
                           <span
-                            className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border transition-all ${
-                              item.statusColor === "emerald"
+                            className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase  border transition-all ${item.statusColor === "emerald"
                                 ? "bg-emerald-50 text-emerald-600 border-emerald-100"
                                 : item.statusColor === "blue"
                                   ? "bg-blue-50 text-blue-600 border-blue-100"
@@ -521,7 +519,7 @@ const DetailedStatsView = ({ title, onBack }) => {
                                     : item.statusColor === "red"
                                       ? "bg-red-50 text-red-600 border-red-100"
                                       : "bg-amber-50 text-amber-600 border-amber-100"
-                            }`}
+                              }`}
                           >
                             {item.status}
                           </span>
@@ -537,7 +535,7 @@ const DetailedStatsView = ({ title, onBack }) => {
                           </div>
                         </td>
                         <td className="px-3 py-2 text-right">
-                          <p className="text-[12px] font-black text-slate-400 uppercase tracking-widest">
+                          <p className="text-[12px] font-black text-slate-400 uppercase ">
                             {item.time}
                           </p>
                         </td>
@@ -553,7 +551,7 @@ const DetailedStatsView = ({ title, onBack }) => {
                         </td>
                         <td className="px-3 py-2">
                           <div className="space-y-0.5">
-                            <p className="text-[12px] font-black text-slate-600 uppercase tracking-widest leading-none italic">
+                            <p className="text-[12px] font-black text-slate-600 uppercase  leading-none italic">
                               {item.date}
                             </p>
                             <p className="text-[10px] font-bold text-blue-600 tracking-wider bg-blue-50/50 px-2 py-0.5 rounded w-fit">
@@ -593,15 +591,15 @@ const DetailedStatsView = ({ title, onBack }) => {
 
                     {(title.includes("Resident") ||
                       title.includes("Employee")) && (
-                      <>
-                        <td className="px-3 py-2 text-[12px] font-medium text-slate-500">
-                          {item.email || item.contact || "N/A"}
-                        </td>
-                        <td className="px-3 py-2 text-[12px] font-medium text-slate-500">
-                          {item.phone || "N/A"}
-                        </td>
-                      </>
-                    )}
+                        <>
+                          <td className="px-3 py-2 text-[12px] font-medium text-slate-500">
+                            {item.email || item.contact || "N/A"}
+                          </td>
+                          <td className="px-3 py-2 text-[12px] font-medium text-slate-500">
+                            {item.phone || "N/A"}
+                          </td>
+                        </>
+                      )}
 
                     {title === "Total Employees" && (
                       <td className="px-3 py-2">
@@ -634,21 +632,20 @@ const DetailedStatsView = ({ title, onBack }) => {
                       title !== "Activity Log" && (
                         <td className="px-3 py-2 text-center">
                           <span
-                            className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
-                              item.status === "Active" ||
-                              item.status === "Approved" ||
-                              item.status === "Scheduled"
+                            className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${item.status === "Active" ||
+                                item.status === "Approved" ||
+                                item.status === "Scheduled"
                                 ? "bg-emerald-50 text-emerald-600 border-emerald-100"
                                 : item.status === "Pending" ||
-                                    item.status === "In-Progress"
+                                  item.status === "In-Progress"
                                   ? "bg-amber-50 text-amber-600 border-amber-100"
                                   : "bg-slate-50 text-slate-600 border-slate-100"
-                            }`}
+                              }`}
                           >
                             {item.status &&
-                            (item.status === "Active" ||
-                              item.status === "Approved" ||
-                              item.status === "Scheduled")
+                              (item.status === "Active" ||
+                                item.status === "Approved" ||
+                                item.status === "Scheduled")
                               ? "Active"
                               : "Inactive"}
                           </span>
@@ -656,7 +653,7 @@ const DetailedStatsView = ({ title, onBack }) => {
                       )}
                     {title === "Staff Schedule" && (
                       <td className="px-3 py-2 text-center">
-                        <span className="px-3 py-1 bg-indigo-50 text-indigo-600 border border-indigo-100 rounded-full text-[10px] font-black uppercase tracking-widest italic">
+                        <span className="px-3 py-1 bg-indigo-50 text-indigo-600 border border-indigo-100 rounded-full text-[10px] font-black uppercase  italic">
                           {item.status}
                         </span>
                       </td>
@@ -720,16 +717,15 @@ const DetailedStatsView = ({ title, onBack }) => {
                 <div className="grid grid-cols-2 gap-4">
                   {title !== "Special Notes" && (
                     <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100">
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">
+                      <p className="text-[10px] font-black text-slate-400 uppercase  mb-1">
                         Status
                       </p>
                       <span
-                        className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
-                          selectedDetail.status === "Active" ||
-                          selectedDetail.status === "Approved"
+                        className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${selectedDetail.status === "Active" ||
+                            selectedDetail.status === "Approved"
                             ? "bg-emerald-50 text-emerald-600 border-emerald-100"
                             : "bg-amber-50 text-amber-600 border-amber-100"
-                        }`}
+                          }`}
                       >
                         {selectedDetail.status === "Active"
                           ? "Active"
@@ -740,7 +736,7 @@ const DetailedStatsView = ({ title, onBack }) => {
                   <div
                     className={`p-4 rounded-2xl bg-slate-50 border border-slate-100 ${title === "Special Notes" ? "col-span-2" : ""}`}
                   >
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">
+                    <p className="text-[10px] font-black text-slate-400 uppercase  mb-1">
                       Record ID
                     </p>
                     <p className="text-sm font-bold text-slate-800 font-mono tracking-tighter">
@@ -759,7 +755,7 @@ const DetailedStatsView = ({ title, onBack }) => {
                         <Users size={18} />
                       </div>
                       <div>
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">
+                        <p className="text-[10px] font-black text-slate-400 uppercase  leading-none">
                           Email Address
                         </p>
                         <p className="text-sm font-bold text-slate-800 mt-1">
@@ -774,7 +770,7 @@ const DetailedStatsView = ({ title, onBack }) => {
                         <Target size={18} />
                       </div>
                       <div>
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">
+                        <p className="text-[10px] font-black text-slate-400 uppercase  leading-none">
                           Phone Number
                         </p>
                         <p className="text-sm font-bold text-slate-800 mt-1">
@@ -788,7 +784,7 @@ const DetailedStatsView = ({ title, onBack }) => {
                 {selectedDetail.department && (
                   <div className="p-4 rounded-2xl bg-[#E3F2FD] border border-[#129FED]/10 flex items-center justify-between">
                     <div>
-                      <p className="text-[10px] font-black text-[#129FED]/60 uppercase tracking-widest leading-none mb-1">
+                      <p className="text-[10px] font-black text-[#129FED]/60 uppercase  leading-none mb-1">
                         Department
                       </p>
                       <p className="text-sm font-black text-[#129FED] uppercase italic">
@@ -814,7 +810,7 @@ const DetailedStatsView = ({ title, onBack }) => {
                       setData(updatedData);
                       setSelectedDetail(null);
                     }}
-                    className="py-3 bg-emerald-600 text-white font-black rounded-xl tracking-widest uppercase text-[10px] hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-100"
+                    className="py-3 bg-emerald-600 text-white font-black rounded-xl  uppercase text-[10px] hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-100"
                   >
                     Approve
                   </button>
@@ -828,7 +824,7 @@ const DetailedStatsView = ({ title, onBack }) => {
                       setData(updatedData);
                       setSelectedDetail(null);
                     }}
-                    className="py-3 bg-red-600 text-white font-black rounded-xl tracking-widest uppercase text-[10px] hover:bg-red-700 transition-all shadow-lg shadow-red-100"
+                    className="py-3 bg-red-600 text-white font-black rounded-xl  uppercase text-[10px] hover:bg-red-700 transition-all shadow-lg shadow-red-100"
                   >
                     Reject
                   </button>

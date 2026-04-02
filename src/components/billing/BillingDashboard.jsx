@@ -175,7 +175,7 @@ const BillingDashboard = () => {
       <div className="flex-1 flex items-center justify-center bg-[#F8FAFC]">
         <div className="text-center">
           <Loader2 className="w-12 h-12 text-[#129FED] animate-spin mx-auto mb-4" />
-          <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">
+          <p className="text-slate-500 font-bold uppercase  text-xs">
             Loading Billing Data...
           </p>
         </div>
@@ -283,7 +283,7 @@ const BillingDashboard = () => {
         <div className="absolute inset-0 bg-[#F8FAFC]/40 backdrop-blur-[1px] z-50 flex items-center justify-center p-8 pointer-events-none">
           <div className="bg-white px-6 py-3 rounded-xl shadow-xl border border-slate-100 flex items-center gap-3 animate-pulse pointer-events-auto">
             <Loader2 className="w-5 h-5 text-[#129FED] animate-spin" />
-            <span className="text-[12px] font-bold text-slate-600 uppercase tracking-widest">
+            <span className="text-[12px] font-bold text-slate-600 uppercase ">
               Updating Dashboard...
             </span>
           </div>
@@ -669,22 +669,22 @@ const BillingDashboard = () => {
                     <table className="w-full">
                       <thead>
                         <tr className="bg-[#F8FAFC]">
-                          <th className="px-3 py-2 text-left text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+                          <th className="px-3 py-2 text-left text-[9px] font-bold text-slate-400 uppercase ">
                             Claim ID
                           </th>
-                          <th className="px-3 py-2 text-left text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+                          <th className="px-3 py-2 text-left text-[9px] font-bold text-slate-400 uppercase ">
                             Patient
                           </th>
-                          <th className="px-3 py-2 text-left text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+                          <th className="px-3 py-2 text-left text-[9px] font-bold text-slate-400 uppercase ">
                             Payer
                           </th>
-                          <th className="px-3 py-2 text-left text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+                          <th className="px-3 py-2 text-left text-[9px] font-bold text-slate-400 uppercase ">
                             Amount
                           </th>
-                          <th className="px-3 py-2 text-left text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+                          <th className="px-3 py-2 text-left text-[9px] font-bold text-slate-400 uppercase ">
                             Status
                           </th>
-                          <th className="px-3 py-2 text-left text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+                          <th className="px-3 py-2 text-left text-[9px] font-bold text-slate-400 uppercase ">
                             Actions
                           </th>
                         </tr>
@@ -758,19 +758,19 @@ const BillingDashboard = () => {
                     <table className="w-full">
                       <thead>
                         <tr className="bg-[#F8FAFC]">
-                          <th className="px-3 py-2 text-left text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+                          <th className="px-3 py-2 text-left text-[9px] font-bold text-slate-400 uppercase ">
                             Claim ID
                           </th>
-                          <th className="px-3 py-2 text-left text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+                          <th className="px-3 py-2 text-left text-[9px] font-bold text-slate-400 uppercase ">
                             Patient
                           </th>
-                          <th className="px-3 py-2 text-left text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+                          <th className="px-3 py-2 text-left text-[9px] font-bold text-slate-400 uppercase ">
                             Payer
                           </th>
-                          <th className="px-3 py-2 text-left text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+                          <th className="px-3 py-2 text-left text-[9px] font-bold text-slate-400 uppercase ">
                             Submitted
                           </th>
-                          <th className="px-3 py-2 text-left text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+                          <th className="px-3 py-2 text-left text-[9px] font-bold text-slate-400 uppercase ">
                             Status
                           </th>
                         </tr>

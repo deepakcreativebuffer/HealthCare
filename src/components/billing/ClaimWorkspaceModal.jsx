@@ -44,7 +44,7 @@ const ClaimWorkspaceModal = ({ isOpen, onClose, claimId }) => {
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center sm:p-4 antialiased selection:bg-blue-100 p-0">
       {/* Backdrop */}
-      <div
+      <divStatus
         className="absolute inset-0 bg-slate-900/10 backdrop-blur-[2px] animate-in fade-in duration-500"
         onClick={onClose}
       />
@@ -58,8 +58,8 @@ const ClaimWorkspaceModal = ({ isOpen, onClose, claimId }) => {
               <Sparkles size={14} className="text-[#129FED]" />
             </div>
             <div className="flex items-baseline gap-2">
-              <h1 className="text-[13px] font-bold text-slate-800">Workspace</h1>
-              <span className="text-[10px] font-medium text-slate-300 uppercase tracking-widest hidden sm:inline">Electronic Filing</span>
+              <h1 className="text-[16px] font-bold text-slate-800">Workspace</h1>
+              <span className="text-[12px] font-medium text-slate-600 hidden sm:inline">Electronic Filing</span>
             </div>
           </div>
           <button
@@ -80,7 +80,7 @@ const ClaimWorkspaceModal = ({ isOpen, onClose, claimId }) => {
                   onClick={onClose}
                   className="flex items-center gap-2 pr-4 sm:pr-6 border-r border-slate-100 group"
                 >
-                  <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-slate-50 text-slate-400 group-hover:text-[#129FED] transition-all border border-slate-50">
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-slate-100 text-slate-400 group-hover:text-[#129FED] transition-all border border-slate-50">
                     <ArrowLeft size={16} />
                   </div>
                   <span className="text-[12px] font-bold text-slate-600 hidden sm:inline">Back</span>
@@ -91,18 +91,18 @@ const ClaimWorkspaceModal = ({ isOpen, onClose, claimId }) => {
                     <h2 className="text-[16px] sm:text-[18px] font-black text-slate-900 tracking-tight">
                       {claimId}
                     </h2>
-                    <div className="px-1.5 py-0.5 rounded bg-amber-50 text-amber-600 border border-amber-50">
-                      <span className="text-[9px] font-bold uppercase tracking-wider">Draft</span>
+                    <div className="px-2.5 py-1 rounded-lg bg-amber-100 text-amber-600 border border-amber-50">
+                      <span className="text-[12px] font-medium">Draft</span>
                     </div>
                   </div>
                 </div>
               </div>
 
               <div className="flex items-center gap-2">
-                <button className="h-9 px-4 rounded-lg border border-slate-100 text-slate-500 font-bold text-[11px] hover:bg-slate-50 transition-all">
+                <button className="h-9 px-4 rounded-lg border border-slate-300 text-slate-500 font-bold text-[12px] hover:bg-slate-50 transition-all">
                   Snapshot
                 </button>
-                <button className="h-9 px-5 rounded-lg bg-[#129FED] text-white font-bold text-[11px] shadow-sm hover:bg-[#0089d8] transition-all flex items-center gap-2">
+                <button className="h-9 px-5 rounded-lg bg-[#129FED] text-white font-bold text-[12px] shadow-sm hover:bg-[#0089d8] transition-all flex items-center gap-2">
                   <CheckCircle2 size={14} />
                   Finish
                 </button>
@@ -120,21 +120,20 @@ const ClaimWorkspaceModal = ({ isOpen, onClose, claimId }) => {
             <div className="flex-1 flex flex-col overflow-hidden bg-[#FAFBFC]">
               {/* Tabs Bar - More compact and scrollable */}
               <div className="px-4 sm:px-6 border-b border-slate-100 bg-white sticky top-0 z-20">
-                <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-1.5">
+                <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1.5">
                   {tabs.map((tab) => {
                     const Icon = tab.icon;
                     return (
                       <button
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
-                        className={`group flex items-center gap-2 px-4 h-9 rounded-lg transition-all duration-200 shrink-0 ${
-                          activeTab === tab.id
-                            ? "bg-[#129FED]/5 text-[#129FED]"
-                            : "text-slate-400 hover:text-slate-700 hover:bg-slate-50"
-                        }`}
+                        className={`group flex items-center gap-2 px-3 h-8 bg-white rounded-lg border border-slate-100 transition-all duration-200 shrink-0 ${activeTab === tab.id
+                          ? "bg-[#129FED]/9 text-[#129FED]"
+                          : "text-slate-400 hover:text-slate-700 hover:bg-slate-100"
+                          }`}
                       >
                         <Icon size={14} className={activeTab === tab.id ? "stroke-[2.5]" : "stroke-[2]"} />
-                        <span className={`text-[11px] font-bold whitespace-nowrap ${activeTab === tab.id ? "text-[#129FED]" : "text-slate-500 group-hover:text-slate-700"}`}>
+                        <span className={`text-[12px] font-bold whitespace-nowrap ${activeTab === tab.id ? "text-[#129FED]" : "text-slate-500 group-hover:text-slate-700"}`}>
                           {tab.label}
                         </span>
                       </button>

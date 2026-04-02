@@ -48,7 +48,7 @@ const EditUserModal = ({ isOpen, onClose, userData, onSave, onDelete }) => {
         <form onSubmit={handleSubmit} className="p-5 space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             <div className="space-y-1.5">
-              <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-0.5">
+              <label className="text-[9px] font-bold text-slate-400 uppercase  ml-0.5">
                 Full Name
               </label>
               <div className="relative group">
@@ -69,7 +69,7 @@ const EditUserModal = ({ isOpen, onClose, userData, onSave, onDelete }) => {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-0.5">
+              <label className="text-[9px] font-bold text-slate-400 uppercase  ml-0.5">
                 Role Tier
               </label>
               <div className="relative group">
@@ -96,7 +96,7 @@ const EditUserModal = ({ isOpen, onClose, userData, onSave, onDelete }) => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             <div className="space-y-1.5">
-              <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-0.5">
+              <label className="text-[9px] font-bold text-slate-400 uppercase  ml-0.5">
                 Email Address
               </label>
               <div className="relative group">
@@ -117,7 +117,7 @@ const EditUserModal = ({ isOpen, onClose, userData, onSave, onDelete }) => {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-0.5">
+              <label className="text-[9px] font-bold text-slate-400 uppercase  ml-0.5">
                 Status
               </label>
               <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-100 p-1 rounded-lg">
@@ -126,11 +126,10 @@ const EditUserModal = ({ isOpen, onClose, userData, onSave, onDelete }) => {
                     key={status}
                     type="button"
                     onClick={() => setFormData({ ...formData, status })}
-                    className={`flex-1 py-1 rounded-md text-[10px] font-bold transition-all ${
-                      formData.status === status
+                    className={`flex-1 py-1 rounded-md text-[10px] font-bold transition-all ${formData.status === status
                         ? "bg-white text-slate-800 shadow-sm border border-slate-100"
                         : "text-slate-400 hover:text-slate-600"
-                    }`}
+                      }`}
                   >
                     {status}
                   </button>
@@ -148,7 +147,7 @@ const EditUserModal = ({ isOpen, onClose, userData, onSave, onDelete }) => {
                 <Trash2 size={16} />
               </div>
               <div className="space-y-0.5">
-                <p className="text-[11px] font-bold text-red-800 uppercase tracking-widest leading-none">
+                <p className="text-[11px] font-bold text-red-800 uppercase  leading-none">
                   Revoke Credentials
                 </p>
                 <p className="text-[9px] font-medium text-red-600/80 uppercase">

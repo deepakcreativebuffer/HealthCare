@@ -37,7 +37,7 @@ const DeleteConfirmationModal = ({
             {title || "Confirm Deletion"}
           </h3>
 
-          <p className="text-[14px] font-bold text-gray-400 leading-relaxed uppercase tracking-widest px-4">
+          <p className="text-[14px] font-bold text-gray-400 leading-relaxed uppercase  px-4">
             {message ||
               `Are you sure you want to permanently delete this user? This action cannot be reversed.`}
           </p>
@@ -67,14 +67,14 @@ const DeleteConfirmationModal = ({
 
           <button
             onClick={onClose}
-            className="w-full py-4 text-gray-400 font-bold hover:text-gray-800 rounded-xl transition-all uppercase tracking-widest text-[11px] font-mono"
+            className="w-full py-4 text-gray-400 font-bold hover:text-gray-800 rounded-xl transition-all uppercase  text-[11px] font-mono"
           >
             Cancel and Go Back
           </button>
         </div>
 
         <div className="p-4 text-center bg-red-50 border-t border-red-100 italic">
-          <p className="text-[10px] font-black text-red-400 uppercase tracking-widest">
+          <p className="text-[10px] font-black text-red-400 uppercase ">
             Warning: Data associated with these users will be archived.
           </p>
         </div>

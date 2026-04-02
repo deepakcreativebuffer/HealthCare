@@ -4,12 +4,12 @@ import { billingData } from "../../../data/billingData";
 
 const FieldBox = ({ label, value, highlight = false }) => (
   <div
-    className={`bg-white p-3.5 rounded-lg border ${highlight ? "border-[#129FED] shadow-[0_4px_12px_rgba(18,159,237,0.1)]" : "border-slate-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)]"} flex flex-col gap-1 group transition-all hover:shadow-[0_4px_15px_rgba(0,0,0,0.04)]`}
+    className={`bg-white px-3 py-2 rounded-lg border ${highlight ? "border-[#129FED] shadow-[0_4px_12px_rgba(18,159,237,0.1)]" : "border-slate-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)]"} flex flex-col gap-2  group transition-all hover:shadow-[0_4px_15px_rgba(0,0,0,0.04)]`}
   >
-    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none">
+    <span className="text-[12px] font-regular text-slate-400 leading-none">
       {label}
     </span>
-    <span className="text-[13px] font-bold text-slate-700 tracking-tight leading-none group-hover:text-slate-900">
+    <span className="text-[14px] font-bold text-slate-600 tracking-tight leading-none group-hover:text-slate-900">
       {value}
     </span>
   </div>
@@ -17,10 +17,10 @@ const FieldBox = ({ label, value, highlight = false }) => (
 
 const SectionTitle = ({ icon: Icon, title }) => (
   <div className="flex items-center gap-2 mb-3 px-1">
-    <div className="w-6 h-6 rounded-lg bg-slate-50 flex items-center justify-center border border-slate-100">
+    <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center border border-slate-200">
       <Icon size={12} className="text-slate-400" />
     </div>
-    <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+    <span className="text-[14px] font-bold text-slate-600">
       {title}
     </span>
   </div>

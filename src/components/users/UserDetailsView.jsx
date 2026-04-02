@@ -125,10 +125,10 @@ const UserDetailsView = ({ user, onBack, onUpdate, onDelete }) => {
                 {user.name}
               </h2>
               <div className="flex items-center gap-2 mt-1">
-                <div className="flex items-center gap-1 px-2 py-0.5 bg-blue-50 text-[#129FED] rounded-md text-[9px] font-bold uppercase tracking-widest border border-blue-100">
+                <div className="flex items-center gap-1 px-2 py-0.5 bg-blue-50 text-[#129FED] rounded-md text-[9px] font-bold uppercase  border border-blue-100">
                   <Shield size={10} /> {user.role}
                 </div>
-                <span className="text-[10px] font-bold text-slate-300 uppercase tracking-widest ml-1">
+                <span className="text-[10px] font-bold text-slate-300 uppercase  ml-1">
                   {user.email}
                 </span>
               </div>
@@ -139,11 +139,11 @@ const UserDetailsView = ({ user, onBack, onUpdate, onDelete }) => {
         <div className="flex items-center gap-2">
           <button
             onClick={() => onDelete(user)}
-            className="h-9 px-4 bg-white text-red-500 rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-red-50 transition-all flex items-center gap-2 border border-red-100"
+            className="h-9 px-4 bg-white text-red-500 rounded-lg text-[10px] font-bold uppercase  hover:bg-red-50 transition-all flex items-center gap-2 border border-red-100"
           >
             <Trash2 size={14} /> Terminate Access
           </button>
-          <button className="h-9 px-6 bg-[#129FED] text-white rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-[#0089d8] transition-all flex items-center gap-2 shadow-sm shadow-blue-100">
+          <button className="h-9 px-6 bg-[#129FED] text-white rounded-lg text-[10px] font-bold uppercase  hover:bg-[#0089d8] transition-all flex items-center gap-2 shadow-sm shadow-blue-100">
             <Save size={14} /> Update Profile
           </button>
         </div>
@@ -154,7 +154,7 @@ const UserDetailsView = ({ user, onBack, onUpdate, onDelete }) => {
         {/* Left Col - Brief Profile and Stats */}
         <div className="col-span-12 md:col-span-4 space-y-4">
           <div className="bg-white rounded-lg border border-slate-100 p-5 shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
-            <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-6">
+            <h4 className="text-[10px] font-bold text-slate-400 uppercase  mb-6">
               Account Snapshot
             </h4>
 
@@ -165,7 +165,7 @@ const UserDetailsView = ({ user, onBack, onUpdate, onDelete }) => {
                     <UserCheck size={16} />
                   </div>
                   <div>
-                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none">
+                    <p className="text-[9px] font-bold text-slate-400 uppercase  leading-none">
                       Current Status
                     </p>
                     <p className="text-[13px] font-bold text-slate-700 tracking-tight mt-1">
@@ -185,7 +185,7 @@ const UserDetailsView = ({ user, onBack, onUpdate, onDelete }) => {
                     <Clock size={16} />
                   </div>
                   <div>
-                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none">
+                    <p className="text-[9px] font-bold text-slate-400 uppercase  leading-none">
                       Joined Date
                     </p>
                     <p className="text-[13px] font-bold text-slate-700 tracking-tight mt-1">
@@ -231,10 +231,10 @@ const UserDetailsView = ({ user, onBack, onUpdate, onDelete }) => {
             {activeTab === "Activity" && (
               <div className="space-y-6 animate-in fade-in duration-500">
                 <div className="flex items-center justify-between px-1">
-                  <h5 className="text-[11px] font-bold text-slate-800 uppercase tracking-widest">
+                  <h5 className="text-[11px] font-bold text-slate-800 uppercase ">
                     Real-time Activity Log
                   </h5>
-                  <button className="flex items-center gap-1.5 text-[10px] font-bold text-[#129FED] uppercase tracking-widest hover:underline">
+                  <button className="flex items-center gap-1.5 text-[10px] font-bold text-[#129FED] uppercase  hover:underline">
                     <History size={12} /> Full Log
                   </button>
                 </div>
@@ -247,20 +247,19 @@ const UserDetailsView = ({ user, onBack, onUpdate, onDelete }) => {
                     >
                       <div className="flex flex-col items-center">
                         <div
-                          className={`w-9 h-9 rounded-lg bg-white border border-slate-100 flex items-center justify-center group-hover:shadow-sm transition-all ${
-                            activity.color === "blue"
+                          className={`w-9 h-9 rounded-lg bg-white border border-slate-100 flex items-center justify-center group-hover:shadow-sm transition-all ${activity.color === "blue"
                               ? "text-blue-500"
                               : activity.color === "orange"
                                 ? "text-orange-500"
                                 : "text-green-500"
-                          }`}
+                            }`}
                         >
                           <activity.icon size={16} strokeWidth={2.5} />
                         </div>
                         <div className="w-px h-full bg-slate-50 mt-1" />
                       </div>
                       <div className="pb-4">
-                        <p className="text-[9px] font-bold text-slate-300 uppercase tracking-widest leading-none">
+                        <p className="text-[9px] font-bold text-slate-300 uppercase  leading-none">
                           {activity.time}
                         </p>
                         <h6 className="text-[14px] font-bold text-slate-700 tracking-tight mt-1 group-hover:text-[#129FED] transition-colors leading-none">
@@ -278,7 +277,7 @@ const UserDetailsView = ({ user, onBack, onUpdate, onDelete }) => {
 
             {activeTab === "Sessions" && (
               <div className="space-y-6 animate-in fade-in duration-500">
-                <h5 className="text-[11px] font-bold text-slate-800 uppercase tracking-widest">
+                <h5 className="text-[11px] font-bold text-slate-800 uppercase ">
                   Login History
                 </h5>
                 <div className="space-y-3">
@@ -295,13 +294,13 @@ const UserDetailsView = ({ user, onBack, onUpdate, onDelete }) => {
                           <h6 className="text-[13px] font-bold text-slate-700 tracking-tight leading-none uppercase">
                             {session.device}
                           </h6>
-                          <p className="text-[10px] font-bold text-slate-300 mt-1 uppercase tracking-widest">
+                          <p className="text-[10px] font-bold text-slate-300 mt-1 uppercase ">
                             {session.location} • {session.ip}
                           </p>
                         </div>
                       </div>
                       <span
-                        className={`text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-widest border ${session.status === "Current" ? "bg-green-50 text-green-600 border-green-100" : "bg-slate-100 text-slate-400 border-slate-200"}`}
+                        className={`text-[9px] font-bold px-2 py-0.5 rounded-full uppercase  border ${session.status === "Current" ? "bg-green-50 text-green-600 border-green-100" : "bg-slate-100 text-slate-400 border-slate-200"}`}
                       >
                         {session.status}
                       </span>
@@ -313,7 +312,7 @@ const UserDetailsView = ({ user, onBack, onUpdate, onDelete }) => {
 
             {activeTab === "Permissions" && (
               <div className="space-y-6 animate-in fade-in duration-500">
-                <h5 className="text-[11px] font-bold text-slate-800 uppercase tracking-widest">
+                <h5 className="text-[11px] font-bold text-slate-800 uppercase ">
                   Active Permission Sets
                 </h5>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -343,7 +342,7 @@ const UserDetailsView = ({ user, onBack, onUpdate, onDelete }) => {
 
                 <div className="p-4 border border-dashed border-slate-200 rounded-lg flex items-center justify-center gap-2 text-slate-300 hover:text-[#129FED] hover:border-[#129FED]/40 transition-all cursor-pointer">
                   <Lock size={14} />
-                  <span className="text-[10px] font-bold uppercase tracking-widest">
+                  <span className="text-[10px] font-bold uppercase ">
                     Request elevated access
                   </span>
                 </div>
@@ -352,12 +351,12 @@ const UserDetailsView = ({ user, onBack, onUpdate, onDelete }) => {
 
             {activeTab === "Settings" && (
               <div className="space-y-6 animate-in fade-in duration-500">
-                <h5 className="text-[11px] font-bold text-slate-800 uppercase tracking-widest">
+                <h5 className="text-[11px] font-bold text-slate-800 uppercase ">
                   Departmental Access
                 </h5>
                 <div className="space-y-6">
                   <div className="flex flex-col gap-2">
-                    <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-0.5">
+                    <label className="text-[9px] font-bold text-slate-400 uppercase  ml-0.5">
                       Assigned Department
                     </label>
                     <select className="h-9 w-full rounded-lg border border-slate-100 bg-slate-50/50 px-3 text-[12px] font-bold text-slate-700 outline-none focus:bg-white focus:border-[#129FED]/30 transition-all">
@@ -372,7 +371,7 @@ const UserDetailsView = ({ user, onBack, onUpdate, onDelete }) => {
                         <Lock size={18} />
                       </div>
                       <div className="space-y-0.5">
-                        <p className="text-[11px] font-bold text-red-800 uppercase tracking-widest leading-none">
+                        <p className="text-[11px] font-bold text-red-800 uppercase  leading-none">
                           Freeze System Account
                         </p>
                         <p className="text-[10px] font-medium text-red-600/80 uppercase tracking-tighter">
