@@ -396,7 +396,7 @@ const Profile = () => {
                         <span className="text-emerald-500">CREATIVE</span>{" "}
                         BUFFER
                       </div>
-                      <div className="text-[10px] text-gray-400 tracking-widest text-right -mt-1">
+                      <div className="text-[10px] text-gray-400  text-right -mt-1">
                         Creativity Inside
                       </div>
                     </div>

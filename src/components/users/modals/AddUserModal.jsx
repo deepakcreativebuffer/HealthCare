@@ -55,7 +55,7 @@ const AddUserModal = ({ isOpen, onClose, onAdd }) => {
 
         <form onSubmit={handleSubmit} className="p-5 space-y-3.5">
           <div className="space-y-1.5">
-            <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-0.5">
+            <label className="text-[9px] font-bold text-slate-400 uppercase  ml-0.5">
               Legal Identity
             </label>
             <div className="relative group">
@@ -77,7 +77,7 @@ const AddUserModal = ({ isOpen, onClose, onAdd }) => {
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-0.5">
+            <label className="text-[9px] font-bold text-slate-400 uppercase  ml-0.5">
               Corporate Email
             </label>
             <div className="relative group">
@@ -99,7 +99,7 @@ const AddUserModal = ({ isOpen, onClose, onAdd }) => {
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-0.5">
+            <label className="text-[9px] font-bold text-slate-400 uppercase  ml-0.5">
               Authorization Tier
             </label>
             <div className="relative group">

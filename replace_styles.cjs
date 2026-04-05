@@ -16,15 +16,15 @@ function processFile(filepath) {
 
   content = content.replace(/font-extrabold/g, 'font-bold');
   content = content.replace(/font-black/g, 'font-bold');
-  
+
   content = content.replace(/ tracking-tight/g, '');
   content = content.replace(/ tracking-tighter/g, '');
-  content = content.replace(/ tracking-widest/g, '');
+  content = content.replace(/ /g, '');
   content = content.replace(/ tracking-wider/g, '');
   content = content.replace(/ uppercase/g, '');
 
   content = content.replace(/bg-white text-\[(\d+)px\]/g, 'bg-gray-50/50 text-[$1px]');
-  
+
   const inputStyleRegex = /placeholder:font-bold focus:outline-none focus:border-\S+ focus:ring-1 focus:ring-\S+ transition-all/g;
   content = content.replace(inputStyleRegex, 'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:opacity-50 ring-offset-white');
 

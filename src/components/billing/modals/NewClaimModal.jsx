@@ -41,10 +41,10 @@ const NewClaimModal = ({ isOpen, onClose, onSave }) => {
               <FileText size={18} />
             </div>
             <div>
-              <h3 className="text-lg font-black text-slate-800 tracking-tight leading-none uppercase tracking-tighter italic">
+              <h3 className="text-lg font-bold text-slate-700 tracking-tight leading-none  tracking-tighter">
                 Create Original Claim
               </h3>
-              <p className="text-[10px] font-black text-slate-400 mt-1 uppercase tracking-widest leading-none">
+              <p className="text-[12px] font-noraml text-slate-400 mt-1 leading-none">
                 Form 1500 (HCFA) Electronic Submission
               </p>
             </div>
@@ -66,7 +66,7 @@ const NewClaimModal = ({ isOpen, onClose, onSave }) => {
             {/* Left Col */}
             <div className="space-y-3">
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                <label className="text-[12px] font-medium text-slate-400 ml-1">
                   Patient Search
                 </label>
                 <div className="relative group">
@@ -76,7 +76,7 @@ const NewClaimModal = ({ isOpen, onClose, onSave }) => {
                   />
                   <input
                     placeholder="Search patient database..."
-                    className="w-full pl-11 pr-4 py-2 bg-white border-2 border-slate-100 rounded-lg text-sm font-bold text-slate-800 outline-none focus:border-[#129FED]/30 transition-all font-mono"
+                    className="w-full pl-11 pr-4 py-2 bg-white border-2 border-slate-100 rounded-lg text-sm font-regular text-slate-400 outline-none focus:border-[#129FED]/30 transition-all"
                     value={formData.patient}
                     onChange={(e) =>
                       setFormData({ ...formData, patient: e.target.value })
@@ -87,33 +87,33 @@ const NewClaimModal = ({ isOpen, onClose, onSave }) => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                <label className="text-[12px] font-medium text-slate-400 ml-1">
                   Claim Type / Status
                 </label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setFormData({ ...formData, status: "Draft" })
-                      }
-                      className={`py-2 rounded-lg text-[10px] font-black uppercase tracking-widest border transition-all ${formData.status === "Draft" ? "bg-slate-800 text-white border-slate-800 shadow-lg" : "bg-white text-slate-400 border-slate-200"}`}
-                    >
-                      Draft
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setFormData({ ...formData, status: "Submitted" })
-                      }
-                      className={`py-2 rounded-lg text-[10px] font-black uppercase tracking-widest border transition-all ${formData.status === "Submitted" ? "bg-[#129FED] text-white border-[#129FED] shadow-lg shadow-blue-100" : "bg-white text-slate-400 border-slate-200"}`}
-                    >
-                      Ready
-                    </button>
-                  </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setFormData({ ...formData, status: "Draft" })
+                    }
+                    className={`py-2 rounded-lg text-[12px] font-medium border transition-all ${formData.status === "Draft" ? "bg-slate-800 text-white border-slate-800 shadow-lg" : "bg-white text-slate-400 border-slate-200"}`}
+                  >
+                    Draft
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setFormData({ ...formData, status: "Submitted" })
+                    }
+                    className={`py-2 rounded-lg text-[12px] font-medium border transition-all ${formData.status === "Submitted" ? "bg-[#129FED] text-white border-[#129FED] shadow-lg shadow-blue-100" : "bg-white text-slate-400 border-slate-200"}`}
+                  >
+                    Ready
+                  </button>
+                </div>
               </div>
 
               <div className="space-y-2 pt-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                <label className="text-[12px] font-medium text-slate-400 ml-1">
                   Payer (Primary)
                 </label>
                 <div className="relative group">
@@ -122,7 +122,7 @@ const NewClaimModal = ({ isOpen, onClose, onSave }) => {
                     className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#129FED] transition-colors"
                   />
                   <select
-                    className="w-full pl-11 pr-4 py-2 bg-white border-2 border-slate-100 rounded-lg text-sm font-bold text-slate-800 outline-none appearance-none focus:border-[#129FED]/30 transition-all"
+                    className="w-full pl-11 pr-4 py-2 bg-white border-2 border-slate-100 rounded-lg text-sm font-medium text-slate-800 outline-none appearance-none focus:border-[#129FED]/30 transition-all"
                     value={formData.payer}
                     onChange={(e) =>
                       setFormData({ ...formData, payer: e.target.value })
@@ -141,17 +141,17 @@ const NewClaimModal = ({ isOpen, onClose, onSave }) => {
             {/* Right Col */}
             <div className="space-y-3">
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                <label className="text-[12px] font-medium text-slate-400 ml-1">
                   Billing Amount ($)
                 </label>
                 <div className="relative group">
                   <DollarSign
-                    size={16}
+                    size={14}
                     className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#27AE60] transition-colors"
                   />
                   <input
                     placeholder="0.00"
-                    className="w-full pl-11 pr-4 py-2 bg-[#E9F7EF] border-2 border-transparent rounded-lg text-lg font-black text-[#27AE60] outline-none focus:border-[#27AE60]/20 transition-all font-mono"
+                    className="w-full pl-11 pr-4 py-2 bg-[#E9F7EF] border-2 border-transparent rounded-lg text-lg font-medium text-[#27AE60] outline-none focus:border-[#27AE60]/20 transition-all"
                     value={formData.amount}
                     onChange={(e) =>
                       setFormData({ ...formData, amount: e.target.value })
@@ -162,7 +162,7 @@ const NewClaimModal = ({ isOpen, onClose, onSave }) => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                <label className="text-[12px] font-medium text-slate-400 ml-1">
                   Date of Service (DOS)
                 </label>
                 <div className="relative group">
@@ -182,11 +182,11 @@ const NewClaimModal = ({ isOpen, onClose, onSave }) => {
                 </div>
               </div>
 
-              <div className="p-5 bg-amber-50 rounded-xl border border-amber-100/50 flex gap-4">
-                <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-amber-500 shadow-sm shrink-0 mt-1">
-                  <HelpCircle size={20} />
+              <div className="p-4 bg-amber-50 rounded-xl border border-amber-100/50 flex gap-2">
+                <div className="w-6 h-6 rounded-full bg-white flex items-center justify-center text-amber-500 shadow-sm shrink-0 mt-1">
+                  <HelpCircle size={16} />
                 </div>
-                <p className="text-[11px] font-bold text-amber-700 leading-relaxed uppercase tracking-tighter">
+                <p className="text-[12px] font-regular text-amber-400 leading-relaxed tracking-tighter">
                   Ensure patients insurance <br /> coverage is verified prior to{" "}
                   <br /> submitting original claims.
                 </p>
@@ -199,14 +199,14 @@ const NewClaimModal = ({ isOpen, onClose, onSave }) => {
         <div className="px-6 py-3 border-t border-slate-100 bg-slate-50/50 flex items-center justify-end gap-3">
           <button
             onClick={onClose}
-            className="px-6 py-2 text-slate-400 font-black hover:bg-white hover:text-slate-600 rounded-lg transition-all font-mono tracking-widest text-[10px] uppercase border-2 border-transparent hover:border-slate-100"
+            className="px-6 py-2 text-slate-400 font-medium hover:bg-white hover:text-slate-600 rounded-lg transition-all text-[12px] border-2 border-transparent hover:border-slate-100"
           >
             Cancel
           </button>
           <button
             type="submit"
             onClick={handleSubmit}
-            className="px-8 py-3 bg-[#129FED] text-white font-black rounded-lg shadow-xl shadow-blue-100 hover:bg-[#129FED]/90 transition-all flex items-center justify-center gap-2 font-mono tracking-[0.1em] text-[11px] uppercase group"
+            className="px-8 py-3 bg-[#129FED] text-white font-medium rounded-lg shadow-xl shadow-blue-100 hover:bg-[#129FED]/90 transition-all flex items-center justify-center gap-2 text-[12px] group"
           >
             <Plus
               size={16}

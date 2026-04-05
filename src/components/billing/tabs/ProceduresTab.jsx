@@ -4,7 +4,7 @@ import { billingData } from "../../../data/billingData";
 
 const TableCell = ({ value, classes = "" }) => (
   <div
-    className={`px-2 py-1 rounded border border-slate-100 bg-white min-h-[28px] flex items-center justify-center text-[10px] font-bold text-slate-600 transition-all group-hover:border-[#129FED]/30 shadow-[0_1px_4px_rgba(0,0,0,0.01)] ${classes}`}
+    className={`px-2 py-1 rounded border border-slate-100 bg-white min-h-[28px] flex items-center justify-center text-[12px] font-bold text-slate-600 transition-all group-hover:border-[#129FED]/30 shadow-[0_1px_4px_rgba(0,0,0,0.01)] ${classes}`}
   >
     {value || ""}
   </div>
@@ -38,7 +38,7 @@ const ProceduresTab = () => {
             ].map((h) => (
               <span
                 key={h}
-                className="text-[9px] font-bold text-slate-400 uppercase tracking-widest text-center"
+                className="text-[10px] font-bold text-slate-400 uppercase text-center"
               >
                 {h}
               </span>
@@ -62,7 +62,7 @@ const ProceduresTab = () => {
                 <TableCell value={`$${item.charge.toFixed(2)}`} classes="text-slate-900" />
                 <TableCell value={item.dxPtr} />
                 <TableCell value={item.pos} />
-                <button className="text-slate-200 hover:text-red-400 transition-colors flex items-center justify-center">
+                <button className="text-slate-400 hover:text-red-400 transition-colors flex items-center justify-center">
                   <Trash2 size={14} />
                 </button>
               </div>
@@ -70,23 +70,23 @@ const ProceduresTab = () => {
           </div>
 
           {/* Footer: Totals */}
-          <div className="pt-3 mt-1 border-t border-slate-50 flex items-center justify-between px-1">
+          <div className="pt-3 mt-1 border-t border-slate-100 flex items-center justify-between px-1">
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded bg-slate-50 flex items-center justify-center">
-                <Receipt size={12} className="text-slate-400" />
+              <div className="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center">
+                <Receipt size={12} className="text-slate-600" />
               </div>
-              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-tight">
+              <span className="text-[12px] font-bold text-slate-600 uppercase tracking-tight">
                 Claim Total
               </span>
             </div>
             <div className="flex items-center gap-3">
               <div className="flex items-baseline gap-1">
-                <span className="text-[10px] font-bold text-slate-400">$</span>
-                <span className="text-[16px] font-black text-slate-900 tracking-tighter italic">
+                <span className="text-[12px] font-bold text-slate-400">$</span>
+                <span className="text-[16px] font-black text-slate-900 italic">
                   {totalCharges.toFixed(2)}
                 </span>
               </div>
-              <div className="px-2 py-0.5 rounded bg-blue-50 text-[#129FED] text-[9px] font-bold uppercase tracking-widest border border-blue-50/50">
+              <div className="px-2 py-0.5 rounded bg-blue-50 text-[#129FED] text-[10px] font-bold uppercase border border-blue-50/50">
                 Validated
               </div>
             </div>
@@ -95,12 +95,12 @@ const ProceduresTab = () => {
 
         {/* Action Bar */}
         <div className="flex items-center justify-between px-1">
-          <button className="flex items-center gap-1.5 text-[#129FED] font-bold text-[11px] uppercase tracking-wider hover:underline transition-all px-3 py-1.5 rounded-lg hover:bg-blue-50">
+          <button className="flex items-center gap-1.5 text-[#129FED] font-bold text-[12px] uppercase hover:underline transition-all px-3 py-1.5 rounded-lg hover:bg-blue-50">
             <Plus size={14} className="stroke-[2.5]" />
             New Charge
           </button>
-          
-          <div className="flex items-center gap-2 text-slate-300 text-[10px] uppercase font-bold tracking-widest">
+
+          <div className="flex items-center gap-2 text-slate-400 text-[12px] font-regular">
             <Info size={12} />
             HCPCS / CPT Level II Support Active
           </div>

@@ -56,7 +56,7 @@ const AdmitResidentModal = ({ isOpen, onClose, onResidentAdmitted }) => {
               <h2 className="text-lg font-bold text-slate-800">
                 Admit New Resident
               </h2>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">
+              <p className="text-[10px] font-bold text-slate-400 uppercase  mt-0.5">
                 Register a new profile
               </p>
             </div>

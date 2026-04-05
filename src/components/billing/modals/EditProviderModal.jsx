@@ -127,13 +127,13 @@ const EditProviderModal = ({ isOpen, onClose, provider, onSave }) => {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2 border border-slate-200 rounded-lg text-[12px] font-bold text-slate-500 hover:bg-slate-50 transition-all font-mono uppercase tracking-widest"
+              className="flex-1 px-4 py-2 border border-slate-200 rounded-lg text-[12px] font-bold text-slate-500 hover:bg-slate-50 transition-all font-mono uppercase "
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="flex-1 px-4 py-2 bg-[#129FED] text-white rounded-lg text-[12px] font-bold shadow-lg shadow-blue-100 hover:bg-[#129FED]/90 transition-all flex items-center justify-center gap-2 font-mono uppercase tracking-widest"
+              className="flex-1 px-4 py-2 bg-[#129FED] text-white rounded-lg text-[12px] font-bold shadow-lg shadow-blue-100 hover:bg-[#129FED]/90 transition-all flex items-center justify-center gap-2 font-mono uppercase "
             >
               <Save size={14} />
               Save Changes

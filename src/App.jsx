@@ -185,7 +185,7 @@ const MockLogin = () => {
         </div>
 
         {/* Simulator Note */}
-        <div className="mt-8 pt-6 border-t border-gray-100 text-[10px] text-gray-400 text-center uppercase tracking-widest font-bold">
+        <div className="mt-8 pt-6 border-t border-gray-100 text-[10px] text-gray-400 text-center uppercase  font-bold">
           Login with "admin" to see admin panel
         </div>
       </div>
