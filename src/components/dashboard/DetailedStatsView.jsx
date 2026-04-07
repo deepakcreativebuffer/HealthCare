@@ -1,4 +1,6 @@
-import React, { useState, useEffect, Activity } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import ActionButton from "../common/ActionButton";
 import {
   ArrowLeft,
   Search,
@@ -15,6 +17,9 @@ import {
   Target,
   ActivityIcon,
   Bell,
+  Eye,
+  Pencil,
+  Trash2,
 } from "lucide-react";
 import { api } from "../../data/api";
 
@@ -45,91 +50,102 @@ const DetailedStatsView = ({ title, onBack }) => {
   const [endDate, setEndDate] = useState("");
   const [isRangeOpen, setIsRangeOpen] = useState(false);
   const Icon = iconMap[title] || Users;
+  const navigate = useNavigate();
+
+  const fetchData = async () => {
+    setIsLoading(true);
+    let result = [];
+    const { mockData } = await import("../../data/mockData");
+
+    switch (title) {
+      case "Total Residents":
+      case "Active Resident Records":
+        result = await api.getResidents();
+        if (title === "Active Resident Records") {
+          result = result.filter((r) => r.status === "Active");
+        }
+        break;
+      case "Total Employees":
+      case "Active Employee Records":
+        result = await api.getStaff();
+        if (title === "Active Employee Records") {
+          result = result.filter((r) => r.status === "Active");
+        }
+        break;
+      case "Pending PTO":
+        result = await api.getPTO();
+        break;
+      case "Sick Time":
+        result = await api.getSickLeave();
+        break;
+      case "Appointments Today":
+      case "Total Appointments":
+        result = await api.getAppointments();
+        break;
+      case "Staff Schedule":
+        result = mockData.staffShifts.map((s) => ({
+          ...s,
+          name: s.staffName,
+          status: s.shiftType,
+        }));
+        break;
+      case "Main Stats List":
+        result = mockData.mainStats.map((s) => ({
+          id: `STAT-${Math.floor(Math.random() * 1000)}`,
+          name: s.label,
+          value: s.value,
+          status: "Active",
+          color: s.color,
+        }));
+        break;
+      case "Claims Pending":
+        const billing = await api.getBillingData();
+        result = billing.recentClaims.filter(
+          (c) => c.status === "Pending" || c.status === "Submitted",
+        );
+        break;
+      case "Activity Log":
+        result = await api.getActivity();
+        console.log("result", result);
+        result = result.map((l, i) => ({
+          id: `ACT-${i + 1}`,
+          name: l.action || l.message || "Manual Update",
+          status: l.status || "Completed",
+          userName: l.userName || l.user || "Admin",
+          time: l.time || "Recently",
+          statusColor: l.statusColor || "blue",
+        }));
+        break;
+      case "Special Notes":
+        result = mockData.specialNotes.map((n, i) => ({
+          id: `NOTE-${i + 1}`,
+          name: n.note,
+          status: n.category,
+          category: n.category,
+          time: n.time,
+          date: n.date,
+          color: n.color,
+        }));
+        break;
+      default:
+        result = [];
+    }
+    setData(result);
+    setIsLoading(false);
+  };
 
   useEffect(() => {
-    setIsLoading(true);
-    const fetchData = async () => {
-      let result = [];
-      const { mockData } = await import("../../data/mockData");
-
-      switch (title) {
-        case "Total Residents":
-        case "Active Resident Records":
-          result = await api.getResidents();
-          if (title === "Active Resident Records") {
-            result = result.filter((r) => r.status === "Active");
-          }
-          break;
-        case "Total Employees":
-        case "Active Employee Records":
-          result = await api.getStaff();
-          if (title === "Active Employee Records") {
-            result = result.filter((r) => r.status === "Active");
-          }
-          break;
-        case "Pending PTO":
-          result = await api.getPTO();
-          break;
-        case "Sick Time":
-          result = await api.getSickLeave();
-          break;
-        case "Appointments Today":
-        case "Total Appointments":
-          result = await api.getAppointments();
-          break;
-        case "Staff Schedule":
-          result = mockData.staffShifts.map((s) => ({
-            ...s,
-            name: s.staffName,
-            status: s.shiftType,
-          }));
-          break;
-        case "Main Stats List":
-          result = mockData.mainStats.map((s) => ({
-            id: `STAT-${Math.floor(Math.random() * 1000)}`,
-            name: s.label,
-            value: s.value,
-            status: "Active",
-            color: s.color,
-          }));
-          break;
-        case "Claims Pending":
-          const billing = await api.getBillingData();
-          result = billing.recentClaims.filter(
-            (c) => c.status === "Pending" || c.status === "Submitted",
-          );
-          break;
-        case "Activity Log":
-          result = await api.getActivity();
-          console.log("result", result);
-          result = result.map((l, i) => ({
-            id: `ACT-${i + 1}`,
-            name: l.action || l.message || "Manual Update",
-            status: l.status || "Completed",
-            userName: l.userName || l.user || "Admin",
-            time: l.time || "Recently",
-            statusColor: l.statusColor || "blue",
-          }));
-          break;
-        case "Special Notes":
-          result = mockData.specialNotes.map((n, i) => ({
-            id: `NOTE-${i + 1}`,
-            name: n.note,
-            status: n.category,
-            category: n.category,
-            time: n.time,
-            date: n.date,
-            color: n.color,
-          }));
-          break;
-        default:
-          result = [];
-      }
-      setData(result);
-      setIsLoading(false);
-    };
     fetchData();
   }, [title]);
+
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete this resident?")) {
+      const response = await api.deleteResident(id);
+      if (response.success) {
+        fetchData();
+      }
+    }
+  };
 
   const filteredData = data.filter((item) => {
     const searchStr = searchTerm.toLowerCase();
@@ -471,10 +487,10 @@ const DetailedStatsView = ({ title, onBack }) => {
                       <td className="px-3 py-2">
                         <span
                           className={`px-3 py-1 rounded-full text-[10px] font-black uppercase  italic border ${item.color === "red"
-                              ? "bg-red-50 text-red-600 border-red-100"
-                              : item.color === "orange"
-                                ? "bg-amber-50 text-amber-600 border-amber-100"
-                                : "bg-teal-50 text-teal-600 border-teal-100"
+                            ? "bg-red-50 text-red-600 border-red-100"
+                            : item.color === "orange"
+                              ? "bg-amber-50 text-amber-600 border-amber-100"
+                              : "bg-teal-50 text-teal-600 border-teal-100"
                             }`}
                         >
                           {item.status}
@@ -511,14 +527,14 @@ const DetailedStatsView = ({ title, onBack }) => {
                         <td className="px-3 py-2 text-center">
                           <span
                             className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase  border transition-all ${item.statusColor === "emerald"
-                                ? "bg-emerald-50 text-emerald-600 border-emerald-100"
-                                : item.statusColor === "blue"
-                                  ? "bg-blue-50 text-blue-600 border-blue-100"
-                                  : item.statusColor === "sky"
-                                    ? "bg-sky-50 text-sky-600 border-sky-100"
-                                    : item.statusColor === "red"
-                                      ? "bg-red-50 text-red-600 border-red-100"
-                                      : "bg-amber-50 text-amber-600 border-amber-100"
+                              ? "bg-emerald-50 text-emerald-600 border-emerald-100"
+                              : item.statusColor === "blue"
+                                ? "bg-blue-50 text-blue-600 border-blue-100"
+                                : item.statusColor === "sky"
+                                  ? "bg-sky-50 text-sky-600 border-sky-100"
+                                  : item.statusColor === "red"
+                                    ? "bg-red-50 text-red-600 border-red-100"
+                                    : "bg-amber-50 text-amber-600 border-amber-100"
                               }`}
                           >
                             {item.status}
@@ -633,13 +649,13 @@ const DetailedStatsView = ({ title, onBack }) => {
                         <td className="px-3 py-2 text-center">
                           <span
                             className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${item.status === "Active" ||
-                                item.status === "Approved" ||
-                                item.status === "Scheduled"
-                                ? "bg-emerald-50 text-emerald-600 border-emerald-100"
-                                : item.status === "Pending" ||
-                                  item.status === "In-Progress"
-                                  ? "bg-amber-50 text-amber-600 border-amber-100"
-                                  : "bg-slate-50 text-slate-600 border-slate-100"
+                              item.status === "Approved" ||
+                              item.status === "Scheduled"
+                              ? "bg-emerald-50 text-emerald-600 border-emerald-100"
+                              : item.status === "Pending" ||
+                                item.status === "In-Progress"
+                                ? "bg-amber-50 text-amber-600 border-amber-100"
+                                : "bg-slate-50 text-slate-600 border-slate-100"
                               }`}
                           >
                             {item.status &&
@@ -661,14 +677,35 @@ const DetailedStatsView = ({ title, onBack }) => {
                     {title !== "Total Appointments" &&
                       title !== "Staff Schedule" &&
                       title !== "Activity Log" && (
-                        <td className="px-3 py-2 text-right">
-                          <button
-                            onClick={() => setSelectedDetail(item)}
-                            className="p-2 rounded-lg text-slate-400 hover:bg-blue-50 hover:text-blue-600 transition-all border border-transparent hover:border-blue-100"
-                          >
-                            <ChevronRight size={18} />
-                          </button>
-                        </td>
+                        title.includes("Resident") ? (
+                          <td className="px-6 py-4 text-right">
+                            <div className="flex items-center justify-end gap-2">
+                              <ActionButton
+                                icon={Eye}
+                                onClick={() => navigate(`/residents/${item.id}`)}
+                              />
+                              <ActionButton
+                                icon={Pencil}
+                                onClick={() => setSelectedDetail(item)}
+                                color="amber"
+                              />
+                              <ActionButton
+                                icon={Trash2}
+                                onClick={() => handleDelete(item.id)}
+                                color="red"
+                              />
+                            </div>
+                          </td>
+                        ) : (
+                          <td className="px-6 py-4 text-right">
+                            <button
+                              onClick={() => setSelectedDetail(item)}
+                              className="p-2 rounded-lg text-slate-400 hover:bg-blue-50 hover:text-blue-600 transition-all border border-transparent hover:border-blue-100"
+                            >
+                              <ChevronRight size={18} />
+                            </button>
+                          </td>
+                        )
                       )}
                   </tr>
                 ))}
@@ -722,9 +759,9 @@ const DetailedStatsView = ({ title, onBack }) => {
                       </p>
                       <span
                         className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${selectedDetail.status === "Active" ||
-                            selectedDetail.status === "Approved"
-                            ? "bg-emerald-50 text-emerald-600 border-emerald-100"
-                            : "bg-amber-50 text-amber-600 border-amber-100"
+                          selectedDetail.status === "Approved"
+                          ? "bg-emerald-50 text-emerald-600 border-emerald-100"
+                          : "bg-amber-50 text-amber-600 border-amber-100"
                           }`}
                       >
                         {selectedDetail.status === "Active"

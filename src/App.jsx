@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense, lazy } from "react";
 import { User, Lock, Eye, EyeOff } from "lucide-react";
 import {
   BrowserRouter as Router,
@@ -20,6 +20,8 @@ import BillingDashboard from "./components/billing/BillingDashboard";
 import DetailedStatsView from "./components/dashboard/DetailedStatsView";
 import { api } from "./data/api";
 import UserManagement from "./components/users/UserManagement";
+
+const ResidentDetailPage = lazy(() => import("./components/dashboard/ResidentDetailPage"));
 
 // Mock Login Page Component
 const MockLogin = () => {
@@ -290,6 +292,29 @@ function App() {
           element={
             <ProtectedRoute allowedRole="admin">
               <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Resident Detailed Page */}
+        <Route
+          path="/residents/:id"
+          element={
+            <ProtectedRoute allowedRole="admin">
+              <Suspense
+                fallback={
+                  <div className="h-screen flex items-center justify-center bg-slate-50">
+                    <div className="flex flex-col items-center gap-4">
+                      <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                      <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">
+                        Loading clinical records...
+                      </p>
+                    </div>
+                  </div>
+                }
+              >
+                <ResidentDetailPage />
+              </Suspense>
             </ProtectedRoute>
           }
         />
