@@ -695,7 +695,7 @@ const DetailedStatsView = ({ title, onBack }) => {
                             <div className="flex items-center justify-end gap-2">
                               <ActionButton
                                 icon={Eye}
-                                onClick={() => navigate(`/residents/${item.id}`)}
+                                onClick={() => navigate(`/admin/residents/${item.id}`)}
                               />
                               <ActionButton
                                 icon={Pencil}
