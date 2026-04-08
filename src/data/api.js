@@ -78,7 +78,7 @@ export const api = {
     if (!resident.appointments) {
       resident.appointments = [
         { id: 1, doctor: "Dr. Amanda Roberts", date: "Thursday, Apr 25", time: "10:30 AM", location: "Monterey Clinic" },
-        { id: 2, doctor: "Dr. James Williams", date: "Friday, Apr 26", time: "02:00 PM", location: "Oasis Center" }
+        { id: 2, doctor: "Dr. James Williams", date: "Friday, Apr 26", time: "02:00 PM", location: "Health Center" }
       ];
     }
     if (!resident.assignedForms) {
@@ -221,19 +221,19 @@ export const api = {
         { label: 'Avg Days to Payment', value: '18', icon: 'Clock3', color: 'green' },
       ],
       provider: {
-        name: 'Oasis Behavioral Health LLC',
+        name: 'Behavioral Health LLC',
         npi: '(555) 555-0199',
         address: '123 Wellness Dr, Suite 200, Austin',
         phone: '(512) 555-0199'
       },
       locations: [
-        { name: 'Oasis Recovery Center', address: '456 Serenity Ln, Austin, TX 78702', npi: '9876543210', pos: '55' },
-        { name: 'Oasis Outpatient Clinic', address: '789 Hope Ave, Austin, TX 78703', npi: '5678901234', pos: '11' }
+        { name: 'Recovery Center', address: '456 Serenity Ln, Austin, TX 78702', npi: '9876543210', pos: '55' },
+        { name: 'Outpatient Clinic', address: '789 Hope Ave, Austin, TX 78703', npi: '5678901234', pos: '11' }
       ],
       encounter: {
         patient: 'David Smith',
         provider: 'Dr. Emily Roberts',
-        facility: 'Oasis Recovery Center',
+        facility: 'Recovery Center',
         dos: '02/12/2025',
         diagnoses: [
           { code: 'F10.20', description: 'Alcohol dependence, uncomplicated' },

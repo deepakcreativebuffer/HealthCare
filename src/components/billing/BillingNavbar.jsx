@@ -31,7 +31,7 @@ const BillingNavbar = () => {
             O
           </div>
           <span className="font-extrabold text-base text-slate-800 tracking-tighter uppercase italic">
-            OASIS NOTES
+            HEALTHCARE NOTES
           </span>
         </div>
 
@@ -40,11 +40,10 @@ const BillingNavbar = () => {
           {tabs.map((tab) => (
             <button
               key={tab.label}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-bold transition-all border ${
-                tab.active
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-bold transition-all border ${tab.active
                   ? "bg-blue-600 text-white shadow-lg shadow-blue-100 border-blue-600"
                   : "text-slate-400 hover:text-slate-600 hover:bg-slate-50 border-transparent"
-              }`}
+                }`}
             >
               <tab.icon size={16} />
               {tab.label}

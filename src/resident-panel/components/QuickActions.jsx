@@ -8,7 +8,7 @@ const QuickActions = ({ resident, refreshResident }) => {
   const [formData, setFormData] = useState({ doctor: '', date: '', time: '', location: '' });
 
   const appointmentsData = resident?.appointments || [];
-  
+
   // Generating some mock history data for the demo
   const historyData = [
     { id: 'h1', date: 'Monday, Feb 12', doctor: 'Dr. Sarah Jenkins', time: '09:00 AM', location: 'Heart Center', status: 'Completed' },
@@ -32,7 +32,7 @@ const QuickActions = ({ resident, refreshResident }) => {
     <Card className="p-1.5 bg-white">
       <div className="flex flex-col sm:flex-row items-center justify-around divide-y sm:divide-y-0 sm:divide-x divide-slate-100">
         {/* Book Appointment */}
-        <div 
+        <div
           className="flex items-center gap-3 flex-1 justify-center cursor-pointer group px-2 py-2 sm:py-1.5 w-full sm:w-auto hover:bg-slate-50 transition-colors rounded-l-lg"
           onClick={() => setActiveModal('book')}
         >
@@ -43,7 +43,7 @@ const QuickActions = ({ resident, refreshResident }) => {
         </div>
 
         {/* Manage Appointments */}
-        <div 
+        <div
           className="flex items-center gap-3 flex-1 justify-center cursor-pointer group px-2 py-2 sm:py-1.5 w-full sm:w-auto hover:bg-slate-50 transition-colors"
           onClick={() => setActiveModal('manage')}
         >
@@ -54,7 +54,7 @@ const QuickActions = ({ resident, refreshResident }) => {
         </div>
 
         {/* Appointment History */}
-        <div 
+        <div
           className="flex items-center gap-3 flex-1 justify-center cursor-pointer group px-2 py-2 sm:py-1.5 w-full sm:w-auto hover:bg-slate-50 transition-colors rounded-r-lg"
           onClick={() => setActiveModal('history')}
         >
@@ -68,30 +68,30 @@ const QuickActions = ({ resident, refreshResident }) => {
       {/* Book Appointment Modal */}
       <Modal isOpen={activeModal === 'book'} onClose={() => setActiveModal(null)} title="Book New Appointment">
         <div className="space-y-4">
-          <Select 
-            label="Doctor / Specialist" 
-            value={formData.doctor} 
-            onChange={(e) => setFormData({...formData, doctor: e.target.value})}
+          <Select
+            label="Doctor / Specialist"
+            value={formData.doctor}
+            onChange={(e) => setFormData({ ...formData, doctor: e.target.value })}
             options={[
-              {value: '', label: 'Select a doctor'},
-              {value: 'Dr. Amanda Roberts', label: 'Dr. Amanda Roberts - Cardiology'},
-              {value: 'Dr. James Williams', label: 'Dr. James Williams - General'},
-              {value: 'Dr. Sarah Jenkins', label: 'Dr. Sarah Jenkins - Neurology'}
+              { value: '', label: 'Select a doctor' },
+              { value: 'Dr. Amanda Roberts', label: 'Dr. Amanda Roberts - Cardiology' },
+              { value: 'Dr. James Williams', label: 'Dr. James Williams - General' },
+              { value: 'Dr. Sarah Jenkins', label: 'Dr. Sarah Jenkins - Neurology' }
             ]}
           />
           <div className="grid grid-cols-2 gap-4">
-            <Input type="date" label="Date" value={formData.date} onChange={(e) => setFormData({...formData, date: e.target.value})} />
-            <Input type="time" label="Time" value={formData.time} onChange={(e) => setFormData({...formData, time: e.target.value})} />
+            <Input type="date" label="Date" value={formData.date} onChange={(e) => setFormData({ ...formData, date: e.target.value })} />
+            <Input type="time" label="Time" value={formData.time} onChange={(e) => setFormData({ ...formData, time: e.target.value })} />
           </div>
-          <Select 
-            label="Location" 
-            value={formData.location} 
-            onChange={(e) => setFormData({...formData, location: e.target.value})}
+          <Select
+            label="Location"
+            value={formData.location}
+            onChange={(e) => setFormData({ ...formData, location: e.target.value })}
             options={[
-              {value: '', label: 'Select location'},
-              {value: 'Monterey Clinic', label: 'Monterey Clinic'},
-              {value: 'Oasis Center', label: 'Oasis Center'},
-              {value: 'Virtual Visit', label: 'Virtual Visit'}
+              { value: '', label: 'Select location' },
+              { value: 'Monterey Clinic', label: 'Monterey Clinic' },
+              { value: 'Health Center', label: 'Health Center' },
+              { value: 'Virtual Visit', label: 'Virtual Visit' }
             ]}
           />
           <div className="flex gap-3 pt-2">

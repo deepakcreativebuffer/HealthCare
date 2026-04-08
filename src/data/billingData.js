@@ -10,7 +10,7 @@ export const billingData = {
   ],
 
   provider: {
-    name: 'Oasis Behavioral Health LLC',
+    name: 'Behavioral Health LLC',
     npi: '(555) 555-0199',
     address: '123 Wellness Dr, Suite 200, Austin',
     phone: '(512) 555-0199'
@@ -18,13 +18,13 @@ export const billingData = {
 
   locations: [
     {
-      name: 'Oasis Recovery Center',
+      name: 'Recovery Center',
       address: '456 Serenity Ln, Austin, TX 78702',
       npi: '9876543210',
       pos: '55'
     },
     {
-      name: 'Oasis Outpatient Clinic',
+      name: 'Outpatient Clinic',
       address: '789 Hope Ave, Austin, TX 78703',
       npi: '5678901234',
       pos: '11'
@@ -34,7 +34,7 @@ export const billingData = {
   encounter: {
     patient: 'David Smith',
     provider: 'Dr. Emily Roberts',
-    facility: 'Oasis Recovery Center',
+    facility: 'Recovery Center',
     dos: '02/12/2025',
     diagnoses: [
       { code: 'F10.20', description: 'Alcohol dependence, uncomplicated' },
@@ -121,7 +121,7 @@ export const billingData = {
     },
     providers: {
       billing: {
-        name: 'Oasis Health',
+        name: 'Health',
         npi: '1234567890',
         taxId: 'XX-XXXXXXX',
         phone: '(555) 123-4567'

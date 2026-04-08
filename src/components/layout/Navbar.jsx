@@ -51,7 +51,7 @@ const Navbar = ({ activeTab, onTabChange }) => {
   const userStr = localStorage.getItem("user");
   const user = userStr
     ? JSON.parse(userStr)
-    : { name: "Sarah Mitchell", email: "sarah.mitchell@oasisnotes.com" };
+    : { name: "Sarah Mitchell", email: "sarah.mitchell@healthcare.com" };
 
   return (
     <nav className="bg-white border-b border-gray-100 px-4 sm:px-6 py-1.5 flex items-center justify-between">
@@ -75,11 +75,10 @@ const Navbar = ({ activeTab, onTabChange }) => {
             <button
               key={item.name}
               onClick={() => onTabChange(item.name)}
-              className={`px-3 py-1 text-[13px] font-medium rounded-[10px] transition-all border whitespace-nowrap flex items-center gap-2 ${
-                activeTab === item.name
+              className={`px-3 py-1 text-[13px] font-medium rounded-[10px] transition-all border whitespace-nowrap flex items-center gap-2 ${activeTab === item.name
                   ? "bg-[#E3F2FD] text-[#129FED] border-[#129FED] shadow-xs"
                   : "bg-white text-slate-500 border-[#E2E8F0] hover:bg-slate-50"
-              }`}
+                }`}
             >
               <item.icon
                 size={14}

@@ -8,7 +8,9 @@ const Navbar = ({ resident }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const user = resident || { name: 'Sarah Mitchell', email: 'sarah.mitchell@oasisnotes.com' };
+  const userStr = localStorage.getItem("user");
+  const storedUser = userStr ? JSON.parse(userStr) : null;
+  const user = storedUser || resident || { name: 'Sarah Mitchell', email: 'sarah.mitchell@healthcare.com' };
 
   const isActive = (path) => location.pathname === path;
 
