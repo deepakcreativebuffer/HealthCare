@@ -741,11 +741,8 @@ const ResidentDetailPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#f1f5f9] flex flex-col font-sans">
-      <header className="shrink-0 z-50 bg-white shadow-sm">
-        <Navbar activeTab="Dashboard" onTabChange={() => navigate("/admin")} />
-        <SubNav />
-      </header>
+    <div className="min-h-screen  flex flex-col font-sans">
+
 
       <main className="flex-1 overflow-y-auto p-2 lg:p-2 space-y-1.5">
         {/* Back Button */}

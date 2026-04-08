@@ -325,6 +325,18 @@ function App() {
           } />
         </Route>
 
+        {/* Top-level Aliases for Admin Sections (Supports flat URLs) */}
+        <Route path="/residents" element={<ProtectedRoute allowedRole="admin"><AdminLayout /></ProtectedRoute>}>
+          <Route index element={<AdminHome />} />
+          <Route path=":id" element={<ResidentDetailPage />} />
+        </Route>
+        <Route path="/billing" element={<ProtectedRoute allowedRole="admin"><AdminLayout /></ProtectedRoute>}>
+          <Route index element={<BillingDashboard />} />
+        </Route>
+        <Route path="/users" element={<ProtectedRoute allowedRole="admin"><AdminLayout /></ProtectedRoute>}>
+          <Route index element={<UserManagement />} />
+        </Route>
+
         {/* Resident Panel Routes (Separate Module) */}
         <Route
           path="/resident-dashboard"
