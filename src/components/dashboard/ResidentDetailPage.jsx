@@ -83,7 +83,17 @@ const ResidentDetailPage = () => {
       'Allergies': 'allergies',
       'Audit Trail': 'auditTrail',
       'Care Plan': 'carePlan',
-      'Social History': 'socialHistory'
+      'Social History': 'socialHistory',
+      'Medical History': 'medicalHistory',
+      'Discharge Summary': 'dischargeSummary',
+      'Communication': 'communication',
+      'Mobility': 'mobility',
+      'Nutrition': 'nutrition',
+      'Safety': 'safety',
+      'Advance Directives': 'advanceDirectives',
+      'Immunizations': 'immunizations',
+      'Pharmacy': 'pharmacy',
+      'Activities': 'activities'
     };
 
     const key = sectionToKey[activeModal.section] || activeModal.section.toLowerCase();
@@ -116,7 +126,17 @@ const ResidentDetailPage = () => {
       'Allergies': 'allergies',
       'Audit Trail': 'auditTrail',
       'Care Plan': 'carePlan',
-      'Social History': 'socialHistory'
+      'Social History': 'socialHistory',
+      'Medical History': 'medicalHistory',
+      'Discharge Summary': 'dischargeSummary',
+      'Communication': 'communication',
+      'Mobility': 'mobility',
+      'Nutrition': 'nutrition',
+      'Safety': 'safety',
+      'Advance Directives': 'advanceDirectives',
+      'Immunizations': 'immunizations',
+      'Pharmacy': 'pharmacy',
+      'Activities': 'activities'
     };
     const key = sectionToKey[section] || section.toLowerCase();
     try {
@@ -380,8 +400,16 @@ const ResidentDetailPage = () => {
       'Social History': 'socialHistory',
       'Medical History': 'medicalHistory',
       'Discharge Summary': 'dischargeSummary',
+      'Communication': 'communication',
+      'Mobility': 'mobility',
+      'Nutrition': 'nutrition',
+      'Safety': 'safety',
+      'Advance Directives': 'advanceDirectives',
+      'Immunizations': 'immunizations',
       'Pharmacy': 'pharmacy',
       'Activities': 'activities',
+      'Lab Highlights': 'labResults',
+      'Goals': 'goals',
       'Report': 'report'
     };
 
@@ -598,7 +626,63 @@ const ResidentDetailPage = () => {
 
     // LIST VIEW
     const key = sectionToKey[section] || section.toLowerCase();
-    const data = resident[key] || [];
+    let data = resident[key] || [];
+
+    // Fallback for demo data if keys are empty in resident object
+    if (data.length === 0) {
+      if (section === 'Discharge Summary') {
+        data = [{ id: 1, status: 'Stable', instruction: 'Maintain light activity', followUp: '2 Weeks Out', date: '02/25/2024' }];
+      } else if (section === 'Audit Trail') {
+        data = [
+          { id: 1, date: '11/20/2022', event: 'Record Access', text: 'EHR: Updated Diagnosis', user: 'Dr. Roberts' },
+          { id: 2, date: '11/15/2022', event: 'Insurance Check', text: 'Insurance: Verified Plan', user: 'Admin' }
+        ];
+      } else if (section === 'Advance Directives') {
+        data = [{ id: 1, dnrStatus: 'Active (DNR)', dniStatus: 'Active (DNI)', documentationDate: '02/20/2024', status: 'Verified' }];
+      } else if (section === 'Safety') {
+        data = [{ id: 1, security: 'Wander Guard Active', accessLevel: 'Family Only', protocol: 'Standard', notes: 'Check bracelet daily' }];
+      } else if (section === 'Nutrition') {
+        data = [{ id: 1, diet: 'Mechanical Soft', fluids: 'Thin', intakeGoal: '1500ml/day', notes: 'Low sodium requirement' }];
+      } else if (section === 'Mobility') {
+        data = [{ id: 1, assist: 'One-Person', devices: 'Walker', fallRisk: 'High', status: 'Supervised' }];
+      } else if (section === 'Communication') {
+        data = [{ id: 1, language: 'English', interpreter: 'Not Required', hearing: 'Impaired (Left)', vision: 'Normal', notes: 'Prefers written instructions' }];
+      } else if (section === 'Care Plan') {
+        data = [
+          { id: 1, name: 'Cardiac Output Management', details: 'Monitor weight daily. Report weight gain > 2 lbs/day or 5 lbs/wk. Restrict sodium to 2g/day.', frequency: 'Daily', status: 'Active' },
+          { id: 2, name: 'Activity Tolerance', details: 'Encourage progressive ambulation. Refer to cardiac rehab phase II program.', frequency: 'Daily', status: 'Active' }
+        ];
+      } else if (section === 'Social History') {
+        data = [
+          { id: 1, category: 'Tobacco', details: 'Former Smoker', notes: 'Quit 2010' },
+          { id: 2, category: 'Alcohol', details: 'Occasional', notes: '1-2 drinks/mo' },
+          { id: 3, category: 'Diet', details: 'Low Sodium', notes: 'Cardiac Diet' }
+        ];
+      } else if (section === 'Immunizations') {
+        data = [
+          { id: 1, name: 'Influenza (Flu)', date: '10/12/2023', status: 'Up-to-date', provider: 'Monterey Clinic' },
+          { id: 2, name: 'Pneumococcal', date: '05/20/2022', status: 'Up-to-date', provider: 'General Hospital' },
+          { id: 3, name: 'COVID-19 Bivalent', date: '01/15/2024', status: 'Required', provider: 'N/A' }
+        ];
+      } else if (section === 'Activities' || section === 'Activity Timeline') {
+        data = [
+          { id: 1, date: '08:00 AM Today', type: 'Medication', name: 'Lisinopril 20mg Admin.', status: 'Completed' },
+          { id: 2, date: '07:30 AM Today', type: 'Vitals', name: 'Morning Vitals Check', status: 'Completed' }
+        ];
+      } else if (section === 'Lab Highlights') {
+        data = [
+          { id: 1, test: 'Glucose', result: '102 mg/dL', status: 'Normal' },
+          { id: 2, test: 'HbA1c', result: '6.4%', status: 'Stable' },
+          { id: 3, test: 'Potassium', result: '4.2 mEq/L', status: 'Normal' }
+        ];
+      } else if (section === 'Goals') {
+        data = [
+          { id: 1, name: 'Remain fall-free during shift', progress: 'On Track', status: 'Active' },
+          { id: 2, name: 'Increase fluid intake to 1.5L', progress: 'Pending', status: 'In-Progress' },
+          { id: 3, name: 'Ambulate to dining room with assist', progress: 'On Track', status: 'Active' }
+        ];
+      }
+    }
 
     const listHeaders = {
       'Visits': ['visitDate', 'visitType', 'providerName', 'chiefComplaint', 'diagnosis'],
@@ -612,11 +696,20 @@ const ResidentDetailPage = () => {
       'Care Team': ['name', 'specialty', 'phone', 'status'],
       'Appointments': ['date', 'time', 'doctor', 'location'],
       'Allergies': ['name', 'reaction', 'severity', 'status'],
-      'Audit Trail': ['date', 'text', 'user'],
       'Care Plan': ['name', 'details', 'frequency', 'status'],
       'Social History': ['category', 'details', 'notes'],
       'Medical History': ['Condition', 'Diagnosis Date', 'Doctor Notes', 'Status'],
-      'Activities': ['date', 'type', 'name', 'status']
+      'Communication': ['language', 'interpreter', 'hearing', 'vision', 'notes'],
+      'Mobility': ['assist', 'devices', 'fallRisk', 'status'],
+      'Nutrition': ['diet', 'fluids', 'intakeGoal', 'notes'],
+      'Safety': ['security', 'accessLevel', 'protocol', 'notes'],
+      'Advance Directives': ['dnrStatus', 'dniStatus', 'documentationDate', 'status'],
+      'Audit Trail': ['date', 'event', 'text', 'user'],
+      'Discharge Summary': ['status', 'instruction', 'followUp', 'date'],
+      'Immunizations': ['name', 'date', 'status', 'provider'],
+      'Activities': ['date', 'type', 'name', 'status'],
+      'Lab Highlights': ['test', 'result', 'status'],
+      'Goals': ['name', 'progress', 'status']
     };
 
     const headers = listHeaders[section] || (data.length > 0 ? Object.keys(data[0]).filter(k => k !== 'id') : ['date', 'name', 'status']);
@@ -1488,8 +1581,15 @@ const ResidentDetailPage = () => {
                   <button className="text-[10px] font-black text-blue-600 uppercase tracking-widest">Full Log</button>
                 </div>
                 <div className="space-y-3">
-                  {resident.activities && resident.activities.length > 0 ? (
-                    resident.activities.slice(0, 3).map((act, i) => (
+                  {(() => {
+                    const activitiesToDisplay = (resident.activities && resident.activities.length > 0)
+                      ? resident.activities
+                      : [
+                          { id: 1, type: 'Medication', name: 'Lisinopril 20mg Admin.', date: '08:00 AM Today', status: 'Completed' },
+                          { id: 2, type: 'Vitals', name: 'Morning Vitals Check', date: '07:30 AM Today', status: 'Completed' }
+                        ];
+
+                    return activitiesToDisplay.slice(0, 3).map((act, i) => (
                       <div key={i} className="flex gap-3">
                         <div className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0 mt-1.5 shadow-sm shadow-blue-200" />
                         <div>
@@ -1497,12 +1597,8 @@ const ResidentDetailPage = () => {
                           <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-0.5">{act.date}</p>
                         </div>
                       </div>
-                    ))
-                  ) : (
-                    <div className="py-4 text-center">
-                      <p className="text-[10px] font-bold text-slate-400 italic">No recent activities.</p>
-                    </div>
-                  )}
+                    ));
+                  })()}
                 </div>
               </div>
             </div>

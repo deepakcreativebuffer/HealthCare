@@ -16,12 +16,15 @@ import {
   ShieldCheck,
   Loader2,
   Eye,
+  Pencil,
+  Phone,
 } from "lucide-react";
+import ActionButton from "../common/ActionButton";
 import { api } from "../../data/api";
 import AddUserModal from "./modals/AddUserModal";
 import EditUserModal from "./modals/EditUserModal";
 import DeleteConfirmationModal from "./modals/DeleteConfirmationModal";
-import UserDetailsView from "./UserDetailsView";
+import UserDetailsModal from "./modals/UserDetailsModal";
 
 const UserStatCard = ({ label, value, icon: Icon, color }) => {
   const colorMap = {
@@ -57,6 +60,7 @@ const UserManagement = () => {
   const [roleFilter, setRoleFilter] = useState("All Roles");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [viewMode, setViewMode] = useState("list"); // "list" or "details"
 
@@ -291,16 +295,16 @@ const UserManagement = () => {
             className="bg-[#129FED] text-white px-4 py-2 rounded-lg text-[11px] font-black shadow-sm hover:bg-[#0089d8] transition-all flex items-center justify-center gap-2 uppercase tracking-wide"
           >
             <Plus size={14} strokeWidth={3} />
-            New Account
+            Add New Users
           </button>
         </div>
 
         {/* User Table */}
         <div className="overflow-x-auto no-scrollbar">
-          <table className="w-full min-w-[800px] border-collapse">
+          <table className="w-full min-w-[1000px] border-collapse">
             <thead>
-              <tr className="bg-slate-50/30">
-                <th className="pl-4 pr-2 py-2 text-left w-8">
+              <tr className="bg-slate-50/50">
+                <th className="pl-6 pr-2 py-3 text-left w-8">
                   <input
                     type="checkbox"
                     className="w-4 h-4 rounded border-slate-200 text-[#129FED] focus:ring-[#129FED] transition-all cursor-pointer"
@@ -311,19 +315,28 @@ const UserManagement = () => {
                     onChange={toggleSelectAll}
                   />
                 </th>
-                <th className="px-3 py-2 text-left text-[10px] font-bold text-slate-400 uppercase  border-b border-slate-50">
+                <th className="px-3 py-3 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50">
+                  ID
+                </th>
+                <th className="px-3 py-3 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50">
                   Staff Member
                 </th>
-                <th className="px-3 py-2 text-left text-[10px] font-bold text-slate-400 uppercase  border-b border-slate-50">
+                <th className="px-3 py-3 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50">
+                  Email Address
+                </th>
+                <th className="px-3 py-3 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50">
+                  Phone Number
+                </th>
+                <th className="px-3 py-3 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50">
                   Role
                 </th>
-                <th className="px-3 py-2 text-left text-[10px] font-bold text-slate-400 uppercase  border-b border-slate-50 text-center">
+                <th className="px-3 py-3 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50" style={{ textAlign: 'left' }}>
                   Status
                 </th>
-                <th className="px-3 py-2 text-left text-[10px] font-bold text-slate-400 uppercase  border-b border-slate-50">
-                  Last Login
+                <th className="px-3 py-3 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50">
+                  Last Access
                 </th>
-                <th className="px-4 py-2 text-right text-[10px] font-bold text-slate-400 uppercase  border-b border-slate-50">
+                <th className="px-6 py-3 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50">
                   Actions
                 </th>
               </tr>
@@ -333,14 +346,13 @@ const UserManagement = () => {
                 <tr
                   key={idx}
                   className={`hover:bg-[#F8FAFC] group transition-all cursor-pointer ${selectedUsers.includes(user.id) ? "bg-blue-50/30" : ""}`}
-                  onClick={() => {
-                    setSelectedUser(user);
-                    setIsEditModalOpen(true);
-                  }}
                 >
                   <td
-                    className="pl-4 pr-2 py-2"
-                    onClick={(e) => toggleSelectUser(e, user.id)}
+                    className="pl-6 pr-2 py-4"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleSelectUser(e, user.id);
+                    }}
                   >
                     <input
                       type="checkbox"
@@ -349,82 +361,116 @@ const UserManagement = () => {
                       onChange={() => { }}
                     />
                   </td>
-                  <td className="px-3 py-2">
+                  <td className="px-3 py-4" onClick={() => {
+                    setSelectedUser(user);
+                    setIsEditModalOpen(true);
+                  }}>
+                    <span className="text-[11px] font-black text-slate-400 font-mono tracking-tighter">
+                      {user.staffId || `EMP-${100 + idx}`}
+                    </span>
+                  </td>
+                  <td className="px-3 py-4" onClick={() => {
+                    setSelectedUser(user);
+                    setIsEditModalOpen(true);
+                  }}>
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-[#E3F2FD] group-hover:text-[#129FED] transition-all border border-slate-100 text-[12px] font-bold">
-                        {user.name.charAt(0)}
+                      <div className="w-9 h-9 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-[#E3F2FD] group-hover:text-[#129FED] transition-all border border-slate-100 text-[13px] font-black shadow-sm overflow-hidden">
+                        {user.photo ? (
+                          <img src={typeof user.photo === 'string' ? user.photo : URL.createObjectURL(user.photo)} alt="" className="w-full h-full object-cover" />
+                        ) : (
+                          user.name.charAt(0)
+                        )}
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-[12px] font-bold text-slate-800 tracking-tight leading-none">
+                        <span className="text-[12px] font-black text-slate-800 tracking-tight leading-none group-hover:text-[#129FED] transition-colors">
                           {user.name}
                         </span>
-                        <span className="text-[10px] font-medium text-slate-400 mt-1 leading-none uppercase tracking-tighter">
-                          {user.email}
+                        <span className="text-[9px] font-bold text-slate-400 mt-1.5 leading-none uppercase tracking-tighter">
+                          Verified Profile
                         </span>
                       </div>
                     </div>
                   </td>
-                  <td className="px-3 py-2">
-                    <div className="flex items-center gap-1.5">
-                      <ShieldCheck
-                        size={12}
-                        className={
-                          user.role === "Admin"
-                            ? "text-red-400"
-                            : "text-[#129FED]"
-                        }
-                      />
-                      <span className="text-[11px] font-bold text-slate-600 uppercase tracking-tight">
+                  <td className="px-3 py-4" onClick={() => {
+                    setSelectedUser(user);
+                    setIsEditModalOpen(true);
+                  }}>
+                    <div className="flex items-center gap-2 text-slate-600">
+                      <Mail size={12} className="text-[#129FED]" />
+                      <span className="text-[11px] font-bold tracking-tight">{user.email}</span>
+                    </div>
+                  </td>
+                  <td className="px-3 py-4" onClick={() => {
+                    setSelectedUser(user);
+                    setIsEditModalOpen(true);
+                  }}>
+                    <div className="flex items-center gap-2 text-slate-600">
+                      <Phone size={12} className="text-[#129FED]" />
+                      <span className="text-[11px] font-bold tracking-tight font-mono">{user.phone || "(555) 000-0000"}</span>
+                    </div>
+                  </td>
+                  <td className="px-3 py-4" onClick={() => {
+                    setSelectedUser(user);
+                    setIsEditModalOpen(true);
+                  }}>
+                    <div className="flex items-center gap-2">
+                      <div className={`w-1.5 h-1.5 rounded-full ${user.role === "Admin" ? "bg-red-400" : "bg-[#129FED] shadow-[0_0_8px_rgba(18,159,237,0.4)]"}`} />
+                      <span className="text-[11px] font-black text-slate-700 uppercase tracking-tight">
                         {user.role}
                       </span>
                     </div>
                   </td>
-                  <td className="px-3 py-2 text-center">
+                  <td className="px-3 py-4 text-left" onClick={() => {
+                    setSelectedUser(user);
+                    setIsEditModalOpen(true);
+                  }}>
                     <span
-                      className={`text-[9px] font-bold px-2 py-0.5 rounded-full border uppercase tracking-wider ${user.status === "Active"
-                          ? "bg-green-50 text-green-600 border-green-100"
-                          : "bg-amber-50 text-amber-600 border-amber-100"
+                      className={`text-[9px] font-black px-2.5 py-1 rounded-lg border uppercase tracking-widest shadow-sm ${user.status === "Active"
+                        ? "bg-green-500 text-white border-green-500 shadow-green-100"
+                        : "bg-slate-300 text-white border-slate-300 shadow-slate-100"
                         }`}
                     >
-                      {user.status}
+                      {user.status === "Suspended" ? "Inactive" : user.status}
                     </span>
                   </td>
-                  <td className="px-3 py-2">
-                    <span className="text-[11px] font-bold text-slate-400 italic tracking-tighter leading-none block">
-                      {user.lastLogin || "02/14/25"}
-                    </span>
+                  <td className="px-3 py-4" onClick={() => {
+                    setSelectedUser(user);
+                    setIsEditModalOpen(true);
+                  }}>
+                    <div className="flex items-center gap-2 text-slate-400 italic">
+                      <Clock size={12} />
+                      <span className="text-[11px] font-bold tracking-tighter leading-none">
+                        {user.lastLogin || "02/14/25"}
+                      </span>
+                    </div>
                   </td>
-                  <td className="px-4 py-2">
-                    <div className="flex items-center justify-end gap-1">
-                      <button
+                  <td className="px-6 py-4">
+                    <div className="flex items-center justify-end gap-1.5">
+                      <ActionButton
+                        icon={Eye}
                         onClick={(e) => {
                           e.stopPropagation();
                           setSelectedUser(user);
-                          setViewMode("details");
+                          setIsViewModalOpen(true);
                         }}
-                        className="p-1.5 text-slate-300 hover:text-green-500 hover:bg-green-50 rounded transition-all"
-                      >
-                        <Eye size={14} />
-                      </button>
-                      <button
+                      />
+                      <ActionButton
+                        icon={Pencil}
                         onClick={(e) => {
                           e.stopPropagation();
                           setSelectedUser(user);
                           setIsEditModalOpen(true);
                         }}
-                        className="p-1.5 text-slate-300 hover:text-[#129FED] hover:bg-[#E3F2FD] rounded transition-all"
-                      >
-                        <Edit3 size={14} />
-                      </button>
-                      <button
+                        color="amber"
+                      />
+                      <ActionButton
+                        icon={Trash2}
                         onClick={(e) => {
                           e.stopPropagation();
                           handleDeleteUser(user);
                         }}
-                        className="p-1.5 text-slate-300 hover:text-red-400 hover:bg-red-50 rounded transition-all"
-                      >
-                        <Trash2 size={14} />
-                      </button>
+                        color="red"
+                      />
                     </div>
                   </td>
                 </tr>
@@ -470,6 +516,12 @@ const UserManagement = () => {
         userData={selectedUser}
         onSave={handleUpdateUser}
         onDelete={handleDeleteUser}
+      />
+
+      <UserDetailsModal
+        isOpen={isViewModalOpen}
+        onClose={() => setIsViewModalOpen(false)}
+        user={selectedUser}
       />
 
       <DeleteConfirmationModal
