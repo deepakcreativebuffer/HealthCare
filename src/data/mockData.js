@@ -15,7 +15,38 @@ export const mockData = {
       allergies: ["Penicillin"],
       emergencyContact: { name: "Robert Johnson", relation: "Son", phone: "555-0123" },
       insurance: { provider: "Medicare", id: "MC123456789" },
-      vitals: { bp: "135/85", bloodSugar: "110 mg/dL", weight: 65, heartRate: 72 }
+      vitals: { bp: "135/85", bloodSugar: "110 mg/dL", weight: 65, heartRate: 72 },
+      visits: [
+        { id: 1, visitDate: '11/20/2022', visitType: 'Office Visit', providerName: 'Dr. Emily Roberts', chiefComplaint: 'Chest Pain', diagnosis: 'I20.9 - Angina Pectoris', procedure: '93000 - ECG', bp: '120/80', pulse: '72', temp: '98.6°F', weight: '185 lbs', notes: 'Patient presented with independent chest pain. ECG shows minor changes. RADIATING TO LEFT ARM.' }
+      ],
+      diagnosisProblems: [
+        { id: 1, name: 'Atrial Fibrillation', onset: '2018', type: 'Chronic', status: 'Active', notes: 'Managed with anticoagulants.' },
+        { id: 2, name: 'Hypertension', onset: '2015', type: 'Chronic', status: 'Controlled', notes: 'Stable on Lisinopril.' }
+      ],
+      labResults: [
+        { id: 1, name: 'Comprehensive Metabolic Panel', date: '12/10/2022', value: 'Normal', flag: 'N', status: 'Final' },
+        { id: 2, name: 'Lipid Panel', date: '12/10/2022', value: 'High', flag: 'H', status: 'Final' }
+      ],
+      medicationsList: [
+        { id: 1, name: 'Lisinopril', dose: '10mg', details: '1 PO Daily', status: 'Active' },
+        { id: 2, name: 'Atorvastatin', dose: '40mg', details: '1 PO QHS', status: 'Active' },
+        { id: 3, name: 'Metformin', dose: '500mg', details: '1 PO BID w/ meals', status: 'Active' }
+      ],
+      appointments: [
+        { id: 1, date: '12/10/2022', time: '10:00 AM', reason: 'Regular Checkup', doctor: 'Dr. Emily Roberts', location: 'Room 402', status: 'Scheduled' }
+      ],
+      allergies: [
+        { id: 1, name: 'Penicillin', reaction: 'Anaphylaxis', severity: 'Severe', status: 'Active' },
+        { id: 2, name: 'Peanuts', reaction: 'Hives', severity: 'Moderate', status: 'Active' }
+      ],
+      billingRecords: [
+        { id: 1, invoiceNumber: 'INV-98765', serviceDate: '11/20/2022', charges: '$300.00', balance: '$300.00', status: 'Pending' },
+        { id: 2, invoiceNumber: 'INV-98764', serviceDate: '11/15/2022', charges: '$150.00', balance: '$50.00', status: 'Partial' }
+      ],
+      medicalHistory: [
+        { id: 1, Condition: 'Unspecified atrial fibrillation', 'Diagnosis Date': '2018' },
+        { id: 2, Condition: 'Essential (primary) hypertension', 'Diagnosis Date': '2015' }
+      ]
     },
     {
       id: "RES002",
@@ -32,7 +63,24 @@ export const mockData = {
       allergies: ["Sulfa Drugs"],
       emergencyContact: { name: "Sarah Williams", relation: "Daughter", phone: "555-0124" },
       insurance: { provider: "Aetna", id: "AE987654321" },
-      vitals: { bp: "128/80", bloodSugar: "95 mg/dL", weight: 78, heartRate: 68 }
+      vitals: { bp: "128/80", bloodSugar: "95 mg/dL", weight: 78, heartRate: 68 },
+      visits: [
+        { id: 1, visitDate: '11/15/2022', visitType: 'Follow-up', providerName: 'Dr. John Chen', chiefComplaint: 'Memory Fog', diagnosis: 'F03.90 - Dementia', bp: '130/80', pulse: '68', temp: '98.4°F', weight: '172 lbs', notes: 'Daughter reports increasing confusion in evenings.' }
+      ],
+      diagnosisProblems: [
+        { id: 1, name: 'Dementia', onset: '2021', type: 'Progressive', status: 'Active' },
+        { id: 2, name: 'Osteoarthritis', onset: '2019', type: 'Chronic', status: 'Stable' }
+      ],
+      medicationsList: [
+        { id: 1, name: 'Donepezil', dose: '10mg', details: '1 PO Daily', status: 'Active' },
+        { id: 2, name: 'Celecoxib', dose: '200mg', details: '1 PO Daily', status: 'Active' }
+      ],
+      billingRecords: [
+        { id: 1, invoiceNumber: 'INV002', serviceDate: '03/05/2024', charges: '$2400.00', balance: '$1400.00', status: 'Pending' }
+      ],
+      allergies: [
+        { id: 1, name: 'Sulfa Drugs', reaction: 'Skin Rash', severity: 'Moderate', status: 'Active' }
+      ]
     },
     {
       id: "RES003",
@@ -49,7 +97,25 @@ export const mockData = {
       allergies: ["Peanuts", "Dust"],
       emergencyContact: { name: "David Miller", relation: "Spouse", phone: "555-0125" },
       insurance: { provider: "Blue Cross Blue Shield", id: "BC112233445" },
-      vitals: { bp: "120/75", bloodSugar: "90 mg/dL", weight: 60, heartRate: 70 }
+      vitals: { bp: "120/75", bloodSugar: "90 mg/dL", weight: 60, heartRate: 70 },
+      visits: [
+        { id: 1, visitDate: '01/10/2024', visitType: 'Specialist', providerName: 'Dr. Sarah Smith', chiefComplaint: 'Joint Pain', diagnosis: 'M81.0 - Osteoporosis', bp: '118/76', pulse: '70', temp: '98.8°F', weight: '135 lbs', notes: 'Scheduled for bone density scan.' }
+      ],
+      diagnosisProblems: [
+        { id: 1, name: 'Asthma', onset: '2010', type: 'Intermittent', status: 'Active' },
+        { id: 2, name: 'Osteoporosis', onset: '2022', type: 'Chronic', status: 'Active' }
+      ],
+      medicationsList: [
+        { id: 1, name: 'Albuterol', dose: 'Inhaler', details: '2 Puffs PRN', status: 'Active' },
+        { id: 2, name: 'Alendronate', dose: '70mg', details: '1 PO Weekly', status: 'Active' }
+      ],
+      billingRecords: [
+        { id: 1, invoiceNumber: 'INV004', serviceDate: '03/10/2024', charges: '$1500.00', balance: '$0.00', status: 'Paid' }
+      ],
+      allergies: [
+        { id: 1, name: 'Peanuts', reaction: 'Swelling', severity: 'Severe', status: 'Active' },
+        { id: 2, name: 'Dust', reaction: 'Sneezing', severity: 'Mild', status: 'Active' }
+      ]
     },
     {
       id: "RES004",

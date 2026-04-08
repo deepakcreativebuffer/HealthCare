@@ -100,6 +100,65 @@ export const api = {
         progress: 60
       };
     }
+    let needsUpdate = false;
+    if (!resident.visits || resident.visits.length === 0) {
+      resident.visits = [
+        { id: 1, visitDate: '11/20/2022', visitType: 'Office Visit', providerName: 'Dr. Emily Roberts', chiefComplaint: 'Chest Pain', diagnosis: 'I20.9 - Angina Pectoris', procedure: '93000 - ECG', bp: '120/80', pulse: '72', temp: '98.6°F', weight: '185 lbs', notes: 'Patient presented with independent chest pain. ECG shows minor changes. RADIATING TO LEFT ARM.' }
+      ];
+      needsUpdate = true;
+    }
+    if (!resident.allergies || (Array.isArray(resident.allergies) && (resident.allergies.length === 0 || typeof resident.allergies[0] === 'string'))) {
+      resident.allergies = [
+        { id: 1, name: 'Penicillin', reaction: 'Anaphylaxis', severity: 'Severe', status: 'Active' },
+        { id: 2, name: 'Peanuts', reaction: 'Hives', severity: 'Moderate', status: 'Active' }
+      ];
+      needsUpdate = true;
+    }
+    if (!resident.billingRecords || resident.billingRecords.length === 0) {
+      resident.billingRecords = [
+        { id: 1, invoiceNumber: 'INV-98765', serviceDate: '11/20/2022', charges: '$300.00', balance: '$300.00', status: 'Pending' },
+        { id: 2, invoiceNumber: 'INV-98764', serviceDate: '11/15/2022', charges: '$150.00', balance: '$50.00', status: 'Partial' }
+      ];
+      needsUpdate = true;
+    }
+    if (!resident.medicalHistory || resident.medicalHistory.length === 0) {
+      resident.medicalHistory = [
+        { id: 1, Condition: 'Unspecified atrial fibrillation', 'Diagnosis Date': '2018', 'Doctor Notes': 'Controlled with medication', Status: 'Chronic' },
+        { id: 2, Condition: 'Essential (primary) hypertension', 'Diagnosis Date': '2015', 'Doctor Notes': 'Stable', Status: 'Controlled' }
+      ];
+      needsUpdate = true;
+    }
+    if (!resident.insuranceInfo || resident.insuranceInfo.length === 0) {
+      resident.insuranceInfo = [
+        { id: 1, company: 'Medicare', plan: 'Plan G', policyNumber: 'MC123456789', status: 'Active' }
+      ];
+      needsUpdate = true;
+    }
+    if (!resident.labResults || resident.labResults.length === 0) {
+      resident.labResults = [
+        { id: 1, name: 'Comprehensive Metabolic Panel', orderedDate: '12/10/2022', value: 'Normal', status: 'Final' },
+        { id: 2, name: 'Lipid Panel', orderedDate: '12/10/2022', value: 'High Cholesterol', status: 'Final' }
+      ];
+      needsUpdate = true;
+    }
+    if (!resident.careTeam || resident.careTeam.length === 0) {
+      resident.careTeam = [
+        { id: 1, name: 'Dr. Emily Roberts', specialty: 'Primary Care', phone: '(555) 123-4567', email: 'emily.r@care.com', status: 'Active' },
+        { id: 2, name: 'Dr. John Chen', specialty: 'Cardiology', phone: '(555) 987-6543', email: 'john.c@care.com', status: 'Active' }
+      ];
+      needsUpdate = true;
+    }
+    if (!resident.pharmacy || resident.pharmacy.length === 0) {
+      resident.pharmacy = [
+        { id: 1, name: 'CVS Pharmacy #1234', address: '123 Main St, Springfield IL', phone: '(555) 987-6543', status: 'Active' }
+      ];
+      needsUpdate = true;
+    }
+
+    if (needsUpdate) {
+      const updatedResidents = residents.map(r => r.id === resident.id ? resident : r);
+      setStoredData(KEYS.RESIDENTS, updatedResidents);
+    }
     
     return simulateAPI(resident);
   },

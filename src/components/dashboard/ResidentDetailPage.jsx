@@ -26,6 +26,10 @@ import {
   Printer,
   Edit,
   MoreVertical,
+  X,
+  Plus,
+  Trash2,
+  CheckCircle2,
 } from "lucide-react";
 import { api } from "../../data/api";
 import Navbar from "../layout/Navbar";
@@ -36,21 +40,440 @@ const ResidentDetailPage = () => {
   const navigate = useNavigate();
   const [resident, setResident] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [activeModal, setActiveModal] = useState(null); // { type: 'LIST' | 'FORM', section: 'Visits' | ... }
+
+  const openModal = (section, type = 'LIST') => {
+    setActiveModal({ section, type });
+  };
+
+  const closeModal = () => {
+    setActiveModal(null);
+  };
+
+  const fetchResident = async () => {
+    setIsLoading(true);
+    try {
+      const data = await api.getResidentData(id);
+      setResident(data);
+    } catch (error) {
+      console.error("Error fetching resident data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchResident = async () => {
-      setIsLoading(true);
-      try {
-        const data = await api.getResidentData(id);
-        setResident(data);
-      } catch (error) {
-        console.error("Error fetching resident data:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
     fetchResident();
   }, [id]);
+
+  const handleSave = async (formData) => {
+    const sectionToKey = {
+      'Visits': 'visits',
+      'Diagnosis': 'diagnosisProblems',
+      'Lab': 'labResults',
+      'Billing': 'billingRecords',
+      'Insurance': 'insuranceInfo',
+      'Documents': 'recentDocuments',
+      'Fax': 'faxLogs',
+      'Medications': 'medicationsList',
+      'Care Team': 'careTeam',
+      'Appointments': 'appointments',
+      'Allergies': 'allergies',
+      'Audit Trail': 'auditTrail',
+      'Care Plan': 'carePlan',
+      'Social History': 'socialHistory'
+    };
+
+    const key = sectionToKey[activeModal.section] || activeModal.section.toLowerCase();
+
+    try {
+      if (activeModal.editItem) {
+        await api.updateResidentSubData(resident.id, key, activeModal.editItem.id, formData);
+      } else {
+        await api.addResidentSubData(resident.id, key, formData);
+      }
+      await fetchResident();
+      closeModal();
+    } catch (error) {
+      console.error("Error saving data:", error);
+    }
+  };
+
+  const handleDelete = async (section, itemId) => {
+    const sectionToKey = {
+      'Visits': 'visits',
+      'Diagnosis': 'diagnosisProblems',
+      'Lab': 'labResults',
+      'Billing': 'billingRecords',
+      'Insurance': 'insuranceInfo',
+      'Documents': 'recentDocuments',
+      'Fax': 'faxLogs',
+      'Medications': 'medicationsList',
+      'Care Team': 'careTeam',
+      'Appointments': 'appointments',
+      'Allergies': 'allergies',
+      'Audit Trail': 'auditTrail',
+      'Care Plan': 'carePlan',
+      'Social History': 'socialHistory'
+    };
+    const key = sectionToKey[section] || section.toLowerCase();
+    try {
+      await api.deleteResidentSubData(resident.id, key, itemId);
+      await fetchResident();
+    } catch (error) {
+      console.error("Error deleting data:", error);
+    }
+  };
+
+  const renderModalContent = () => {
+    if (!activeModal) return null;
+
+    const { section, type, editItem } = activeModal;
+
+    const sectionToKey = {
+      'Visits': 'visits',
+      'Diagnosis': 'diagnosisProblems',
+      'Lab': 'labResults',
+      'Billing': 'billingRecords',
+      'Insurance': 'insuranceInfo',
+      'Documents': 'recentDocuments',
+      'Fax': 'faxLogs',
+      'Medications': 'medicationsList',
+      'Care Team': 'careTeam',
+      'Appointments': 'appointments',
+      'Allergies': 'allergies',
+      'Audit Trail': 'auditTrail',
+      'Care Plan': 'carePlan',
+      'Social History': 'socialHistory',
+      'Medical History': 'medicalHistory',
+      'Discharge Summary': 'dischargeSummary',
+      'Pharmacy': 'pharmacy',
+      'Report': 'report'
+    };
+
+    if (type === 'FORM') {
+      const formFields = {
+        'Visits': [
+          'visitDate', 'visitType', 'providerName', 'chiefComplaint',
+          'hpi', 'ros', 'physicalExam',
+          'bp', 'pulse', 'temp', 'weight', 'height', 'bmi',
+          'diagnosis', 'procedure', 'notes'
+        ],
+        'Diagnosis': [
+          'name', 'onset', 'type', 'status', 'notes'
+        ],
+        'Lab': [
+          'name', 'orderedDate', 'resultDate', 'value',
+          'range', 'flag', 'orderedBy', 'status'
+        ],
+        'Billing': [
+          'invoiceNumber', 'serviceDate', 'charges', 'balance', 'status'
+        ],
+        'Insurance': [
+          'company', 'plan', 'policyNumber', 'groupNumber',
+          'subscriber', 'eligibility', 'status'
+        ],
+        'Documents': [
+          'name', 'date', 'type', 'uploadedBy'
+        ],
+        'Fax': [
+          'faxDate', 'from', 'to', 'subject', 'status'
+        ],
+        'Medications': ['name', 'dose', 'details', 'status'],
+        'Care Team': ['name', 'specialty', 'phone', 'email', 'organization'],
+        'Appointments': ['date', 'time', 'doctor', 'location'],
+        'Allergies': ['name', 'reaction', 'severity', 'status'],
+        'Audit Trail': ['date', 'text', 'user'],
+        'Care Plan': ['name', 'details', 'frequency', 'status'],
+        'Social History': ['category', 'details', 'notes']
+      };
+
+      const fields = formFields[section] || ['name', 'details', 'status'];
+
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        const formData = {};
+        const form = e.target;
+        fields.forEach(field => {
+          formData[field] = form[field].value;
+        });
+        handleSave(formData);
+      };
+
+      return (
+        <div className="p-6">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-black text-slate-800 uppercase tracking-tight">{editItem ? 'Edit' : 'Add'} {section}</h2>
+            <button onClick={closeModal} className="text-slate-400 hover:text-slate-600 transition-colors">
+              <X size={24} />
+            </button>
+          </div>
+          <form onSubmit={handleSubmit}>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+              {fields.map((field, i) => (
+                <div key={i} className="space-y-1">
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest leading-tight">{field.replace(/([A-Z])/g, ' $1').toUpperCase()}</label>
+                  <input
+                    name={field}
+                    type="text"
+                    defaultValue={editItem ? editItem[field] : ''}
+                    placeholder={`Enter ${field}`}
+                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-sm font-bold text-slate-700"
+                  />
+                </div>
+              ))}
+            </div>
+            <div className="flex justify-end gap-3 pt-6 border-t border-slate-100">
+              <button type="button" onClick={closeModal} className="px-6 py-2.5 bg-slate-100 text-slate-600 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-slate-200 transition-all">Cancel</button>
+              <button type="submit" className="px-6 py-2.5 bg-blue-600 text-white rounded-xl font-black uppercase tracking-widest text-xs hover:bg-blue-700 transition-all shadow-lg shadow-blue-100">Save {section}</button>
+            </div>
+          </form>
+        </div>
+      );
+    }
+
+    if (section === 'Report') {
+      return (
+        <div className="flex flex-col h-full bg-white overflow-hidden">
+          <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center text-white shadow-sm">
+                <FileText size={18} />
+              </div>
+              <h2 className="text-sm font-black text-slate-800 uppercase tracking-tight">
+                Comprehensive Patient Report Preview
+              </h2>
+            </div>
+            <button onClick={closeModal} className="p-1.5 hover:bg-slate-200 rounded-lg text-slate-400 transition-colors">
+              <X size={20} />
+            </button>
+          </div>
+
+          <div className="flex-1 overflow-auto p-8 space-y-8 print:p-0">
+            {/* Report Header */}
+            <div className="flex justify-between items-start border-b-2 border-slate-900 pb-6">
+              <div>
+                <h1 className="text-3xl font-black text-slate-900 uppercase">{resident.name}</h1>
+                <p className="text-slate-500 font-bold uppercase tracking-widest text-xs mt-1">Patient Clinical Summary Report</p>
+              </div>
+              <div className="text-right">
+                <p className="text-sm font-black text-slate-900 uppercase">Generated On</p>
+                <p className="text-xs font-bold text-slate-500">{new Date().toLocaleDateString()} {new Date().toLocaleTimeString()}</p>
+              </div>
+            </div>
+
+            {/* Demographics */}
+            <div className="grid grid-cols-3 gap-6">
+              <div>
+                <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-1">Patient ID</p>
+                <p className="text-sm font-bold text-slate-800">{resident.id}</p>
+              </div>
+              <div>
+                <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-1">Date of Birth</p>
+                <p className="text-sm font-bold text-slate-800">03/15/1970 (Age: 51)</p>
+              </div>
+              <div>
+                <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-1">Gender</p>
+                <p className="text-sm font-bold text-slate-800">Male</p>
+              </div>
+            </div>
+
+            {/* Clinical Overview */}
+            <div className="space-y-4">
+              <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest border-l-4 border-blue-600 pl-3">Active Conditions & Diagnosis</h3>
+              <div className="grid grid-cols-2 gap-4">
+                {resident.diagnosisProblems?.map((diag, i) => (
+                  <div key={i} className="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                    <p className="text-sm font-bold text-slate-800">{diag.name}</p>
+                    <p className="text-[10px] font-black text-slate-400 uppercase mt-1">{diag.status} • Onset: {diag.onset}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Medications & Allergies */}
+            <div className="grid grid-cols-2 gap-8">
+              <div className="space-y-4">
+                <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest border-l-4 border-emerald-600 pl-3">Medications List</h3>
+                <div className="space-y-2">
+                  {resident.medicationsList?.map((med, i) => (
+                    <div key={i} className="flex justify-between items-center py-2 border-b border-slate-100">
+                      <div>
+                        <p className="text-sm font-bold text-slate-800">{med.name}</p>
+                        <p className="text-[10px] font-bold text-slate-500">{med.details}</p>
+                      </div>
+                      <p className="text-xs font-black text-slate-400">{med.dose}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="space-y-4">
+                <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest border-l-4 border-red-600 pl-3">Known Allergies</h3>
+                <div className="space-y-2">
+                  {resident.allergies?.map((all, i) => (
+                    <div key={i} className="p-3 bg-red-50 rounded-xl border border-red-100">
+                      <div className="flex justify-between">
+                        <p className="text-sm font-bold text-red-800">{all.name}</p>
+                        <span className="text-[9px] font-black text-red-500 uppercase tracking-tighter bg-white px-1.5 py-0.5 rounded border border-red-100">{all.severity}</span>
+                      </div>
+                      <p className="text-[10px] font-bold text-red-600/70 mt-1 uppercase tracking-widest">Reaction: {all.reaction}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Recent Vital Signs */}
+            <div className="space-y-4">
+              <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest border-l-4 border-blue-600 pl-3">Latest Clinical Vitals</h3>
+              {resident.visits && resident.visits.length > 0 ? (
+                <div className="grid grid-cols-4 gap-4">
+                  <div className="p-4 bg-slate-900 text-white rounded-2xl text-center">
+                    <p className="text-[10px] font-black uppercase tracking-widest opacity-60 mb-1">Blood Pressure</p>
+                    <p className="text-xl font-black">{resident.visits[0].bp || '-'}</p>
+                  </div>
+                  <div className="p-4 bg-slate-900 text-white rounded-2xl text-center">
+                    <p className="text-[10px] font-black uppercase tracking-widest opacity-60 mb-1">Pulse Rate</p>
+                    <p className="text-xl font-black">{resident.visits[0].pulse || '-'}</p>
+                  </div>
+                  <div className="p-4 bg-slate-900 text-white rounded-2xl text-center">
+                    <p className="text-[10px] font-black uppercase tracking-widest opacity-60 mb-1">Body Temp</p>
+                    <p className="text-xl font-black">{resident.visits[0].temp || '-'}</p>
+                  </div>
+                  <div className="p-4 bg-slate-900 text-white rounded-2xl text-center">
+                    <p className="text-[10px] font-black uppercase tracking-widest opacity-60 mb-1">Body Weight</p>
+                    <p className="text-xl font-black">{resident.visits[0].weight || '-'}</p>
+                  </div>
+                </div>
+              ) : (
+                <p className="text-xs font-bold text-slate-400 italic">No vital signs recorded recently.</p>
+              )}
+            </div>
+          </div>
+
+          <div className="p-4 border-t border-slate-100 flex justify-end gap-3 bg-slate-50/50">
+            <button onClick={closeModal} className="px-6 py-2.5 bg-white border border-slate-200 text-slate-600 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-slate-50 transition-all">Close</button>
+            <button onClick={() => window.print()} className="px-8 py-2.5 bg-slate-900 text-white rounded-xl font-black uppercase tracking-widest text-xs hover:bg-black transition-all shadow-lg shadow-slate-200 flex items-center gap-2">
+              <Printer size={16} /> Print Official Report
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    // LIST VIEW
+    const key = sectionToKey[section] || section.toLowerCase();
+    const data = resident[key] || [];
+
+    const listHeaders = {
+      'Visits': ['date', 'type', 'provider', 'complaint', 'status'],
+      'Diagnosis': ['name', 'onset', 'type', 'status'],
+      'Lab': ['name', 'date', 'value', 'flag', 'status'],
+      'Billing': ['invoiceNumber', 'serviceDate', 'charges', 'balance', 'status'],
+      'Insurance': ['company', 'plan', 'policyNumber', 'status'],
+      'Documents': ['name', 'date', 'type', 'uploadedBy'],
+      'Fax': ['faxDate', 'from', 'to', 'subject', 'status'],
+      'Medications': ['name', 'dose', 'details', 'status'],
+      'Care Team': ['name', 'specialty', 'phone', 'status'],
+      'Appointments': ['date', 'time', 'doctor', 'location'],
+      'Allergies': ['name', 'reaction', 'severity', 'status'],
+      'Audit Trail': ['date', 'text', 'user'],
+      'Care Plan': ['name', 'details', 'frequency', 'status'],
+      'Social History': ['category', 'details', 'notes'],
+      'Medical History': ['Condition', 'Diagnosis Date', 'Doctor Notes', 'Status']
+    };
+
+    const headers = listHeaders[section] || (data.length > 0 ? Object.keys(data[0]).filter(k => k !== 'id') : ['date', 'name', 'status']);
+
+    return (
+      <div className="flex flex-col h-full">
+        <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center text-white shadow-sm ring-4 ring-emerald-50">
+              <Stethoscope size={18} />
+            </div>
+            <h2 className="text-sm font-black text-slate-800 uppercase tracking-tight">
+              {resident.name} | {resident.id || '123456'}
+            </h2>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="p-1.5 hover:bg-slate-200 rounded-lg cursor-pointer text-slate-400 transition-colors">
+              <Search size={16} />
+            </div>
+            <button onClick={closeModal} className="p-1.5 hover:bg-slate-200 rounded-lg text-slate-400 transition-colors">
+              <X size={20} />
+            </button>
+          </div>
+        </div>
+
+        <div className="p-4 flex-1 flex flex-col overflow-hidden">
+          {section !== 'Patient Info' && section !== 'Report' && (
+            <div className="flex justify-end mb-4">
+              <button
+                onClick={() => openModal(section, 'FORM')}
+                className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg text-xs font-black uppercase tracking-widest hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-100 active:scale-95"
+              >
+                Add {section.includes(' ') ? section.split(' ')[0] : section} <Plus size={16} />
+              </button>
+            </div>
+          )}
+
+          <div className="overflow-auto border border-slate-100 rounded-xl flex-1 bg-white">
+            <table className="w-full text-left border-collapse table-fixed">
+              <thead className="sticky top-0 z-10 bg-slate-50 shadow-sm">
+                <tr>
+                  {headers.map((h, i) => (
+                    <th key={i} className="px-4 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                      {h.replace(/([A-Z])/g, ' $1')}
+                    </th>
+                  ))}
+                  <th className="px-4 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right w-24">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-50">
+                {data.length > 0 ? (
+                  data.map((item, idx) => (
+                    <tr key={idx} className="group hover:bg-blue-50/30 transition-colors">
+                      {headers.map((h, i) => (
+                        <td key={i} className="px-4 py-3 text-[11px] font-bold text-slate-700 truncate">
+                          {item[h] || '-'}
+                        </td>
+                      ))}
+                      <td className="px-4 py-3 text-right">
+                        <div className="flex justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button
+                            onClick={() => setActiveModal({ section, type: 'FORM', editItem: item })}
+                            className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-blue-600 hover:border-blue-200 transition-all"
+                          >
+                            <Edit size={14} />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(section, item.id)}
+                            className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-red-600 hover:border-red-200 transition-all"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={headers.length + 1} className="px-4 py-16 text-center text-slate-300">
+                      <div className="flex flex-col items-center gap-2">
+                        <Clipboard size={48} className="opacity-20" />
+                        <p className="font-black uppercase tracking-widest text-xs">No records found</p>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   if (isLoading) {
     return (
@@ -103,144 +526,174 @@ const ResidentDetailPage = () => {
         </div>
 
         {/* Profile Card */}
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-          <div className="p-2 md:p-3 flex flex-col md:flex-row gap-2 md:gap-3">
+        <div onClick={() => openModal('Patient Info')} className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition-all group/profile relative">
+          <div className="p-2 md:p-2.5 flex flex-col md:flex-row gap-2.5 md:gap-4 pl-3">
             {/* Profile Sidebar */}
-            <div className="flex flex-col items-center">
-              <div className="w-20 h-20 rounded-xl bg-slate-100 flex items-center justify-center border-4 border-white shadow-md overflow-hidden ring-1 ring-slate-100">
+            <div className="flex flex-col items-center justify-center">
+              <div className="w-16 h-16 rounded-xl bg-slate-100 flex items-center justify-center border-2 border-white shadow-sm overflow-hidden ring-1 ring-slate-100">
                 {resident.image ? (
                   <img src={resident.image} alt={resident.name} className="w-full h-full object-cover" />
                 ) : (
-                  <User size={64} className="text-slate-300" />
+                  <User size={48} className="text-slate-300" />
                 )}
               </div>
-              <div className="mt-2 flex flex-col items-center gap-2">
-                <button className="flex items-center gap-2 px-4 py-1.5 bg-blue-50 text-blue-600 rounded-full text-xs font-bold hover:bg-blue-100 transition-colors">
-                  <Edit size={14} />
-                  Edit Profile
-                </button>
-              </div>
+              <button className="mt-1.5 flex items-center gap-1.5 px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-[10px] font-black uppercase tracking-tight hover:bg-blue-100 transition-colors">
+                <Edit size={12} />
+                Edit
+              </button>
             </div>
 
-            <div className="flex-1 space-y-2">
-              <div className="flex flex-col md:flex-row md:items-start justify-between gap-2.5">
+            <div className="flex-1 space-y-1.5">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-1">
                 <div>
-                  <h1 className="text-2xl font-black text-slate-800 tracking-tight  uppercase">
+                  <h1 className="text-xl font-black text-slate-800 tracking-tight uppercase leading-none mb-1">
                     {resident.name}
                   </h1>
-                  <div className="flex items-center gap-2.5 mt-1">
-                    <div className="flex items-center gap-1.5 text-slate-400">
-                      <Fingerprint size={14} />
-                      <span className="text-xs font-bold uppercase tracking-wider">Patient ID: <span className="text-slate-800">{resident.id || '123456'}</span></span>
+                  <div className="flex items-center gap-3 overflow-x-auto whitespace-nowrap scrollbar-hide">
+                    <div className="flex items-center gap-1 text-slate-400">
+                      <Fingerprint size={12} />
+                      <span className="text-[10px] font-bold uppercase tracking-tight">ID: <span className="text-slate-800">{resident.id || '123456'}</span></span>
                     </div>
-                    <div className="flex items-center gap-1.5 text-slate-400">
-                      <Calendar size={14} />
-                      <span className="text-xs font-bold uppercase tracking-wider">DOB: <span className="text-slate-800">03/15/1970 (Age: 51)</span></span>
+                    <div className="flex items-center gap-1 text-slate-400">
+                      <Calendar size={12} />
+                      <span className="text-[10px] font-bold uppercase tracking-tight">DOB: <span className="text-slate-800">03/15/1970 (51)</span></span>
                     </div>
-                    <div className="flex items-center gap-1.5 text-slate-400">
-                      <User size={14} />
-                      <span className="text-xs font-bold uppercase tracking-wider">Gender: <span className="text-slate-800">Male</span></span>
+                    <div className="flex items-center gap-1 text-slate-400">
+                      <User size={12} />
+                      <span className="text-[10px] font-bold uppercase tracking-tight">Gender: <span className="text-slate-800">Male</span></span>
+                    </div>
+                    <div className="flex items-center gap-1 text-slate-400 pl-3 border-l border-slate-200">
+                      <span className="text-[10px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded uppercase tracking-widest">Level: Skilled Care</span>
+                    </div>
+                    <div className="flex items-center gap-1 text-slate-400">
+                      <span className="text-[10px] font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded uppercase tracking-widest">Adm: 10/12/2023</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex flex-wrap gap-2">
-                  <span className="px-4 py-1.5 bg-blue-50 text-blue-600 border border-blue-100 rounded-full text-[11px] font-black uppercase tracking-widest flex items-center gap-2 shadow-sm">
-                    <Heart size={14} className="fill-blue-600" />
+                <div className="flex flex-wrap gap-1.5">
+                  <span className="px-2.5 py-1 bg-blue-50 text-blue-600 border border-blue-100 rounded-full text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 shadow-sm">
+                    <Heart size={12} className="fill-blue-600" />
                     Active
                   </span>
-                  <span className="px-4 py-1.5 bg-amber-50 text-amber-600 border border-amber-100 rounded-full text-[11px] font-black uppercase tracking-widest flex items-center gap-2 shadow-sm">
-                    <AlertCircle size={14} className="fill-amber-600" />
+                  <span className="px-2.5 py-1 bg-amber-50 text-amber-600 border border-amber-100 rounded-full text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 shadow-sm">
+                    <AlertCircle size={12} className="fill-amber-600" />
                     Plan G
-                  </span>
-                  <span className="px-4 py-1.5 bg-teal-50 text-teal-600 border border-teal-100 rounded-full text-[11px] font-black uppercase tracking-widest flex items-center gap-2 shadow-sm">
-                    <Heart size={14} className="fill-teal-600" />
-                    Decased
                   </span>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-y-2 gap-x-4 pt-4 border-t border-slate-100">
-                <div className="space-y-2">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-y-2 gap-x-4 pt-3 border-t border-slate-100 pb-1">
+                {/* Insurance & Allergy */}
+                <div className="space-y-2 lg:col-span-1">
                   <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500 shadow-sm border border-blue-100">
-                      <Shield size={14} />
+                    <div className="w-5 h-5 rounded bg-blue-50 flex items-center justify-center text-blue-500 border border-blue-100 shadow-sm">
+                      <Shield size={12} />
                     </div>
                     <div>
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Insurance</p>
-                      <p className="text-[12px] font-bold text-blue-600 underline underline-offset-4 decoration-2">BlueCross BlueShield</p>
+                      <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-0.5">Insurance</p>
+                      <p className="text-[11px] font-bold text-blue-600 underline underline-offset-2">BCBS PPO</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 text-red-600">
-                    <div className="w-6 h-6 rounded-lg bg-red-50 flex items-center justify-center shadow-sm border border-red-100">
-                      <AlertCircle size={14} />
+                  <div className="flex items-center gap-2">
+                    <div className="w-5 h-5 rounded bg-red-50 flex items-center justify-center text-red-500 border border-red-100 shadow-sm">
+                      <AlertCircle size={12} />
                     </div>
                     <div>
-                      <p className="text-[9px] font-black uppercase tracking-widest leading-none mb-1 opacity-70">Allergy</p>
-                      <p className="text-[13px] font-black ">Penicilin <span className="bg-red-600 text-white text-[9px] px-1.5 py-0.5 rounded ml-1">Red</span></p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 rounded-lg bg-teal-50 flex items-center justify-center text-teal-600 shadow-sm border border-teal-100">
-                      <User size={14} />
-                    </div>
-                    <div>
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Provider</p>
-                      <p className="text-[12px] font-bold text-slate-700 underline underline-offset-4 decoration-slate-200 decoration-2 cursor-pointer hover:text-blue-600 transition-colors">Emily Roberts</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400 shadow-sm border border-slate-200">
-                      <Clipboard size={14} />
-                    </div>
-                    <div>
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Condition</p>
-                      <p className="text-[12px] font-bold text-blue-600">Diabetes, Hypertension</p>
+                      <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-0.5">Allergy</p>
+                      <p className="text-[11px] font-black text-red-600">Penicilin (Severe)</p>
                     </div>
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400 shadow-sm border border-slate-200">
-                      <User size={14} />
+                {/* Provider & Condition */}
+                <div className="space-y-2 lg:col-span-1">
+                  <div className="flex items-center gap-2">
+                    <div className="w-5 h-5 rounded bg-emerald-50 flex items-center justify-center text-emerald-600 border border-emerald-100 shadow-sm">
+                      <User size={12} />
                     </div>
                     <div>
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Gender</p>
-                      <p className="text-[12px] font-bold text-slate-700">Male</p>
+                      <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-0.5">Provider</p>
+                      <p className="text-[11px] font-bold text-slate-700">Emily Roberts</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400 shadow-sm border border-slate-200">
-                      <MapPin size={14} />
+                  <div className="flex items-center gap-2">
+                    <div className="w-5 h-5 rounded bg-slate-100 flex items-center justify-center text-slate-400 border border-slate-200 shadow-sm">
+                      <Clipboard size={12} />
                     </div>
                     <div>
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Address</p>
-                      <p className="text-[11px] font-bold text-slate-700">123 Main St. Springfield, IL</p>
+                      <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-0.5">Condition</p>
+                      <p className="text-[11px] font-bold text-blue-600">Chronic Hypertension</p>
                     </div>
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500 shadow-sm border border-blue-100">
-                      <Phone size={14} />
+                {/* Location & Nutrition */}
+                <div className="space-y-2 lg:col-span-1 border-l border-slate-50 pl-4 hidden lg:block">
+                  <div className="flex items-center gap-2">
+                    <div className="w-5 h-5 rounded bg-indigo-50 flex items-center justify-center text-indigo-500 border border-indigo-100 shadow-sm">
+                      <MapPin size={12} />
                     </div>
                     <div>
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Phone</p>
-                      <p className="text-[12px] font-bold text-slate-700">(555) 123-4567</p>
+                      <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-0.5">Location</p>
+                      <p className="text-[11px] font-bold text-slate-700">Room 102-B, West Wing</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400 shadow-sm border border-slate-200">
-                      <Heart size={14} />
+                  <div className="flex items-center gap-2">
+                    <div className="w-5 h-5 rounded bg-amber-50 flex items-center justify-center text-amber-600 border border-amber-100 shadow-sm">
+                      <FileText size={12} />
                     </div>
                     <div>
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Emergency Contact</p>
-                      <p className="text-[11px] font-bold text-slate-700">Mary Smith <span className="text-blue-600 underline font-mono">(555-987-6543)</span></p>
+                      <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-0.5">Nutrition</p>
+                      <p className="text-[11px] font-bold text-slate-700">Low Sodium Diet</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Contact Info */}
+                <div className="space-y-2 lg:col-span-1">
+                  <div className="flex items-center gap-2">
+                    <div className="w-5 h-5 rounded bg-blue-50 flex items-center justify-center text-blue-500 border border-blue-100 shadow-sm">
+                      <Phone size={12} />
+                    </div>
+                    <div>
+                      <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-0.5">Phone</p>
+                      <p className="text-[11px] font-bold text-slate-700">(555) 123-4567</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-5 h-5 rounded bg-slate-50 flex items-center justify-center text-slate-400 border border-slate-100 shadow-sm">
+                      <Search size={12} />
+                    </div>
+                    <div>
+                      <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-0.5">Address</p>
+                      <p className="text-[11px] font-bold text-slate-700 truncate w-32">123 Main St. Springfield, IL</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Emergency & Access */}
+                <div className="space-y-2 lg:col-span-2 border-l border-slate-100 pl-4">
+                  <div className="flex items-center gap-2">
+                    <div className="w-5 h-5 rounded bg-rose-50 flex items-center justify-center text-rose-500 border border-rose-100 shadow-sm">
+                      <Heart size={12} />
+                    </div>
+                    <div>
+                      <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-0.5">Emergency Contact</p>
+                      <p className="text-[11px] font-bold text-slate-700 leading-none mb-0.5">Mary Smith</p>
+                      <p className="text-[10px] font-bold text-blue-600">(555) 987-6543</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-5 h-5 rounded bg-purple-50 flex items-center justify-center text-purple-600 border border-purple-100 shadow-sm">
+                      <Shield size={12} />
+                    </div>
+                    <div>
+                      <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-0.5">Clinical Access</p>
+                      <div className="flex gap-1">
+                        <span className="text-[9px] font-black text-purple-700 bg-purple-100/50 px-1.5 py-0.5 rounded uppercase">Full Assist</span>
+                        <span className="text-[9px] font-black text-blue-700 bg-blue-100/50 px-1.5 py-0.5 rounded uppercase">Interpreter Req</span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -319,18 +772,18 @@ const ResidentDetailPage = () => {
               </div>
               <div className="px-2 py-1 space-y-0.5">
                 {[
-                  { label: 'Recent Visits', count: 35, icon: Clock, color: 'text-teal-500 bg-teal-50' },
-                  { label: 'Diagnosis', count: 20, icon: AlertCircle, color: 'text-red-500 bg-red-50' },
-                  { label: 'Medications', count: 18, icon: Pill, color: 'text-emerald-500 bg-emerald-50' },
-                  { label: 'Medications', count: 45, icon: Pill, color: 'text-red-500 bg-red-50' },
-                  { label: 'Lab Results', count: 10, icon: FlaskConical, color: 'text-amber-500 bg-amber-50' },
+                  { label: 'Recent Visits', count: 35, icon: Clock, color: 'text-teal-500 bg-teal-50', section: 'Visits' },
+                  { label: 'Diagnosis', count: 20, icon: AlertCircle, color: 'text-red-500 bg-red-50', section: 'Diagnosis' },
+                  { label: 'Medications', count: 18, icon: Pill, color: 'text-emerald-500 bg-emerald-50', section: 'Medications' },
+                  { label: 'Lab Results', count: 10, icon: FlaskConical, color: 'text-amber-500 bg-amber-50', section: 'Lab' },
+                  { label: 'Fax Section', count: 5, icon: Printer, color: 'text-indigo-500 bg-indigo-50', section: 'Fax' },
                 ].map((item, i) => (
-                  <button key={i} className="w-full flex items-center justify-between p-2 rounded-xl hover:bg-slate-50 transition-all group">
+                  <button key={i} onClick={() => openModal(item.section)} className="w-full flex items-center justify-between py-1 px-2 rounded-xl hover:bg-slate-50 transition-all group">
                     <div className="flex items-center gap-3">
                       <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${item.color}`}>
                         <item.icon size={14} />
                       </div>
-                      <span className="text-[11px] font-bold text-slate-600 group-hover:text-blue-600 transition-colors">{item.label}</span>
+                      <span className="text-[11px] font-bold text-slate-600 group-hover:text-blue-600 transition-colors uppercase tracking-tight">{item.label}</span>
                     </div>
                     <span className="text-[11px] font-black text-slate-400 bg-slate-50 px-2 py-0.5 rounded-full">{item.count} Day</span>
                   </button>
@@ -338,7 +791,7 @@ const ResidentDetailPage = () => {
               </div>
             </div>
 
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div onClick={() => openModal('Diagnosis')} className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition-all">
               <div className="p-2.5 border-b border-slate-100 flex items-center justify-between">
                 <h3 className="text-xs font-black text-slate-800 uppercase tracking-widest ">Diagnosis</h3>
                 <ChevronDown size={14} className="text-slate-400" />
@@ -361,7 +814,7 @@ const ResidentDetailPage = () => {
               </div>
             </div>
 
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div onClick={() => openModal('Lab')} className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition-all">
               <div className="p-2.5 border-b border-slate-100 flex items-center justify-between">
                 <h3 className="text-xs font-black text-slate-800 uppercase tracking-widest  text-blue-600">Lab Results</h3>
                 <ChevronDown size={14} className="text-blue-500" />
@@ -390,7 +843,7 @@ const ResidentDetailPage = () => {
               </div>
             </div>
 
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div onClick={() => openModal('Documents')} className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition-all">
               <div className="p-2.5 border-b border-slate-100 flex items-center justify-between">
                 <h3 className="text-[12px] font-black text-slate-800 uppercase tracking-tight ">Documents</h3>
                 <div className="flex gap-2">
@@ -435,135 +888,164 @@ const ResidentDetailPage = () => {
                 </div>
               </div>
             </div>
-            {/* Discharge Summary */}
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-              <div className="p-2.5 border-b border-slate-100 flex items-center justify-between">
-                <h3 className="text-xs font-black text-slate-800 uppercase tracking-widest ">Discharge Summary</h3>
-                <Clipboard size={14} className="text-slate-400" />
-              </div>
-              <div className="p-2.5 space-y-2">
-                <div className="flex items-center gap-2 mb-1.5 pb-1.5 border-b border-slate-50">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Status:</span>
-                  <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">Stable / Discharged</span>
+            {/* Communication & Language */}
+            <div onClick={() => openModal('Communication')} className="bg-white rounded-xl border border-slate-200 shadow-sm p-2.5 cursor-pointer hover:shadow-md transition-all">
+              <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ">Communication</h3>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+                  <span className="text-[11px] font-bold text-slate-700">Language: English</span>
                 </div>
-                <div>
-                  <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-0.5">Primary instruction</p>
-                  <p className="text-[11px] font-bold text-slate-700 leading-tight">Patient advised to maintain light activity. Specialist follow-up required within 2 weeks.</p>
+                <div className="flex items-center gap-2 text-[11px] text-slate-600 pl-3">
+                  <span>Interpreter: Not Required</span>
                 </div>
-                <div className="pt-1">
-                  <div className="flex items-center gap-1.5 bg-blue-50 text-blue-600 px-2 py-1.5 rounded border border-blue-100 cursor-pointer hover:bg-blue-100 transition-colors w-fit">
-                    <FileText size={12} />
-                    <span className="text-[9px] font-black uppercase tracking-widest">Download PDF</span>
-                  </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-slate-300" />
+                  <span className="text-[11px] font-bold text-slate-700">Hearing: Impaired (Left)</span>
                 </div>
               </div>
             </div>
 
+            {/* Mobility & Physical Safety */}
+            <div onClick={() => openModal('Mobility')} className="bg-white rounded-xl border border-slate-200 shadow-sm p-2.5 cursor-pointer hover:shadow-md transition-all">
+              <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ">Mobility & Safety</h3>
+              <div className="space-y-2">
+                <div className="p-1.5 bg-slate-50 border border-slate-100 rounded flex justify-between items-center">
+                  <span className="text-[10px] font-bold text-slate-500 uppercase">Assist:</span>
+                  <span className="text-[11px] font-black text-slate-700">One-Person</span>
+                </div>
+                <div className="grid grid-cols-2 gap-1.5">
+                  <div className="p-1 bg-blue-50 text-blue-700 rounded text-[9px] font-black text-center uppercase">Walker</div>
+                  <div className="p-1 bg-slate-100 text-slate-400 rounded text-[9px] font-black text-center uppercase">Wheelchair</div>
+                </div>
+                <p className="text-[9px] text-red-500 font-bold text-center mt-1 uppercase tracking-tighter">Fall Risk: HIGH (B Morse)</p>
+              </div>
+            </div>
+
+            {/* Nutrition & Hydration */}
+            <div onClick={() => openModal('Nutrition')} className="bg-emerald-50/50 rounded-xl border border-emerald-100 shadow-sm p-2.5 cursor-pointer hover:shadow-md transition-all">
+              <h3 className="text-[10px] font-black text-emerald-800 uppercase tracking-widest mb-2 ">Nutrition & Hydration</h3>
+              <div className="space-y-1.5">
+                <div className="flex justify-between items-center text-[10px]">
+                  <span className="font-bold text-slate-500 uppercase tracking-tight">Diet:</span>
+                  <span className="font-black text-slate-800 uppercase">Mechanical Soft</span>
+                </div>
+                <div className="flex justify-between items-center text-[10px]">
+                  <span className="font-bold text-slate-500 uppercase tracking-tight">Fluids:</span>
+                  <span className="font-black text-blue-600 uppercase">Thin / No Restrict</span>
+                </div>
+                <div className="p-1 px-2 bg-white/60 rounded border border-emerald-50 text-[9px] font-bold text-emerald-700"> Intake Goal: 1500ml/day </div>
+              </div>
+            </div>
+
+            {/* Safety & Access Control */}
+            <div onClick={() => openModal('Safety')} className="bg-slate-50 rounded-xl border border-slate-200 shadow-sm p-2.5 cursor-pointer hover:shadow-md transition-all">
+              <h3 className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ">Safety & Access</h3>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded bg-red-100 flex items-center justify-center text-red-600">
+                    <AlertCircle size={10} />
+                  </div>
+                  <span className="text-[10px] font-black text-slate-700 uppercase">Wander Guard Active</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded bg-blue-100 flex items-center justify-center text-blue-600">
+                    <User size={10} />
+                  </div>
+                  <span className="text-[10px] font-black text-slate-700 uppercase">Family Access Only</span>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div className="lg:col-span-7 space-y-2">
 
             {/* Visit Details Section */}
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden mb-2">
-              <div className="p-2 border-b border-slate-100 bg-slate-50/50">
+            <div onClick={() => openModal('Visits')} className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden mb-2 cursor-pointer hover:shadow-md transition-all">
+              <div className="p-2 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
                 <h3 className="text-[12px] font-black text-slate-800 uppercase tracking-tight">Visit Details</h3>
+                <span className="text-[10px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded uppercase tracking-wider">{resident.visits?.length || 0} Total Visits</span>
               </div>
               <div className="p-2 md:p-3">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 md:gap-3">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <Calendar size={14} className="text-slate-400 shrink-0" />
-                      <div className="flex w-full border-b border-slate-100 pb-1">
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest w-24">Date:</span>
-                        <span className="text-[12px] font-bold text-slate-700">11/20/2022</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <User size={14} className="text-slate-400 shrink-0" />
-                      <div className="flex w-full border-b border-slate-100 pb-1">
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest w-24">Provider:</span>
-                        <span className="text-[12px] font-bold text-blue-600 underline underline-offset-2 decoration-blue-100 decoration-2">Dr. Emily Roberts</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Activity size={14} className="text-slate-400 shrink-0" />
-                      <div className="flex w-full border-b border-slate-100 pb-1">
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest w-24 whitespace-nowrap">Chief Complaint:</span>
-                        <span className="text-[12px] font-bold text-slate-700 ">Chest Pain</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Heart size={14} className="text-red-500 shrink-0" />
-                      <div className="flex w-full border-b border-slate-100 pb-1">
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest w-24">Diagnosis:</span>
-                        <span className="text-[12px] font-bold text-slate-700 ">I20.9 - Angina Pectoris</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Clipboard size={14} className="text-slate-400 shrink-0" />
-                      <div className="flex w-full border-b border-slate-100 pb-1">
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest w-24">Procedure:</span>
-                        <span className="text-[12px] font-bold text-slate-700 ">93000 - ECG</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Inserted Vitals Column */}
-                  <div className="flex flex-col space-y-2">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Vitals</p>
-                    <div className="grid grid-cols-2 gap-2">
-                      <div className="bg-slate-50 p-2 rounded-lg border border-slate-100 flex flex-col items-center">
-                        <span className="text-[9px] font-bold text-slate-400 uppercase">BP</span>
-                        <span className="text-[12px] font-black text-slate-700">120/80</span>
-                      </div>
-                      <div className="bg-slate-50 p-2 rounded-lg border border-slate-100 flex flex-col items-center">
-                        <span className="text-[9px] font-bold text-slate-400 uppercase">HR</span>
-                        <span className="text-[12px] font-black text-slate-700">72</span>
-                      </div>
-                      <div className="bg-slate-50 p-2 rounded-lg border border-slate-100 flex flex-col items-center">
-                        <span className="text-[9px] font-bold text-slate-400 uppercase">Temp</span>
-                        <span className="text-[12px] font-black text-slate-700">98.6°F</span>
-                      </div>
-                      <div className="bg-slate-50 p-2 rounded-lg border border-slate-100 flex flex-col items-center">
-                        <span className="text-[9px] font-bold text-slate-400 uppercase">O2</span>
-                        <span className="text-[12px] font-black text-slate-700">98%</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <div className="p-2 bg-slate-50 border border-slate-100 rounded-lg relative overflow-hidden">
-                      <div className="flex items-center justify-between mb-1">
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Type: <span className="text-slate-700 font-bold uppercase">OFFICE VISIT</span></p>
-                        <div className="flex gap-1">
-                          <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-                          <div className="w-1.5 h-1.5 rounded-full bg-slate-200" />
+                {resident.visits && resident.visits.length > 0 ? (() => {
+                  const latestVisit = resident.visits[0];
+                  return (
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 md:gap-3">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <Calendar size={14} className="text-slate-400 shrink-0" />
+                          <div className="flex w-full border-b border-slate-100 pb-1">
+                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest w-32">Date:</span>
+                            <span className="text-[12px] font-bold text-slate-700">{latestVisit.visitDate}</span>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <User size={14} className="text-slate-400 shrink-0" />
+                          <div className="flex w-full border-b border-slate-100 pb-1">
+                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest w-32">Provider:</span>
+                            <span className="text-[12px] font-bold text-blue-600 underline underline-offset-2 decoration-blue-100 decoration-2">{latestVisit.providerName}</span>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Activity size={14} className="text-slate-400 shrink-0" />
+                          <div className="flex w-full border-b border-slate-100 pb-1">
+                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest w-32 whitespace-nowrap">Chief Complaint:</span>
+                            <span className="text-[12px] font-bold text-slate-700 ">{latestVisit.chiefComplaint}</span>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Heart size={14} className="text-red-500 shrink-0" />
+                          <div className="flex w-full border-b border-slate-100 pb-1">
+                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest w-32">Diagnosis:</span>
+                            <span className="text-[12px] font-bold text-slate-700 ">{latestVisit.diagnosis}</span>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Clipboard size={14} className="text-slate-400 shrink-0" />
+                          <div className="flex w-full border-b border-slate-100 pb-1">
+                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest w-32">Procedure:</span>
+                            <span className="text-[12px] font-bold text-slate-700 ">{latestVisit.procedure || '-'}</span>
+                          </div>
                         </div>
                       </div>
 
-                      {/* Simulated ECG SVG */}
-                      <div className="h-16 w-full mt-1 border-l border-b border-slate-200 relative bg-white/50 rounded p-1">
-                        <svg viewBox="0 0 400 100" className="w-full h-full text-slate-800" preserveAspectRatio="none">
-                          <path d="M0 50 L10 50 L15 40 L20 60 L25 50 L80 50 L85 10 L95 90 L105 50 L160 50 L165 40 L170 60 L175 50 L230 50 L235 15 L245 85 L255 50 L310 50 L315 42 L320 58 L325 50 L400 50" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                          {/* Grid lines */}
-                          <g className="text-slate-200">
-                            <line x1="0" y1="20" x2="400" y2="20" stroke="currentColor" strokeWidth="0.5" />
-                            <line x1="0" y1="40" x2="400" y2="40" stroke="currentColor" strokeWidth="0.5" />
-                            <line x1="0" y1="60" x2="400" y2="60" stroke="currentColor" strokeWidth="0.5" />
-                            <line x1="0" y1="80" x2="400" y2="80" stroke="currentColor" strokeWidth="0.5" />
-                            {[...Array(20)].map((_, i) => (
-                              <line key={i} x1={i * 20} y1="0" x2={i * 20} y2="100" stroke="currentColor" strokeWidth="0.5" />
-                            ))}
-                          </g>
-                        </svg>
-                        <div className="absolute top-1 right-1 flex gap-0.5">
-                          <div className="w-2 h-2 border border-slate-300 rounded-[2px]" />
-                          <div className="w-2 h-2 border border-slate-300 rounded-[2px]" />
+                      <div className="flex flex-col space-y-2">
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Vitals</p>
+                        <div className="grid grid-cols-2 gap-2">
+                          <div className="bg-slate-50 p-2 rounded-lg border border-slate-100 flex flex-col items-center">
+                            <span className="text-[9px] font-bold text-slate-400 uppercase">BP</span>
+                            <span className="text-[12px] font-black text-slate-700">{latestVisit.bp || '-'}</span>
+                          </div>
+                          <div className="bg-slate-50 p-2 rounded-lg border border-slate-100 flex flex-col items-center">
+                            <span className="text-[9px] font-bold text-slate-400 uppercase">Pulse</span>
+                            <span className="text-[12px] font-black text-slate-700">{latestVisit.pulse || '-'}</span>
+                          </div>
+                          <div className="bg-slate-50 p-2 rounded-lg border border-slate-100 flex flex-col items-center">
+                            <span className="text-[9px] font-bold text-slate-400 uppercase">Temp</span>
+                            <span className="text-[12px] font-black text-slate-700">{latestVisit.temp || '-'}</span>
+                          </div>
+                          <div className="bg-slate-50 p-2 rounded-lg border border-slate-100 flex flex-col items-center">
+                            <span className="text-[9px] font-bold text-slate-400 uppercase">Weight</span>
+                            <span className="text-[12px] font-black text-slate-700">{latestVisit.weight || '-'}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <div className="p-2 bg-slate-50 border border-slate-100 rounded-lg relative overflow-hidden h-full">
+                          <div className="flex items-center justify-between mb-1">
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Type: <span className="text-slate-700 font-bold uppercase">{latestVisit.visitType}</span></p>
+                          </div>
+                          <p className="text-[11px] font-bold text-slate-600 line-clamp-3 mt-2">{latestVisit.notes || 'No clinical notes provided for this visit.'}</p>
                         </div>
                       </div>
                     </div>
+                  );
+                })() : (
+                  <div className="py-8 text-center bg-slate-50 rounded-xl border border-slate-100 w-full">
+                    <p className="text-slate-400 font-black uppercase tracking-widest text-xs">No visit records found</p>
                   </div>
-                </div>
+                )}
 
                 <div className="mt-2 pt-2 border-t border-slate-100 grid grid-cols-1 lg:grid-cols-3 gap-3">
                   <div className="space-y-2">
@@ -616,58 +1098,57 @@ const ResidentDetailPage = () => {
 
             {/* Split Row for Medical History & Billing Summary */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
-              {/* Medical History */}
-              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-3">
-                <h3 className="text-[12px] font-bold text-[#0f5b78] mb-2">Medical History (MD Note)</h3>
+              <div onClick={() => openModal('Medical History')} className="bg-white rounded-xl border border-slate-200 shadow-sm p-3 cursor-pointer hover:shadow-md transition-all">
+                <h3 className="text-[12px] font-bold text-[#0f5b78] mb-2 uppercase tracking-tight">Medical History (MD Note)</h3>
                 <ul className="text-[12px] text-slate-600 space-y-1">
-                  <li className="flex gap-1.5"><span className="text-slate-400">&bull;</span><span>Unspecified atrial fibrillation</span></li>
-                  <li className="flex gap-1.5 items-start"><span className="text-slate-400">&bull;</span><span>Atherosclerotic heart disease of native coronary artery without angina pectoris <span className="italic text-slate-400">(abnormal SE 6/2021, possibly due to underlying cardiomyopathy)</span></span></li>
-                  <li className="flex gap-1.5"><span className="text-slate-400">&bull;</span><span>Occlusion and stenosis of unspecified carotid artery</span></li>
-                  <li className="flex gap-1.5 items-start"><span className="text-slate-400">&bull;</span><span>Left ventricular failure, unspecified <span className="italic text-slate-400">(Fluctuating EF - possibly due to asymptomatic AF)</span></span></li>
-                  <li className="flex gap-1.5"><span className="text-slate-400">&bull;</span><span>Hyperlipidemia, unspecified</span></li>
-                  <li className="flex gap-1.5"><span className="text-slate-400">&bull;</span><span>Essential (primary) hypertension</span></li>
-                  <li className="flex gap-1.5"><span className="text-slate-400">&bull;</span><span>Prediabetes</span></li>
+                  {resident.medicalHistory && resident.medicalHistory.length > 0 ? (
+                    resident.medicalHistory.slice(0, 7).map((hist, i) => (
+                      <li key={i} className="flex gap-1.5 items-start">
+                        <span className="text-slate-400 mt-1">&bull;</span>
+                        <span className="font-bold text-slate-700">{hist.Condition || hist.name} {hist['Diagnosis Date'] && <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">({hist['Diagnosis Date']})</span>}</span>
+                      </li>
+                    ))
+                  ) : (
+                    <li className="text-slate-400 italic">No historical records available.</li>
+                  )}
                 </ul>
               </div>
 
-              {/* Billing Summary Section */}
-              <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+              <div onClick={() => openModal('Billing')} className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col cursor-pointer hover:shadow-md transition-all">
                 <div className="p-2.5 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
                   <h3 className="text-[12px] font-black text-slate-800 uppercase tracking-tight ">Billing Summary</h3>
-                  <button className="text-blue-600 text-[11px] font-black uppercase tracking-widest hover:underline">View All Records</button>
+                  <button className="text-blue-600 text-[11px] font-black uppercase tracking-widest hover:underline">View All</button>
                 </div>
                 <div className="p-2.5 flex-1 flex flex-col justify-between">
-                  <table className="w-full text-left">
-                    <thead>
-                      <tr className="border-b border-slate-100">
-                        <th className="pb-1.5 text-[9px] font-black text-slate-400 uppercase tracking-widest ">Date</th>
-                        <th className="pb-1.5 text-[9px] font-black text-slate-400 uppercase tracking-widest ">Invoice #</th>
-                        <th className="pb-1.5 text-[9px] font-black text-slate-400 uppercase tracking-widest ">Amount</th>
-                        <th className="pb-1.5 text-[9px] font-black text-slate-400 uppercase tracking-widest  text-right">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-50">
-                      {[
-                        { date: '11/20/2022', invoice: 'INV-98765', amount: '$300.00', status: 'Pending', color: 'text-amber-500 bg-amber-50 border-amber-100' },
-                        { date: '11/15/2022', invoice: 'INV-98764', amount: '$150.00', status: 'Paid', color: 'text-emerald-500 bg-emerald-50 border-emerald-100' },
-                        { date: '11/10/2022', invoice: 'INV-98763', amount: '$200.00', status: 'Paid', color: 'text-emerald-500 bg-emerald-50 border-emerald-100' },
-                      ].map((bill, i) => (
-                        <tr key={i} className="group hover:bg-slate-50/50 transition-all">
-                          <td className="py-1.5 text-[10px] font-bold text-slate-600">{bill.date}</td>
-                          <td className="py-1.5 text-[10px] font-black text-blue-600  cursor-pointer hover:underline">{bill.invoice}</td>
-                          <td className="py-1.5 text-[10px] font-black text-slate-800 ">{bill.amount}</td>
-                          <td className="py-1.5 text-right">
-                            <span className={`px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest border ${bill.color}`}>
-                              {bill.status}
-                            </span>
-                          </td>
+                  {resident.billingRecords && resident.billingRecords.length > 0 ? (
+                    <table className="w-full text-left">
+                      <thead>
+                        <tr className="border-b border-slate-100">
+                          <th className="pb-1.5 text-[9px] font-black text-slate-400 uppercase tracking-widest ">Date</th>
+                          <th className="pb-1.5 text-[9px] font-black text-slate-400 uppercase tracking-widest ">Invoice #</th>
+                          <th className="pb-1.5 text-[9px] font-black text-slate-400 uppercase tracking-widest  text-right">Balance</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody className="divide-y divide-slate-50">
+                        {resident.billingRecords.slice(0, 3).map((bill, i) => (
+                          <tr key={i} className="group hover:bg-slate-50/50 transition-all">
+                            <td className="py-1.5 text-[10px] font-bold text-slate-600">{bill.serviceDate}</td>
+                            <td className="py-1.5 text-[10px] font-black text-blue-600 truncate max-w-[80px]">{bill.invoiceNumber}</td>
+                            <td className="py-1.5 text-[10px] font-black text-red-600 text-right">{bill.balance}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  ) : (
+                    <div className="py-6 text-center">
+                      <p className="text-slate-400 font-bold uppercase tracking-widest text-[9px]">No billing history</p>
+                    </div>
+                  )}
                   <div className="mt-2 p-2 bg-slate-50 border border-slate-100 rounded-lg flex items-center justify-between">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Outstanding Balance:</p>
-                    <p className="text-[13px] font-black text-red-600 ">$350.00</p>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Calculated Balance:</p>
+                    <p className="text-[13px] font-black text-red-600 ">
+                      ${resident.billingRecords?.reduce((sum, b) => sum + parseFloat(b.balance?.replace('$', '') || 0), 0).toFixed(2)}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -676,7 +1157,7 @@ const ResidentDetailPage = () => {
             {/* Split Row for Care Plan & Social History */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 mt-2.5">
               {/* Care Plan & Goals */}
-              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-3">
+              <div onClick={() => openModal('Care Plan')} className="bg-white rounded-xl border border-slate-200 shadow-sm p-3 cursor-pointer hover:shadow-md transition-all">
                 <h3 className="text-[12px] font-bold text-[#0f5b78] mb-2">Care Plan & Interventions</h3>
                 <div className="space-y-2">
                   <div className="p-2 border border-blue-100 bg-blue-50/30 rounded-lg">
@@ -697,7 +1178,7 @@ const ResidentDetailPage = () => {
               </div>
 
               {/* Social History */}
-              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-3 flex flex-col">
+              <div onClick={() => openModal('Social History')} className="bg-white rounded-xl border border-slate-200 shadow-sm p-3 flex flex-col cursor-pointer hover:shadow-md transition-all">
                 <h3 className="text-[12px] font-bold text-[#0f5b78] mb-2 shrink-0">Social History & Lifestyle</h3>
                 <div className="grid grid-cols-3 gap-2 flex-1">
                   <div className="p-2 bg-slate-50 border border-slate-100 rounded-lg text-center flex flex-col justify-center">
@@ -733,6 +1214,99 @@ const ResidentDetailPage = () => {
                 </div>
               </div>
             </div>
+
+            {/* Row for Immunizations & Activity Timeline */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 mt-2.5">
+              {/* Immunization History */}
+              <div onClick={() => openModal('Immunizations')} className="bg-white rounded-xl border border-slate-200 shadow-sm p-3 cursor-pointer hover:shadow-md transition-all">
+                <h3 className="text-[12px] font-bold text-[#0f5b78] mb-3 uppercase tracking-tight">Immunization Record</h3>
+                <div className="space-y-2">
+                  {[
+                    { name: 'Influenza (Flu)', date: '10/12/2023', status: 'Up-to-date', provider: 'Monterey Clinic' },
+                    { name: 'Pneumococcal', date: '05/20/2022', status: 'Up-to-date', provider: 'General Hospital' },
+                    { name: 'COVID-19 Bivalent', date: '01/15/2024', status: 'Required', provider: 'N/A' }
+                  ].map((imm, i) => (
+                    <div key={i} className="flex items-center justify-between py-1.5 border-b border-slate-50 last:border-0">
+                      <div>
+                        <p className="text-[11px] font-bold text-slate-700">{imm.name}</p>
+                        <p className="text-[9px] text-slate-400 font-bold uppercase">{imm.provider}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-[10px] font-black text-slate-600">{imm.date}</p>
+                        <span className={`text-[8px] font-black uppercase tracking-widest ${imm.status === 'Required' ? 'text-red-500' : 'text-emerald-500'}`}>{imm.status}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Resident Activity Timeline */}
+              <div onClick={() => openModal('Activities')} className="bg-white rounded-xl border border-slate-200 shadow-sm p-3 cursor-pointer hover:shadow-md transition-all">
+                <div className="flex items-center justify-between mb-3 border-b border-slate-100 pb-2">
+                  <h3 className="text-[12px] font-bold text-[#0f5b78] uppercase tracking-tight">Activity Timeline</h3>
+                  <button className="text-[10px] font-black text-blue-600 uppercase tracking-widest">Full Log</button>
+                </div>
+                <div className="space-y-3">
+                  {[
+                    { type: 'Medication', detail: 'Lisinopril 20mg Admin.', time: '08:00 AM Today' },
+                    { type: 'Vitals', detail: 'Morning Vitals Check', time: '07:30 AM Today' },
+                    { type: 'Social', detail: 'Art Therapy Session', time: '02:00 PM Today' }
+                  ].map((act, i) => (
+                    <div key={i} className="flex gap-3">
+                      <div className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0 mt-1.5 shadow-sm shadow-blue-200" />
+                      <div>
+                        <p className="text-[11px] font-bold text-slate-700 leading-tight">{act.detail}</p>
+                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-0.5">{act.time}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+            {/* Row for Labs & Care Goals */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 mt-2.5 pb-2">
+              {/* Lab Highlights */}
+              <div onClick={() => openModal('Lab Highlights')} className="bg-white rounded-xl border border-slate-200 shadow-sm p-3 cursor-pointer hover:shadow-md transition-all">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-[12px] font-bold text-[#0f5b78] uppercase tracking-tight">Recent Lab Highlights</h3>
+                  <FlaskConical size={14} className="text-slate-400" />
+                </div>
+                <div className="space-y-1.5">
+                  {[
+                    { test: 'Glucose', result: '102 mg/dL', status: 'Normal' },
+                    { test: 'HbA1c', result: '6.4%', status: 'Stable' },
+                    { test: 'Potassium', result: '4.2 mEq/L', status: 'Normal' }
+                  ].map((lab, i) => (
+                    <div key={i} className="flex justify-between items-center py-1 border-b border-slate-50 last:border-0">
+                      <span className="text-[11px] font-bold text-slate-700">{lab.test}</span>
+                      <div className="text-right">
+                        <span className="text-[11px] font-black text-slate-800 mr-2">{lab.result}</span>
+                        <span className="text-[8px] font-black uppercase text-emerald-500">{lab.status}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Key Care Goals */}
+              <div onClick={() => openModal('Goals')} className="bg-indigo-50/50 rounded-xl border border-indigo-100 shadow-sm p-3 cursor-pointer hover:shadow-md transition-all flex flex-col">
+                <h3 className="text-[12px] font-bold text-indigo-900 mb-2 uppercase tracking-tight">Key Patient Goals</h3>
+                <div className="space-y-2.5 flex-1">
+                  <div className="flex gap-2">
+                    <CheckCircle2 size={14} className="text-indigo-500 shrink-0 mt-0.5" />
+                    <p className="text-[11px] font-bold text-slate-700 leading-tight">Remain fall-free during shift</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <CheckCircle2 size={14} className="text-slate-300 shrink-0 mt-0.5" />
+                    <p className="text-[11px] font-bold text-slate-700 leading-tight">Increase fluid intake to 1.5L</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <CheckCircle2 size={14} className="text-slate-300 shrink-0 mt-0.5" />
+                    <p className="text-[11px] font-bold text-slate-700 leading-tight">Ambulate to dining room with assist</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Right Sidebar */}
@@ -741,7 +1315,7 @@ const ResidentDetailPage = () => {
             {/* Split Row for Insurance & Audit Trail */}
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-2.5">
               {/* Insurance Information */}
-              <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+              <div onClick={() => openModal('Insurance')} className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col cursor-pointer hover:shadow-md transition-all">
                 <div className="p-2.5 border-b border-slate-100 flex items-center justify-between">
                   <h3 className="text-[12px] font-black text-slate-800 uppercase tracking-tight ">Insurance Information</h3>
                   <MoreVertical size={14} className="text-slate-400" />
@@ -779,7 +1353,7 @@ const ResidentDetailPage = () => {
               </div>
 
               {/* Audit Trail Section */}
-              <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden pb-2 flex flex-col">
+              <div onClick={() => openModal('Audit Trail')} className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden pb-2 flex flex-col cursor-pointer hover:shadow-md transition-all">
                 <div className="p-2.5 border-b border-slate-100 flex items-center justify-between">
                   <h3 className="text-xs font-black text-slate-800 uppercase tracking-widest ">Audit Trail</h3>
                   <ChevronDown size={14} className="text-slate-400" />
@@ -808,84 +1382,120 @@ const ResidentDetailPage = () => {
               </div>
             </div>
 
+            {/* Discharge Summary */}
+            <div onClick={() => openModal('Discharge Summary')} className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden mb-2.5 cursor-pointer hover:shadow-md transition-all">
+              <div className="p-2.5 border-b border-slate-100 flex items-center justify-between">
+                <h3 className="text-xs font-black text-slate-800 uppercase tracking-widest ">Discharge Summary</h3>
+                <Clipboard size={14} className="text-slate-400" />
+              </div>
+              <div className="p-2.5 space-y-2">
+                <div className="flex items-center gap-2 mb-1.5 pb-1.5 border-b border-slate-50">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Status:</span>
+                  <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">Stable / Discharged</span>
+                </div>
+                <div>
+                  <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-0.5">Primary instruction</p>
+                  <p className="text-[11px] font-bold text-slate-700 leading-tight">Patient advised to maintain light activity. Specialist follow-up required within 2 weeks.</p>
+                </div>
+                <div className="pt-1">
+                  <div className="flex items-center gap-1.5 bg-blue-50 text-blue-600 px-2 py-1.5 rounded border border-blue-100 cursor-pointer hover:bg-blue-100 transition-colors w-fit">
+                    <FileText size={12} />
+                    <span className="text-[9px] font-black uppercase tracking-widest">Download PDF</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Advance Directives */}
+            <div onClick={() => openModal('Advance Directives')} className="bg-amber-50 rounded-xl border border-amber-100 shadow-sm p-2.5 mb-2.5 cursor-pointer hover:shadow-md transition-all">
+              <h3 className="text-[10px] font-black text-amber-800 uppercase tracking-widest mb-1.5 ">Advance Directives</h3>
+              <div className="space-y-1.5">
+                <div className="flex justify-between items-center text-[11px]">
+                  <span className="font-bold text-slate-600">DNR Status:</span>
+                  <span className="font-black text-red-600 uppercase">Active (DNR)</span>
+                </div>
+                <div className="flex justify-between items-center text-[11px]">
+                  <span className="font-bold text-slate-600">DNI Status:</span>
+                  <span className="font-black text-red-600 uppercase">Active (DNI)</span>
+                </div>
+                <p className="text-[9px] text-amber-700 font-bold bg-amber-100/50 p-1 rounded mt-1">Full code documentation on file (02/2024)</p>
+              </div>
+            </div>
+
             {/* Split Row for Allergies & Medications */}
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-2.5">
-              {/* Allergies Section */}
-              <div className="bg-red-50 rounded-xl border border-red-100 shadow-sm overflow-hidden flex flex-col">
+              <div onClick={() => openModal('Allergies')} className="bg-red-50 rounded-xl border border-red-100 shadow-sm overflow-hidden flex flex-col cursor-pointer hover:shadow-md transition-all">
                 <div className="p-2.5 border-b border-red-100 flex items-center justify-between">
                   <h3 className="text-[12px] font-black text-red-800 uppercase tracking-tight ">Allergies</h3>
-                  <div className="bg-red-100/50 px-2 py-0.5 rounded text-[9px] font-bold text-red-600 uppercase tracking-widest shrink-0">2 Active</div>
+                  <div className="bg-red-100/50 px-2 py-0.5 rounded text-[9px] font-bold text-red-600 uppercase tracking-widest shrink-0">{resident.allergies?.length || 0} Active</div>
                 </div>
                 <div className="p-2.5 space-y-2 flex-1">
-                  <div className="flex flex-col gap-0.5 pb-2 border-b border-red-100/50">
-                    <div className="flex justify-between items-start gap-2">
-                      <span className="text-[11px] font-bold text-red-700 leading-tight">Penicillin</span>
-                      <span className="text-[9px] font-bold text-red-400 shrink-0 mt-0.5">Severe</span>
-                    </div>
-                    <p className="text-[9px] font-black text-red-500/70 uppercase tracking-widest">Anaphylaxis</p>
-                  </div>
-                  <div className="flex flex-col gap-0.5 pb-0">
-                    <div className="flex justify-between items-start gap-2">
-                      <span className="text-[11px] font-bold text-red-700 leading-tight">Peanuts</span>
-                      <span className="text-[9px] font-bold text-red-400 shrink-0 mt-0.5">Moderate</span>
-                    </div>
-                    <p className="text-[9px] font-black text-red-500/70 uppercase tracking-widest">Hives</p>
-                  </div>
+                  {resident.allergies && resident.allergies.length > 0 ? (
+                    resident.allergies.map((allergy, i) => (
+                      <div key={i} className={`flex flex-col gap-0.5 ${i !== resident.allergies.length - 1 ? 'pb-2 border-b border-red-100/50' : ''}`}>
+                        <div className="flex justify-between items-start gap-2">
+                          <span className="text-[11px] font-bold text-red-700 leading-tight">{allergy.name}</span>
+                          <span className="text-[9px] font-bold text-red-400 shrink-0 mt-0.5">{allergy.severity}</span>
+                        </div>
+                        <p className="text-[9px] font-black text-red-500/70 uppercase tracking-widest">{allergy.reaction}</p>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-[10px] text-red-400 italic">No active allergies recorded.</p>
+                  )}
                 </div>
               </div>
 
               {/* Active Medications Section */}
-              <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+              <div onClick={() => openModal('Medications')} className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col cursor-pointer hover:shadow-md transition-all">
                 <div className="p-2.5 border-b border-slate-100 flex items-center justify-between">
                   <h3 className="text-[12px] font-black text-slate-800 uppercase tracking-tight ">Medications</h3>
-                  <div className="bg-blue-50 px-2 py-0.5 rounded text-[9px] font-bold text-blue-600 uppercase tracking-widest shrink-0">3 Scripts</div>
+                  <div className="bg-blue-50 px-2 py-0.5 rounded text-[9px] font-bold text-blue-600 uppercase tracking-widest shrink-0">{resident.medicationsList?.length || 0} Scripts</div>
                 </div>
                 <div className="p-2.5 space-y-2.5 flex-1">
-                  <div className="flex flex-col gap-0.5 pb-2 border-b border-slate-50">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-[11px] font-bold text-slate-700 leading-tight">Lisinopril</span>
-                      <span className="text-[10px] font-black text-slate-400 shrink-0">10mg</span>
-                    </div>
-                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tight">1 PO Daily</p>
-                  </div>
-                  <div className="flex flex-col gap-0.5 pb-2 border-b border-slate-50">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-[11px] font-bold text-slate-700 leading-tight">Atorvastatin</span>
-                      <span className="text-[10px] font-black text-slate-400 shrink-0">40mg</span>
-                    </div>
-                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tight">1 PO QHS</p>
-                  </div>
-                  <div className="flex flex-col gap-0.5">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-[11px] font-bold text-slate-700 leading-tight">Metformin</span>
-                      <span className="text-[10px] font-black text-slate-400 shrink-0">500mg</span>
-                    </div>
-                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tight">1 PO BID w/ meals</p>
-                  </div>
+                  {resident.medicationsList && resident.medicationsList.length > 0 ? (
+                    resident.medicationsList.slice(0, 3).map((med, i) => (
+                      <div key={i} className={`flex flex-col gap-0.5 ${i !== resident.medicationsList.length - 1 ? 'pb-2 border-b border-slate-50' : ''}`}>
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-[11px] font-bold text-slate-700 leading-tight">{med.name}</span>
+                          <span className="text-[10px] font-black text-slate-400 shrink-0">{med.dose}</span>
+                        </div>
+                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tight">{med.details}</p>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-[10px] text-slate-400 italic py-4 text-center">No active medications.</p>
+                  )}
                 </div>
               </div>
             </div>
 
             {/* Appointment Section */}
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div onClick={() => openModal('Appointments')} className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition-all">
               <div className="p-2.5 border-b border-slate-100 flex items-center justify-between">
                 <h3 className="text-xs font-black text-slate-800 uppercase tracking-widest ">Appointments</h3>
                 <span className="bg-blue-600 text-[9px] font-black text-white px-2 py-0.5 rounded-full uppercase tracking-widest">Upcoming</span>
               </div>
               <div className="p-2.5 space-y-2">
-                <div className="flex items-start gap-3 p-3 bg-blue-50/50 rounded-xl border border-blue-100">
-                  <Calendar size={18} className="text-blue-500 shrink-0" />
-                  <div className="space-y-1">
-                    <p className="text-[11px] font-black text-slate-800 ">12/10/2022</p>
-                    <p className="text-[12px] font-bold text-slate-500">Regular Checkup - Room 402</p>
-                    <p className="text-[9px] font-black text-blue-600 uppercase tracking-widest">Follow-up: 3 Months</p>
-                  </div>
-                </div>
+                {resident.appointments && resident.appointments.length > 0 ? (
+                  resident.appointments.slice(0, 1).map((appt, i) => (
+                    <div key={i} className="flex items-start gap-3 p-3 bg-blue-50/50 rounded-xl border border-blue-100 w-full">
+                      <Calendar size={18} className="text-blue-500 shrink-0" />
+                      <div className="space-y-1">
+                        <p className="text-[11px] font-black text-slate-800 ">{appt.date}</p>
+                        <p className="text-[12px] font-bold text-slate-500">{appt.reason || appt.doctor} - {appt.location}</p>
+                        <p className="text-[9px] font-black text-blue-600 uppercase tracking-widest">Status: {appt.status || 'Scheduled'}</p>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-[10px] text-slate-400 italic py-2 text-center">No upcoming appointments.</p>
+                )}
               </div>
             </div>
 
             {/* Care Team */}
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-3">
+            <div onClick={() => openModal('Care Team')} className="bg-white rounded-xl border border-slate-200 shadow-sm p-3 cursor-pointer hover:shadow-md transition-all">
               <h3 className="text-[12px] font-bold text-[#0f5b78] mb-2">Care Team</h3>
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
@@ -906,7 +1516,7 @@ const ResidentDetailPage = () => {
             </div>
 
             {/* Preferred Pharmacy */}
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div onClick={() => openModal('Pharmacy')} className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition-all">
               <div className="p-2.5 border-b border-slate-100 flex items-center justify-between">
                 <h3 className="text-[12px] font-black text-slate-800 uppercase tracking-tight ">Pharmacy</h3>
                 <MapPin size={14} className="text-slate-400" />
@@ -915,6 +1525,23 @@ const ResidentDetailPage = () => {
                 <p className="text-[11px] font-bold text-slate-800">CVS Pharmacy #1234</p>
                 <p className="text-[10px] text-slate-500 mt-0.5">123 Main St, Springfield IL</p>
                 <p className="text-[10px] font-bold text-blue-600 mt-1 cursor-pointer hover:underline">📞 (555) 987-6543</p>
+              </div>
+            </div>
+
+            {/* Risk & Pain Screener */}
+            <div onClick={() => openModal('Risks')} className="bg-rose-50 rounded-xl border border-rose-100 shadow-sm p-2.5 cursor-pointer hover:shadow-md transition-all">
+              <h3 className="text-[10px] font-black text-rose-800 uppercase tracking-widest mb-2 ">Risk & Pain Screener</h3>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="p-1.5 bg-white/60 rounded border border-rose-100 text-center">
+                  <p className="text-[8px] font-black text-slate-400 uppercase leading-none mb-1">Pain Score</p>
+                  <p className="text-[14px] font-black text-rose-600 leading-none">2/10</p>
+                  <p className="text-[8px] font-bold text-slate-500 uppercase mt-0.5">Mild</p>
+                </div>
+                <div className="p-1.5 bg-white/60 rounded border border-rose-100 text-center">
+                  <p className="text-[8px] font-black text-slate-400 uppercase leading-none mb-1">Skin Risk</p>
+                  <p className="text-[12px] font-black text-slate-700 leading-none uppercase">Low</p>
+                  <p className="text-[8px] font-bold text-slate-500 uppercase mt-0.5">Braden: 20</p>
+                </div>
               </div>
             </div>
           </div>
@@ -932,10 +1559,22 @@ const ResidentDetailPage = () => {
           <span className="text-[11px] font-bold text-slate-400  font-mono uppercase">Last Sync: 2 mins ago</span>
         </div>
         <div className="flex gap-3">
-          <button className="px-6 py-2 rounded-xl border border-slate-200 text-slate-600 text-xs font-black uppercase tracking-widest hover:bg-slate-50 transition-all ">Print Profile</button>
-          <button className="px-6 py-2 rounded-xl bg-slate-900 text-white text-xs font-black uppercase tracking-widest hover:bg-black transition-all shadow-lg ">Generate Report</button>
+          <button onClick={() => openModal('Report', 'FORM')} className="px-8 py-2.5 rounded-xl bg-slate-900 text-white text-xs font-black uppercase tracking-widest hover:bg-black transition-all shadow-lg hover:-translate-y-0.5 active:translate-y-0 ">Generate Patient Report</button>
         </div>
       </footer>
+
+      {/* Modal Overlay */}
+      {activeModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"
+            onClick={closeModal}
+          ></div>
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden border border-slate-200 animate-in fade-in zoom-in duration-200">
+            {renderModalContent()}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
