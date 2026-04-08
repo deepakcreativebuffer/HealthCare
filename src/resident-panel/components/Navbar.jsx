@@ -24,7 +24,7 @@ const Navbar = ({ resident }) => {
       <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-14 items-center">
           {/* Logo & Hamburger */}
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-3 gap-4">
             <button
               className="md:hidden text-gray-400 hover:text-gray-500"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -36,10 +36,11 @@ const Navbar = ({ resident }) => {
               )}
             </button>
             <Link to="/resident-dashboard" className="flex items-center space-x-2">
-              <div className="w-7 h-7 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold" />
+              {/* <div className="w-7 h-7 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold" />
               <span className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">
                 HealthCare
-              </span>
+              </span> */}
+              <img src="logo.svg" className="h-12" alt="Logo" />
             </Link>
 
             <div className="hidden md:flex items-center space-x-2">

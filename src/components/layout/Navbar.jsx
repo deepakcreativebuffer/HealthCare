@@ -62,10 +62,11 @@ const Navbar = ({ activeTab, onTabChange }) => {
           onClick={() => onTabChange("Dashboard")}
         >
           <Link to="/" className="flex items-center space-x-2 justify-center">
-            <div className="w-7 h-7 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold" />
-            <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">
-              HealthCare
-            </span>
+            {/* <div className="w-7 h-7 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold" />
+              <span className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">
+                HealthCare
+              </span> */}
+            <img src="logo.svg" className="h-12" alt="Logo" />
           </Link>
         </div>
 
@@ -76,8 +77,8 @@ const Navbar = ({ activeTab, onTabChange }) => {
               key={item.name}
               onClick={() => onTabChange(item.name)}
               className={`px-3 py-1 text-[13px] font-medium rounded-[10px] transition-all border whitespace-nowrap flex items-center gap-2 ${activeTab === item.name
-                  ? "bg-[#E3F2FD] text-[#129FED] border-[#129FED] shadow-xs"
-                  : "bg-white text-slate-500 border-[#E2E8F0] hover:bg-slate-50"
+                ? "bg-[#E3F2FD] text-[#129FED] border-[#129FED] shadow-xs"
+                : "bg-white text-slate-500 border-[#E2E8F0] hover:bg-slate-50"
                 }`}
             >
               <item.icon
