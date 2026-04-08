@@ -41,14 +41,44 @@ export const mockUser = {
     height: "5'10\"",
     bmi: "26.5"
   },
-  upcomingAppointment: {
-    date: "12/10/2022",
-    time: "10:30 AM",
-    type: "Cardiology Follow-up",
-    location: "Building B, Room 402",
-    followUp: "3 MONTHS",
-    provider: "Dr. Emily Roberts"
-  },
+  upcomingAppointments: [
+    {
+      date: "12/10/2022",
+      month: "DEC",
+      day: "10",
+      time: "10:30 AM",
+      type: "Cardiology Follow-up",
+      location: "Room 402 • FOLLOW-UP: 3 MONTHS",
+      provider: "Dr. Emily Roberts"
+    },
+    {
+      date: "12/15/2022",
+      month: "DEC",
+      day: "15",
+      time: "02:00 PM",
+      type: "Endocrinology Check",
+      location: "Building A, Room 305",
+      provider: "Dr. Sarah Chen"
+    },
+    {
+      date: "12/22/2022",
+      month: "DEC",
+      day: "22",
+      time: "09:00 AM",
+      type: "Physical Therapy session",
+      location: "Rehab Center, Gym 1",
+      provider: "Mark Thompson, PT"
+    },
+    {
+      date: "12/22/2022",
+      month: "DEC",
+      day: "24",
+      time: "09:30 AM",
+      type: "Mental Health Checkup",
+      location: "Building C, Room 101",
+      provider: "Dr. Alice Rivera"
+    }
+  ],
   recentVisitsHistory: [
     { label: "Internal Medicine", value: "Nov 20, 2022", icon: "Clock" },
     { label: "Cardiology", value: "Oct 15, 2022", icon: "Activity" },
@@ -77,6 +107,18 @@ export const mockUser = {
     { name: "BCBS Insurance Card Scanned", status: "Verified", date: "01/10/2022", type: "Scan" },
     { name: "Annual Wellness Visit Summary", status: "Signed", date: "09/15/2022", type: "PDF" }
   ],
+  faxes: [
+    { id: "FAX-102", name: "Inbound: Radiology Report", date: "11/20/2022", from: "City Radiology", status: "Success" },
+    { id: "FAX-101", name: "Outbound: Referral", date: "11/18/2022", to: "Dr. Roberts", status: "Sent" },
+    { id: "FAX-100", name: "Inbound: Pharmacy Auth", date: "11/15/2022", from: "CVS #1234", status: "Success" },
+    { id: "FAX-099", name: "Outbound: Lab Req", date: "11/12/2022", to: "Quest Diagnostics", status: "Success" },
+    { id: "FAX-098", name: "Inbound: Cardiology Note", date: "11/10/2022", from: "Dr. Roberts Office", status: "Success" },
+    { id: "FAX-097", name: "Outbound: Discharge Summ", date: "11/08/2022", to: "Family Medicine", status: "Success" }
+  ],
+  surgicalHistory: [
+    { name: "Appendectomy", date: "05/10/2005", location: "Springfield General", notes: "Laparoscopic, no complications" },
+    { name: "Arthroplasty, Knee", date: "03/15/2018", location: "St. Jude Orthopedics", notes: "Right knee, partial" }
+  ],
   dischargeSummary: {
     status: "Stable / Discharged",
     instruction: "Patient advised to maintain light activity. Monitor heart rate daily. Specialist follow up required within 2 weeks."
@@ -90,26 +132,26 @@ export const mockUser = {
     { id: 6, name: "Omeprazole", dose: "20mg", instructions: "1 Capsule PO DAILY", type: "PPI" }
   ],
   carePlan: [
-    { 
-      title: "Cardiac Output Management", 
+    {
+      title: "Cardiac Output Management",
       instruction: "Monitor weight daily. Report weight gain > 2 lbs/day. Restrict sodium to 2g/day",
       icon: "Activity",
       priority: "High"
     },
-    { 
-      title: "Activity Tolerance", 
+    {
+      title: "Activity Tolerance",
       instruction: "Encourage progressive ambulation. Refer to cardio rehab phase ll program",
       icon: "UserCheck",
       priority: "Medium"
     },
-    { 
-      title: "Glycemic Control", 
+    {
+      title: "Glycemic Control",
       instruction: "Check capillary blood glucose pre-meals and at bedtime. Goal: 80-130 mg/dL.",
       icon: "TrendingUp",
       priority: "High"
     },
-    { 
-      title: "Medication Adherence", 
+    {
+      title: "Medication Adherence",
       instruction: "Educate on side effects of Beta Blockers. Patient to use pill organizer.",
       icon: "Pill",
       priority: "Medium"
@@ -152,7 +194,7 @@ export const mockUser = {
 
 export const diagnosisProblems = mockUser.diagnoses;
 export const medications = mockUser.medicationsList;
-export const appointments = [mockUser.upcomingAppointment];
+export const appointments = mockUser.upcomingAppointments;
 export const assignedForms = [];
 export const recentDocuments = mockUser.documents;
 export const billingDetails = {
@@ -161,3 +203,13 @@ export const billingDetails = {
   progress: 85
 };
 export const vitals = mockUser.latestVitals;
+export const faxesList = mockUser.faxes;
+export const surgicalHistory = mockUser.surgicalHistory;
+export const vitalsHistory = [
+  { date: "11/20/2022", bp: "120/80", hr: "72", temp: "98.6°F", o2: "98%", rr: "16", wt: "185 lbs" },
+  { date: "11/15/2022", bp: "122/82", hr: "74", temp: "98.4°F", o2: "97%", rr: "18", wt: "186 lbs" },
+  { date: "11/10/2022", bp: "118/78", hr: "70", temp: "98.7°F", o2: "99%", rr: "14", wt: "185 lbs" },
+  { date: "10/25/2022", bp: "125/85", hr: "78", temp: "98.2°F", o2: "98%", rr: "16", wt: "187 lbs" },
+  { date: "10/10/2022", bp: "115/75", hr: "68", temp: "98.5°F", o2: "97%", rr: "14", wt: "188 lbs" },
+  { date: "09/15/2022", bp: "124/84", hr: "76", temp: "98.3°F", o2: "98%", rr: "18", wt: "189 lbs" }
+];

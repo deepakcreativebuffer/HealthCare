@@ -75,15 +75,15 @@ const ClinicalOverview = ({ resident, refreshResident }) => {
                   </div>
                   <div>
                     <p className="text-[13px] font-bold text-gray-900 leading-tight flex items-center gap-2">
-                        {prob.name}
-                        <div className="opacity-0 group-hover/item:opacity-100 transition-opacity flex gap-0.5 bg-white/50 rounded ml-1">
-                          <button onClick={() => handleOpenModal('diagnosis', 'edit', prob)} className="p-0.5 text-gray-500 hover:text-blue-600 rounded">
-                            <Edit className="w-3 h-3" />
-                          </button>
-                          <button onClick={() => handleDelete('diagnosis', prob.id)} className="p-0.5 text-gray-500 hover:text-red-600 rounded">
-                            <Trash2 className="w-3 h-3" />
-                          </button>
-                        </div>
+                      {prob.name}
+                      <div className="opacity-0 group-hover/item:opacity-100 transition-opacity flex gap-0.5 bg-white/50 rounded ml-1">
+                        <button onClick={() => handleOpenModal('diagnosis', 'edit', prob)} className="p-0.5 text-gray-500 hover:text-blue-600 rounded">
+                          <Edit className="w-3 h-3" />
+                        </button>
+                        <button onClick={() => handleDelete('diagnosis', prob.id)} className="p-0.5 text-gray-500 hover:text-red-600 rounded">
+                          <Trash2 className="w-3 h-3" />
+                        </button>
+                      </div>
                     </p>
                     <p className="text-[11px] text-gray-500 flex items-center gap-1 mt-0.5">
                       {prob.onset ? <span className="flex items-center"><Clock className="w-3 h-3 mr-1" /> Onset: {prob.onset}</span> : <span className="flex items-center"><Clock className="w-3 h-3 mr-1" /> Type: {prob.type}</span>}
@@ -155,15 +155,15 @@ const ClinicalOverview = ({ resident, refreshResident }) => {
         <div className="space-y-4">
           {modalTarget === 'diagnosis' ? (
             <>
-              <Input label="Condition Name" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} placeholder="e.g. Asthma" />
-              <Input label="Onset / Type" value={formData.onset || formData.type} onChange={(e) => setFormData({...formData, onset: e.target.value, type: e.target.value})} placeholder="e.g. 2023 or Chronic" />
-              <Input label="Status" value={formData.status} onChange={(e) => setFormData({...formData, status: e.target.value})} placeholder="Active" />
+              <Input label="Condition Name" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} placeholder="e.g. Asthma" />
+              <Input label="Onset / Type" value={formData.onset || formData.type} onChange={(e) => setFormData({ ...formData, onset: e.target.value, type: e.target.value })} placeholder="e.g. 2023 or Chronic" />
+              <Input label="Status" value={formData.status} onChange={(e) => setFormData({ ...formData, status: e.target.value })} placeholder="Active" />
             </>
           ) : (
             <>
-              <Input label="Medication Name" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} placeholder="e.g. Lisinopril" />
-              <Input label="Dose" value={formData.dose} onChange={(e) => setFormData({...formData, dose: e.target.value})} placeholder="e.g. 20mg" />
-              <Input label="Details" value={formData.details} onChange={(e) => setFormData({...formData, details: e.target.value})} placeholder="e.g. Oral - Daily" />
+              <Input label="Medication Name" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} placeholder="e.g. Lisinopril" />
+              <Input label="Dose" value={formData.dose} onChange={(e) => setFormData({ ...formData, dose: e.target.value })} placeholder="e.g. 20mg" />
+              <Input label="Details" value={formData.details} onChange={(e) => setFormData({ ...formData, details: e.target.value })} placeholder="e.g. Oral - Daily" />
             </>
           )}
           <div className="flex gap-3 pt-2">
