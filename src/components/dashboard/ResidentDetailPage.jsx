@@ -1,5 +1,7 @@
 import React, { useState, useEffect, Suspense } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
 import {
   ArrowLeft,
   User,
@@ -123,6 +125,237 @@ const ResidentDetailPage = () => {
     } catch (error) {
       console.error("Error deleting data:", error);
     }
+  };
+
+  const handleDownloadReport = () => {
+    if (!resident) return;
+
+    const doc = new jsPDF();
+    const margin = 20;
+    const pageWidth = doc.internal.pageSize.getWidth();
+    let y = 20;
+
+    // BRANDING & HEADER
+    doc.setFillColor(15, 91, 120); // Medical blue
+    doc.rect(0, 0, pageWidth, 40, 'F');
+    
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(24);
+    doc.setFont(undefined, 'bold');
+    doc.text("PATIENT CLINICAL SUMMARY", margin, 25);
+    
+    doc.setFontSize(10);
+    doc.setFont(undefined, 'normal');
+    doc.text(`HealthCare EHR System - Confidential Medical Record`, margin, 33);
+    doc.text(`Generated: ${new Date().toLocaleString()}`, pageWidth - margin - 50, 33);
+
+    y = 50;
+
+    // SECTION 1: PERSONAL & DEMOGRAPHICS
+    doc.setTextColor(15, 91, 120);
+    doc.setFontSize(14);
+    doc.setFont(undefined, 'bold');
+    doc.text("1. PERSONAL INFORMATION", margin, y);
+    y += 4;
+    doc.setDrawColor(15, 91, 120);
+    doc.setLineWidth(0.5);
+    doc.line(margin, y, pageWidth - margin, y);
+    y += 10;
+
+    doc.setTextColor(0);
+    doc.setFontSize(10);
+    doc.setFont(undefined, 'bold');
+    doc.text("Name:", margin, y);
+    doc.setFont(undefined, 'normal');
+    doc.text(resident.name, margin + 20, y);
+    
+    doc.setFont(undefined, 'bold');
+    doc.text("Patient ID:", margin + 80, y);
+    doc.setFont(undefined, 'normal');
+    doc.text(resident.id, margin + 110, y);
+    y += 7;
+
+    doc.setFont(undefined, 'bold');
+    doc.text("DOB/Age:", margin, y);
+    doc.setFont(undefined, 'normal');
+    doc.text(`${resident.age} years, ${resident.gender || 'N/A'}`, margin + 20, y);
+    
+    doc.setFont(undefined, 'bold');
+    doc.text("Room:", margin + 80, y);
+    doc.setFont(undefined, 'normal');
+    doc.text(resident.roomNumber || 'N/A', margin + 110, y);
+    y += 7;
+
+    doc.setFont(undefined, 'bold');
+    doc.text("Admission:", margin, y);
+    doc.setFont(undefined, 'normal');
+    doc.text(resident.admissionDate || 'N/A', margin + 20, y);
+    
+    doc.setFont(undefined, 'bold');
+    doc.text("Status:", margin + 80, y);
+    doc.setFont(undefined, 'normal');
+    doc.text(resident.status || 'Active', margin + 110, y);
+    y += 15;
+
+    // SECTION 2: VITALS SUMMARY
+    doc.setTextColor(15, 91, 120);
+    doc.setFontSize(14);
+    doc.setFont(undefined, 'bold');
+    doc.text("2. VITALS SUMMARY", margin, y);
+    y += 4;
+    doc.line(margin, y, pageWidth - margin, y);
+    y += 10;
+
+    const vitals = resident.vitals || {};
+    const vitalsData = [
+      ["Blood Pressure", vitals.bp || "N/A", "Heart Rate", `${vitals.heartRate || "N/A"} bpm`],
+      ["Blood Sugar", vitals.bloodSugar || "N/A", "Weight", `${vitals.weight || "N/A"} kg`]
+    ];
+
+    autoTable(doc, {
+      startY: y,
+      body: vitalsData,
+      theme: 'plain',
+      styles: { fontSize: 10, cellPadding: 2 },
+      columnStyles: { 0: { fontStyle: 'bold', width: 40 }, 2: { fontStyle: 'bold', width: 40 } },
+      margin: { left: margin }
+    });
+    
+    y = doc.lastAutoTable.finalY + 15;
+
+    // SECTION 3: ALLERGIES (CRITICAL)
+    doc.setTextColor(200, 0, 0); // Warning Red
+    doc.setFontSize(14);
+    doc.setFont(undefined, 'bold');
+    doc.text("3. KNOWN ALLERGIES", margin, y);
+    y += 4;
+    doc.setDrawColor(200, 0, 0);
+    doc.line(margin, y, pageWidth - margin, y);
+    y += 10;
+
+    doc.setTextColor(0);
+    const allergies = resident.allergies || [];
+    if (allergies.length > 0) {
+      const allergyTable = allergies.map(a => [a.name, a.severity, a.reaction]);
+      autoTable(doc, {
+        startY: y,
+        head: [['Allergen', 'Severity', 'Reaction']],
+        body: allergyTable,
+        theme: 'striped',
+        headStyles: { fillColor: [200, 50, 50] },
+        styles: { fontSize: 9 },
+        margin: { left: margin }
+      });
+      y = doc.lastAutoTable.finalY + 15;
+    } else {
+      doc.setFont(undefined, 'italic');
+      doc.text("NKDA (No Known Drug Allergies) recorded.", margin + 5, y);
+      y += 15;
+    }
+
+    // SECTION 4: MEDICATIONS
+    doc.setTextColor(15, 91, 120);
+    doc.setFontSize(14);
+    doc.setFont(undefined, 'bold');
+    doc.text("4. CURRENT MEDICATIONS", margin, y);
+    y += 4;
+    doc.setDrawColor(15, 91, 120);
+    doc.line(margin, y, pageWidth - margin, y);
+    y += 10;
+
+    const meds = resident.medicationsList || [];
+    if (meds.length > 0) {
+      const medTable = meds.map(m => [m.name, m.dose, m.details, m.status]);
+      autoTable(doc, {
+        startY: y,
+        head: [['Medication', 'Dose', 'Instructions', 'Status']],
+        body: medTable,
+        theme: 'grid',
+        headStyles: { fillColor: [15, 91, 120] },
+        styles: { fontSize: 9 },
+        margin: { left: margin }
+      });
+      y = doc.lastAutoTable.finalY + 15;
+    } else {
+      doc.setFont(undefined, 'italic');
+      doc.text("No active medications records found.", margin + 5, y);
+      y += 15;
+    }
+
+    // PAGE BREAK CHECK
+    if (y > 220) { doc.addPage(); y = 20; }
+
+    // SECTION 5: DIAGNOSIS & PROBLEMS
+    doc.setTextColor(15, 91, 120);
+    doc.setFontSize(14);
+    doc.setFont(undefined, 'bold');
+    doc.text("5. DIAGNOSIS & ACTIVE PROBLEMS", margin, y);
+    y += 4;
+    doc.line(margin, y, pageWidth - margin, y);
+    y += 10;
+
+    const problems = resident.diagnosisProblems || [];
+    if (problems.length > 0) {
+      const probTable = problems.map(p => [p.name, p.onset, p.type, p.status]);
+      autoTable(doc, {
+        startY: y,
+        head: [['Condition', 'Onset', 'Type', 'Status']],
+        body: probTable,
+        theme: 'striped',
+        headStyles: { fillColor: [15, 91, 120] },
+        styles: { fontSize: 9 },
+        margin: { left: margin }
+      });
+      y = doc.lastAutoTable.finalY + 15;
+    } else {
+      doc.text("No active diagnosis records found.", margin + 5, y);
+      y += 15;
+    }
+
+    // SECTION 6: INSURANCE & CONTACTS
+    doc.setTextColor(15, 91, 120);
+    doc.setFontSize(14);
+    doc.setFont(undefined, 'bold');
+    doc.text("6. INSURANCE & EMERGENCY CONTACT", margin, y);
+    y += 4;
+    doc.line(margin, y, pageWidth - margin, y);
+    y += 10;
+
+    doc.setTextColor(0);
+    doc.setFontSize(10);
+    const ins = resident.insurance || {};
+    const emergency = resident.emergencyContact || {};
+
+    doc.setFont(undefined, 'bold');
+    doc.text("Insurance Provider:", margin, y);
+    doc.setFont(undefined, 'normal');
+    doc.text(ins.provider || "N/A", margin + 40, y);
+    
+    doc.setFont(undefined, 'bold');
+    doc.text("Policy ID:", margin + 100, y);
+    doc.setFont(undefined, 'normal');
+    doc.text(ins.id || "N/A", margin + 125, y);
+    y += 10;
+
+    doc.setFont(undefined, 'bold');
+    doc.text("Emergency Contact:", margin, y);
+    doc.setFont(undefined, 'normal');
+    const contactInfo = emergency.name ? `${emergency.name} (${emergency.relation}) - ${emergency.phone}` : "N/A";
+    doc.text(contactInfo, margin + 40, y);
+    y += 15;
+
+    // FOOTER
+    const pageCount = doc.internal.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i++) {
+      doc.setPage(i);
+      doc.setFontSize(8);
+      doc.setTextColor(150);
+      doc.text(`HealthCare EHR Automated Report - Electronic Signature Not Required`, margin, 285);
+      doc.text(`Page ${i} of ${pageCount}`, pageWidth - margin - 20, 285);
+    }
+
+    // Save
+    doc.save(`${resident.name.replace(/\s+/g, "_")}_Clinical_Report.pdf`);
   };
 
   const renderModalContent = () => {
@@ -366,7 +599,7 @@ const ResidentDetailPage = () => {
     const data = resident[key] || [];
 
     const listHeaders = {
-      'Visits': ['date', 'type', 'provider', 'complaint', 'status'],
+      'Visits': ['visitDate', 'visitType', 'providerName', 'chiefComplaint', 'diagnosis'],
       'Diagnosis': ['name', 'onset', 'type', 'status'],
       'Lab': ['name', 'date', 'value', 'flag', 'status'],
       'Billing': ['invoiceNumber', 'serviceDate', 'charges', 'balance', 'status'],
@@ -1528,22 +1761,7 @@ const ResidentDetailPage = () => {
               </div>
             </div>
 
-            {/* Risk & Pain Screener */}
-            <div onClick={() => openModal('Risks')} className="bg-rose-50 rounded-xl border border-rose-100 shadow-sm p-2.5 cursor-pointer hover:shadow-md transition-all">
-              <h3 className="text-[10px] font-black text-rose-800 uppercase tracking-widest mb-2 ">Risk & Pain Screener</h3>
-              <div className="grid grid-cols-2 gap-2">
-                <div className="p-1.5 bg-white/60 rounded border border-rose-100 text-center">
-                  <p className="text-[8px] font-black text-slate-400 uppercase leading-none mb-1">Pain Score</p>
-                  <p className="text-[14px] font-black text-rose-600 leading-none">2/10</p>
-                  <p className="text-[8px] font-bold text-slate-500 uppercase mt-0.5">Mild</p>
-                </div>
-                <div className="p-1.5 bg-white/60 rounded border border-rose-100 text-center">
-                  <p className="text-[8px] font-black text-slate-400 uppercase leading-none mb-1">Skin Risk</p>
-                  <p className="text-[12px] font-black text-slate-700 leading-none uppercase">Low</p>
-                  <p className="text-[8px] font-bold text-slate-500 uppercase mt-0.5">Braden: 20</p>
-                </div>
-              </div>
-            </div>
+
           </div>
         </div>
       </main>
@@ -1559,7 +1777,7 @@ const ResidentDetailPage = () => {
           <span className="text-[11px] font-bold text-slate-400  font-mono uppercase">Last Sync: 2 mins ago</span>
         </div>
         <div className="flex gap-3">
-          <button onClick={() => openModal('Report', 'FORM')} className="px-8 py-2.5 rounded-xl bg-slate-900 text-white text-xs font-black uppercase tracking-widest hover:bg-black transition-all shadow-lg hover:-translate-y-0.5 active:translate-y-0 ">Generate Patient Report</button>
+          <button onClick={handleDownloadReport} className="px-8 py-2.5 rounded-xl bg-slate-900 text-white text-xs font-black uppercase tracking-widest hover:bg-black transition-all shadow-lg hover:-translate-y-0.5 active:translate-y-0 ">Generate Patient Report</button>
         </div>
       </footer>
 
