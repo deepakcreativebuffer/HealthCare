@@ -46,6 +46,11 @@ export const mockData = {
       medicalHistory: [
         { id: 1, Condition: 'Unspecified atrial fibrillation', 'Diagnosis Date': '2018' },
         { id: 2, Condition: 'Essential (primary) hypertension', 'Diagnosis Date': '2015' }
+      ],
+      activities: [
+        { id: 1, type: 'Medication', name: 'Lisinopril 20mg Admin.', date: '08:00 AM Today', status: 'Completed' },
+        { id: 2, type: 'Vitals', name: 'Morning Vitals Check', date: '07:30 AM Today', status: 'Completed' },
+        { id: 3, type: 'Social', name: 'Art Therapy Session', date: '02:00 PM Today', status: 'Pending' }
       ]
     },
     {

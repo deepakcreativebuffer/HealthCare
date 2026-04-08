@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Users, MoreHorizontal, Loader2 } from 'lucide-react';
 import PanelCard from './PanelCard';
+import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../../data/api';
 
 const ResidentRecords = ({ onViewAll }) => {
   const [residents, setResidents] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     api.getResidents().then(data => {
@@ -44,7 +46,11 @@ const ResidentRecords = ({ onViewAll }) => {
           </div>
         ) : (
           residents.map((res, idx) => (
-            <div key={idx} className="flex items-center gap-2.5 p-1.5 rounded-[10px] hover:bg-gray-50 transition-colors cursor-pointer group border-b border-gray-100 last:border-0 relative">
+            <div 
+              key={idx} 
+              onClick={() => navigate(`/admin/residents/${res.id}`)}
+              className="flex items-center gap-2.5 p-1.5 rounded-[10px] hover:bg-gray-50 transition-colors cursor-pointer group border-b border-gray-100 last:border-0 relative"
+            >
               <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-[10px] font-bold ${
                 res.color === 'orange' ? 'bg-[#FFF4E5] text-[#FF9800]' :
                 res.color === 'blue' ? 'bg-[#DEF3FF] text-[#129FED]' :

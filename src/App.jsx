@@ -6,7 +6,9 @@ import {
   Route,
   Navigate,
   useNavigate,
+  useLocation,
   Link,
+  Outlet
 } from "react-router-dom";
 import ResidentLayout from "./resident-panel/layouts/ResidentLayout";
 import Dashboard from "./resident-panel/pages/Dashboard";
@@ -195,65 +197,73 @@ const MockLogin = () => {
   );
 };
 
-// Admin Mock Page
-const AdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState("Dashboard");
-  const [activeDetailView, setActiveDetailView] = useState(null);
+// Admin Layout Wrapper
+const AdminLayout = () => {
   const navigate = useNavigate();
+  const { pathname } = window.location;
+  
+  // Map paths to tab names for the Navbar highlight
+  let activeTab = "Dashboard";
+  if (pathname.includes("/admin/billing")) activeTab = "Billing & Claims";
+  else if (pathname.includes("/admin/users")) activeTab = "Users";
+  else if (pathname.includes("/admin/tracking")) activeTab = "Tracking";
+  else if (pathname.includes("/admin/log")) activeTab = "Log";
+  else if (pathname.includes("/admin/activity-log")) activeTab = "Activity Log";
 
-  // Reset detail view when switching tabs
-  const handleTabChange = (tab) => {
-    setActiveTab(tab);
-    setActiveDetailView(null);
+  const handleTabChange = (tabName) => {
+    const pathMap = {
+      "Dashboard": "/admin",
+      "Billing & Claims": "/admin/billing",
+      "Users": "/admin/users",
+      "Tracking": "/admin/tracking",
+      "Log": "/admin/log",
+      "Activity Log": "/admin/activity-log"
+    };
+    navigate(pathMap[tabName] || "/admin");
   };
+
   return (
     <div className="h-screen bg-[#f8fafc] flex flex-col overflow-hidden">
-      {/* Fixed Sticky Header Block */}
       <header className="shrink-0 z-50 bg-white shadow-sm">
         <Navbar activeTab={activeTab} onTabChange={handleTabChange} />
         <SubNav />
       </header>
-
-      {/* Conditional Dashboard Content */}
       <div className="flex-1 overflow-hidden flex flex-col">
-        {activeTab === "Dashboard" ? (
-          <main className="flex-1 overflow-y-auto p-5 scroll-smooth custom-scrollbar">
-            {activeDetailView ? (
-              <DetailedStatsView
-                title={activeDetailView}
-                onBack={() => setActiveDetailView(null)}
-              />
-            ) : (
-              <MedicalDashboard
-                onStatClick={setActiveDetailView}
-                onViewAll={setActiveDetailView}
-              />
-            )}
-          </main>
-        ) : activeTab === "Billing & Claims" ? (
-          <BillingDashboard />
-        ) : activeTab === "Users" ? (
-          <UserManagement />
-        ) : (
-          <main className="flex-1 overflow-y-auto flex items-center justify-center p-8 custom-scrollbar">
-            <div className="text-center">
-              <h2 className="text-2xl font-bold text-slate-800">
-                Section Under Construction
-              </h2>
-              <p className="text-slate-500 mt-2">
-                The {activeTab} module will be available soon.
-              </p>
-              <button
-                onClick={() => setActiveTab("Dashboard")}
-                className="mt-6 bg-blue-600 text-white px-6 py-2 rounded-lg font-bold shadow-lg shadow-blue-100 hover:bg-blue-700 transition-all"
-              >
-                Back to Dashboard
-              </button>
+        <Suspense fallback={
+          <div className="flex-1 flex items-center justify-center bg-slate-50">
+            <div className="flex flex-col items-center gap-4">
+              <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+              <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">Loading section...</p>
             </div>
+          </div>
+        }>
+          <main className="flex-1 overflow-y-auto p-5 scroll-smooth custom-scrollbar">
+            <Outlet />
           </main>
-        )}
+        </Suspense>
       </div>
     </div>
+  );
+};
+
+// Admin Dashboard Component (Home view for /admin)
+const AdminHome = () => {
+  const [activeDetailView, setActiveDetailView] = useState(null);
+  
+  if (activeDetailView) {
+    return (
+      <DetailedStatsView
+        title={activeDetailView}
+        onBack={() => setActiveDetailView(null)}
+      />
+    );
+  }
+
+  return (
+    <MedicalDashboard
+      onStatClick={setActiveDetailView}
+      onViewAll={setActiveDetailView}
+    />
   );
 };
 
@@ -291,33 +301,29 @@ function App() {
           path="/admin"
           element={
             <ProtectedRoute allowedRole="admin">
-              <AdminDashboard />
+              <AdminLayout />
             </ProtectedRoute>
           }
-        />
-
-        {/* Resident Detailed Page */}
-        <Route
-          path="/residents/:id"
-          element={
-            <ProtectedRoute allowedRole="admin">
-              <Suspense
-                fallback={
-                  <div className="h-screen flex items-center justify-center bg-slate-50">
-                    <div className="flex flex-col items-center gap-4">
-                      <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-                      <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">
-                        Loading clinical records...
-                      </p>
-                    </div>
-                  </div>
-                }
-              >
-                <ResidentDetailPage />
-              </Suspense>
-            </ProtectedRoute>
-          }
-        />
+        >
+          <Route index element={<AdminHome />} />
+          <Route path="billing" element={<BillingDashboard />} />
+          <Route path="users" element={<UserManagement />} />
+          <Route path="residents/:id" element={<ResidentDetailPage />} />
+          {/* Section Under Construction */}
+          <Route path="*" element={
+            <div className="flex items-center justify-center h-full">
+              <div className="text-center">
+                <h2 className="text-2xl font-bold text-slate-800">
+                  Section Under Construction
+                </h2>
+                <p className="text-slate-500 mt-2">The requested module will be available soon.</p>
+                <Link to="/admin" className="mt-6 inline-block bg-blue-600 text-white px-6 py-2 rounded-lg font-bold">
+                  Back to Dashboard
+                </Link>
+              </div>
+            </div>
+          } />
+        </Route>
 
         {/* Resident Panel Routes (Separate Module) */}
         <Route
