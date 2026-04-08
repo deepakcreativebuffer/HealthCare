@@ -138,12 +138,12 @@ const ResidentDetailPage = () => {
     // BRANDING & HEADER
     doc.setFillColor(15, 91, 120); // Medical blue
     doc.rect(0, 0, pageWidth, 40, 'F');
-    
+
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(24);
     doc.setFont(undefined, 'bold');
     doc.text("PATIENT CLINICAL SUMMARY", margin, 25);
-    
+
     doc.setFontSize(10);
     doc.setFont(undefined, 'normal');
     doc.text(`HealthCare EHR System - Confidential Medical Record`, margin, 33);
@@ -168,7 +168,7 @@ const ResidentDetailPage = () => {
     doc.text("Name:", margin, y);
     doc.setFont(undefined, 'normal');
     doc.text(resident.name, margin + 20, y);
-    
+
     doc.setFont(undefined, 'bold');
     doc.text("Patient ID:", margin + 80, y);
     doc.setFont(undefined, 'normal');
@@ -179,7 +179,7 @@ const ResidentDetailPage = () => {
     doc.text("DOB/Age:", margin, y);
     doc.setFont(undefined, 'normal');
     doc.text(`${resident.age} years, ${resident.gender || 'N/A'}`, margin + 20, y);
-    
+
     doc.setFont(undefined, 'bold');
     doc.text("Room:", margin + 80, y);
     doc.setFont(undefined, 'normal');
@@ -190,7 +190,7 @@ const ResidentDetailPage = () => {
     doc.text("Admission:", margin, y);
     doc.setFont(undefined, 'normal');
     doc.text(resident.admissionDate || 'N/A', margin + 20, y);
-    
+
     doc.setFont(undefined, 'bold');
     doc.text("Status:", margin + 80, y);
     doc.setFont(undefined, 'normal');
@@ -220,7 +220,7 @@ const ResidentDetailPage = () => {
       columnStyles: { 0: { fontStyle: 'bold', width: 40 }, 2: { fontStyle: 'bold', width: 40 } },
       margin: { left: margin }
     });
-    
+
     y = doc.lastAutoTable.finalY + 15;
 
     // SECTION 3: ALLERGIES (CRITICAL)
@@ -330,7 +330,7 @@ const ResidentDetailPage = () => {
     doc.text("Insurance Provider:", margin, y);
     doc.setFont(undefined, 'normal');
     doc.text(ins.provider || "N/A", margin + 40, y);
-    
+
     doc.setFont(undefined, 'bold');
     doc.text("Policy ID:", margin + 100, y);
     doc.setFont(undefined, 'normal');
@@ -381,6 +381,7 @@ const ResidentDetailPage = () => {
       'Medical History': 'medicalHistory',
       'Discharge Summary': 'dischargeSummary',
       'Pharmacy': 'pharmacy',
+      'Activities': 'activities',
       'Report': 'report'
     };
 
@@ -418,7 +419,8 @@ const ResidentDetailPage = () => {
         'Allergies': ['name', 'reaction', 'severity', 'status'],
         'Audit Trail': ['date', 'text', 'user'],
         'Care Plan': ['name', 'details', 'frequency', 'status'],
-        'Social History': ['category', 'details', 'notes']
+        'Social History': ['category', 'details', 'notes'],
+        'Activities': ['date', 'type', 'name', 'status']
       };
 
       const fields = formFields[section] || ['name', 'details', 'status'];
@@ -613,7 +615,8 @@ const ResidentDetailPage = () => {
       'Audit Trail': ['date', 'text', 'user'],
       'Care Plan': ['name', 'details', 'frequency', 'status'],
       'Social History': ['category', 'details', 'notes'],
-      'Medical History': ['Condition', 'Diagnosis Date', 'Doctor Notes', 'Status']
+      'Medical History': ['Condition', 'Diagnosis Date', 'Doctor Notes', 'Status'],
+      'Activities': ['date', 'type', 'name', 'status']
     };
 
     const headers = listHeaders[section] || (data.length > 0 ? Object.keys(data[0]).filter(k => k !== 'id') : ['date', 'name', 'status']);
@@ -1490,19 +1493,21 @@ const ResidentDetailPage = () => {
                   <button className="text-[10px] font-black text-blue-600 uppercase tracking-widest">Full Log</button>
                 </div>
                 <div className="space-y-3">
-                  {[
-                    { type: 'Medication', detail: 'Lisinopril 20mg Admin.', time: '08:00 AM Today' },
-                    { type: 'Vitals', detail: 'Morning Vitals Check', time: '07:30 AM Today' },
-                    { type: 'Social', detail: 'Art Therapy Session', time: '02:00 PM Today' }
-                  ].map((act, i) => (
-                    <div key={i} className="flex gap-3">
-                      <div className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0 mt-1.5 shadow-sm shadow-blue-200" />
-                      <div>
-                        <p className="text-[11px] font-bold text-slate-700 leading-tight">{act.detail}</p>
-                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-0.5">{act.time}</p>
+                  {resident.activities && resident.activities.length > 0 ? (
+                    resident.activities.slice(0, 3).map((act, i) => (
+                      <div key={i} className="flex gap-3">
+                        <div className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0 mt-1.5 shadow-sm shadow-blue-200" />
+                        <div>
+                          <p className="text-[11px] font-bold text-slate-700 leading-tight">{act.name}</p>
+                          <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-0.5">{act.date}</p>
+                        </div>
                       </div>
+                    ))
+                  ) : (
+                    <div className="py-4 text-center">
+                      <p className="text-[10px] font-bold text-slate-400 italic">No recent activities.</p>
                     </div>
-                  ))}
+                  )}
                 </div>
               </div>
             </div>
