@@ -65,10 +65,11 @@ const MockLogin = () => {
             to="/"
             className="flex items-center space-x-2 justify-center mb-6"
           >
-            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold" />
+            {/* <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold" />
             <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">
               HealthCare
-            </span>
+            </span> */}
+            <img src="/logo.svg" className="h-20" alt="Logo" />
           </Link>
           <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
             Welcome Back
