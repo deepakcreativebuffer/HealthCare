@@ -219,10 +219,10 @@ const Dashboard = () => {
          </div>
 
          {/* 3. MAIN DASHBOARD CONTENT */}
-         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch pb-12">
+         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
 
             {/* LEFT NAVIGATION COLUMN */}
-            <div className="lg:col-span-2 space-y-3 flex flex-col">
+            <div className="lg:col-span-2 space-y-4 flex flex-col">
                <Card className="p-2 space-y-1 bg-white/60">
                   <h3 className="text-[10px] font-extrabold text-gray-400 uppercase px-2 py-1 tracking-widest">My Health Record</h3>
                   <NavItem label="Recent Visits" value="25 Day" icon={Clock} isActive={activeTab === 'recent_visits'} onClick={() => setActiveTab('recent_visits')} />
@@ -302,7 +302,7 @@ const Dashboard = () => {
             </div>
 
             {/* CENTER PRIMARY COLUMN */}
-            <div className="lg:col-span-7 space-y-3 flex flex-col">
+            <div className="lg:col-span-7 space-y-4 flex flex-col">
 
                {/* TAB: RECENT VISITS (DEFAULT) */}
                {activeTab === 'recent_visits' && (
@@ -671,7 +671,7 @@ const Dashboard = () => {
                      <button className="text-[10px] font-black text-[#129FED] uppercase hover:underline" onClick={() => openModal('VIEW_LIST', { title: 'Full Billing History', items: m.billing?.records })}>View All Records</button>
                   </div>
                   <div className="p-3">
-                     <div className="overflow-x-auto max-h-[210px] overflow-y-auto custom-scrollbar">
+                     <div className="overflow-x-auto max-h-[225px] overflow-y-auto custom-scrollbar">
                         <table className="w-full text-left text-[11px]">
                            <thead>
                               <tr className="text-gray-400 font-extrabold uppercase border-b border-gray-100">
@@ -766,12 +766,12 @@ const Dashboard = () => {
                   </div>
                </Card>
 
-               <Card className="p-0 overflow-hidden shadow-sm">
-                  <div className="p-2.5 bg-gray-50 flex items-center justify-between border-b border-gray-100">
+               <Card className="p-0 overflow-hidden shadow-sm flex flex-col">
+                  <div className="p-2.5 bg-gray-50 flex items-center justify-between border-b border-gray-100 shrink-0">
                      <h3 className="text-[12px] font-extrabold text-gray-900 uppercase">Appointments</h3>
                      <Badge className="bg-[#129FED] text-white border-none text-[8px] font-black px-2 py-0 cursor-pointer hover:bg-blue-600 transition-colors" onClick={() => openModal('VIEW_LIST', { title: 'Upcoming Visits', items: m.upcomingAppointments })}>UPCOMING</Badge>
                   </div>
-                  <div className="divide-y divide-gray-50 max-h-[280px] overflow-y-auto custom-scrollbar">
+                  <div className="divide-y divide-gray-50 max-h-[274px] overflow-y-auto custom-scrollbar pr-1">
                      {m.upcomingAppointments?.map((appt, i) => (
                         <div key={i} className="p-3 cursor-pointer hover:bg-gray-50 transition-colors group" onClick={() => openModal('GENERIC_MESSAGE', { title: appt.type, message: `Your appointment is scheduled for ${appt.date} at ${appt.time} with ${appt.provider}.` })}>
                            <div className="flex items-center gap-3">
@@ -787,7 +787,7 @@ const Dashboard = () => {
                         </div>
                      ))}
                   </div>
-                  <div className="p-2 bg-gray-50 border-t border-gray-100">
+                  <div className="p-2 bg-gray-50 border-t border-gray-100 mt-auto shrink-0">
                      <Button className="w-full h-8 bg-blue-50 text-[#129FED] hover:bg-blue-100 font-black text-[10px] border-none uppercase tracking-widest shadow-none" onClick={() => openModal('VIEW_LIST', { title: 'Upcoming Visits', items: m.upcomingAppointments })}>View Full Schedule</Button>
                   </div>
                </Card>

@@ -201,7 +201,7 @@ const MockLogin = () => {
 const AdminLayout = () => {
   const navigate = useNavigate();
   const { pathname } = window.location;
-  
+
   // Map paths to tab names for the Navbar highlight
   let activeTab = "Dashboard";
   if (pathname.includes("/admin/billing")) activeTab = "Billing & Claims";
@@ -237,7 +237,7 @@ const AdminLayout = () => {
             </div>
           </div>
         }>
-          <main className="flex-1 overflow-y-auto p-5 scroll-smooth custom-scrollbar">
+          <main className="flex-1 overflow-y-auto p-6 scroll-smooth custom-scrollbar">
             <Outlet />
           </main>
         </Suspense>
@@ -249,7 +249,7 @@ const AdminLayout = () => {
 // Admin Dashboard Component (Home view for /admin)
 const AdminHome = () => {
   const [activeDetailView, setActiveDetailView] = useState(null);
-  
+
   if (activeDetailView) {
     return (
       <DetailedStatsView

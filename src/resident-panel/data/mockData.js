@@ -70,13 +70,40 @@ export const mockUser = {
       provider: "Mark Thompson, PT"
     },
     {
-      date: "12/22/2022",
+      date: "12/24/2022",
       month: "DEC",
       day: "24",
       time: "09:30 AM",
       type: "Mental Health Checkup",
       location: "Building C, Room 101",
       provider: "Dr. Alice Rivera"
+    },
+    {
+      date: "01/05/2023",
+      month: "JAN",
+      day: "05",
+      time: "11:00 AM",
+      type: "Optometry Exam",
+      location: "Eye Center, Suite 200",
+      provider: "Dr. David Look"
+    },
+    {
+      date: "01/12/2023",
+      month: "JAN",
+      day: "12",
+      time: "03:30 PM",
+      type: "Dermatology Screening",
+      location: "Skin Clinic, 2nd Floor",
+      provider: "Dr. Karen White"
+    },
+    {
+      date: "01/20/2023",
+      month: "JAN",
+      day: "20",
+      time: "10:00 AM",
+      type: "Dental Cleaning",
+      location: "Dental Wing, Room 12",
+      provider: "Dr. Michael Dent"
     }
   ],
   recentVisitsHistory: [

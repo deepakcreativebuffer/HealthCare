@@ -79,19 +79,22 @@
 /* Custom Scrollbar Utility */
 @utility custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: #1e88e5 transparent;
+  scrollbar-color: #CBD5E1 transparent;
 
   &::-webkit-scrollbar {
-    width: 5px;
+    width: 4px;
   }
   &::-webkit-scrollbar-track {
     background: transparent;
     margin: 4px;
   }
   &::-webkit-scrollbar-thumb {
-    background: #1e88e5;
+    background: #CBD5E1;
     border-radius: 20px;
-    border: 1px solid transparent;
+    border: none;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: #94A3B8;
   }
 }
 
