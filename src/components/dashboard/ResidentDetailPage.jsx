@@ -840,6 +840,16 @@ const ResidentDetailPage = () => {
                     <ChevronRight size={14} className="text-slate-300" />
                   </div>
                 </div>
+                <div className="flex items-center justify-between group cursor-pointer">
+                  <div className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+                    <p className="text-[11px] font-bold text-slate-700 transition-colors group-hover:text-blue-600">Blood Glucose</p>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[11px] font-black text-slate-400 ">110 mg/dl</span>
+                    <ChevronRight size={14} className="text-slate-300" />
+                  </div>
+                </div>
               </div>
             </div>
 
