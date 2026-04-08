@@ -221,6 +221,15 @@ export const api = {
     return simulateAPI(resident);
   },
 
+  updateResident: (residentId, updates) => {
+    const residents = getStoredData(KEYS.RESIDENTS, mockData.residents);
+    const updated = residents.map(r => 
+      r.id === residentId ? { ...r, ...updates } : r
+    );
+    setStoredData(KEYS.RESIDENTS, updated);
+    return simulateAPI({ success: true });
+  },
+
   updateResidentSubData: (residentId, key, itemId, updates) => {
     const residents = getStoredData(KEYS.RESIDENTS, mockData.residents);
     const updated = residents.map(r => {

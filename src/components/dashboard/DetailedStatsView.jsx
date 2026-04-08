@@ -52,6 +52,7 @@ const DetailedStatsView = ({ title, onBack }) => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [isRangeOpen, setIsRangeOpen] = useState(false);
+  const [editResident, setEditResident] = useState(null);
   const Icon = iconMap[title] || Users;
   const navigate = useNavigate();
 
@@ -331,7 +332,10 @@ const DetailedStatsView = ({ title, onBack }) => {
 
           {title === "Total Residents" && (
             <button
-              onClick={() => setIsAdmitModalOpen(true)}
+              onClick={() => {
+                setEditResident(null);
+                setIsAdmitModalOpen(true);
+              }}
               className="flex items-center gap-2 px-4 py-1.5 bg-emerald-600 text-white rounded-lg font-bold hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-100"
             >
               <Plus size={18} />
@@ -699,7 +703,10 @@ const DetailedStatsView = ({ title, onBack }) => {
                               />
                               <ActionButton
                                 icon={Pencil}
-                                onClick={() => setSelectedDetail(item)}
+                                onClick={() => {
+                                  setEditResident(item);
+                                  setIsAdmitModalOpen(true);
+                                }}
                                 color="amber"
                               />
                               <ActionButton
@@ -811,7 +818,7 @@ const DetailedStatsView = ({ title, onBack }) => {
                         <p className="text-sm font-bold text-slate-800 mt-1">
                           {selectedDetail.email ||
                             selectedDetail.contact ||
-                            "info@care.com"}
+                            "N/A"}
                         </p>
                       </div>
                     </div>
@@ -824,7 +831,7 @@ const DetailedStatsView = ({ title, onBack }) => {
                           Phone Number
                         </p>
                         <p className="text-sm font-bold text-slate-800 mt-1">
-                          {selectedDetail.phone || "555-0012-334"}
+                          {selectedDetail.phone || "N/A"}
                         </p>
                       </div>
                     </div>
@@ -890,12 +897,17 @@ const DetailedStatsView = ({ title, onBack }) => {
           </div>
         </div>
       )}
-      {/* Registration Modal */}
+      {/* Registration & Edit Modal */}
       <AdmitResidentModal
         isOpen={isAdmitModalOpen}
-        onClose={() => setIsAdmitModalOpen(false)}
+        editData={editResident}
+        onClose={() => {
+          setIsAdmitModalOpen(false);
+          setEditResident(null);
+        }}
         onResidentAdmitted={() => {
           setIsAdmitModalOpen(false);
+          setEditResident(null);
           fetchData();
         }}
       />

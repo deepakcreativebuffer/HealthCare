@@ -99,7 +99,9 @@ const ResidentDetailPage = () => {
     const key = sectionToKey[activeModal.section] || activeModal.section.toLowerCase();
 
     try {
-      if (activeModal.editItem) {
+      if (activeModal.section === 'Patient Info') {
+        await api.updateResident(resident.id, formData);
+      } else if (activeModal.editItem) {
         await api.updateResidentSubData(resident.id, key, activeModal.editItem.id, formData);
       } else {
         await api.addResidentSubData(resident.id, key, formData);
@@ -448,7 +450,12 @@ const ResidentDetailPage = () => {
         'Audit Trail': ['date', 'text', 'user'],
         'Care Plan': ['name', 'details', 'frequency', 'status'],
         'Social History': ['category', 'details', 'notes'],
-        'Activities': ['date', 'type', 'name', 'status']
+        'Activities': ['date', 'type', 'name', 'status'],
+        'Patient Info': [
+          'name', 'mrn', 'dob', 'gender', 'status', 'phone', 'email', 'photo', 'address',
+          'allergy', 'condition', 'emergencyContactName', 'emergencyContactPhone',
+          'insurance', 'provider', 'admissionDate', 'room'
+        ]
       };
 
       const fields = formFields[section] || ['name', 'details', 'status'];
@@ -479,7 +486,13 @@ const ResidentDetailPage = () => {
                   <input
                     name={field}
                     type="text"
-                    defaultValue={editItem ? editItem[field] : ''}
+                    defaultValue={(() => {
+                      const val = editItem ? editItem[field] : '';
+                      if (field === 'insurance' && typeof val === 'object') return val.provider || '';
+                      if (Array.isArray(val)) return val.map(v => typeof v === 'object' ? (v.name || JSON.stringify(v)) : v).join(', ');
+                      if (typeof val === 'object' && val !== null) return val.name || JSON.stringify(val);
+                      return val;
+                    })()}
                     placeholder={`Enter ${field}`}
                     className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-sm font-bold text-slate-700"
                   />
@@ -855,13 +868,19 @@ const ResidentDetailPage = () => {
             {/* Profile Sidebar */}
             <div className="flex flex-col items-center justify-center">
               <div className="w-16 h-16 rounded-xl bg-slate-100 flex items-center justify-center border-2 border-white shadow-sm overflow-hidden ring-1 ring-slate-100">
-                {resident.image ? (
-                  <img src={resident.image} alt={resident.name} className="w-full h-full object-cover" />
+                {(resident.photo || resident.image) ? (
+                  <img src={resident.photo || resident.image} alt={resident.name} className="w-full h-full object-cover" />
                 ) : (
                   <User size={48} className="text-slate-300" />
                 )}
               </div>
-              <button className="mt-1.5 flex items-center gap-1.5 px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-[10px] font-black uppercase tracking-tight hover:bg-blue-100 transition-colors">
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  openModal('Patient Info', 'FORM');
+                }}
+                className="mt-1.5 flex items-center gap-1.5 px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-[10px] font-black uppercase tracking-tight hover:bg-blue-100 transition-colors"
+              >
                 <Edit size={12} />
                 Edit
               </button>
@@ -876,33 +895,33 @@ const ResidentDetailPage = () => {
                   <div className="flex items-center gap-3 overflow-x-auto whitespace-nowrap scrollbar-hide">
                     <div className="flex items-center gap-1 text-slate-400">
                       <Fingerprint size={12} />
-                      <span className="text-[10px] font-bold uppercase tracking-tight">ID: <span className="text-slate-800">{resident.id || '123456'}</span></span>
+                      <span className="text-[10px] font-bold uppercase tracking-tight">ID: <span className="text-slate-800">{resident.mrn || resident.id || '123456'}</span></span>
                     </div>
                     <div className="flex items-center gap-1 text-slate-400">
                       <Calendar size={12} />
-                      <span className="text-[10px] font-bold uppercase tracking-tight">DOB: <span className="text-slate-800">03/15/1970 (51)</span></span>
+                      <span className="text-[10px] font-bold uppercase tracking-tight">DOB: <span className="text-slate-800">{resident.dob || '03/15/1970'}</span></span>
                     </div>
                     <div className="flex items-center gap-1 text-slate-400">
                       <User size={12} />
-                      <span className="text-[10px] font-bold uppercase tracking-tight">Gender: <span className="text-slate-800">Male</span></span>
+                      <span className="text-[10px] font-bold uppercase tracking-tight">Gender: <span className="text-slate-800">{resident.gender || 'Male'}</span></span>
                     </div>
                     <div className="flex items-center gap-1 text-slate-400 pl-3 border-l border-slate-200">
-                      <span className="text-[10px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded uppercase tracking-widest">Level: Skilled Care</span>
+                      <span className="text-[10px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded uppercase tracking-widest text-[9px]">Level: {resident.levelOfCare || 'Skilled Care'}</span>
                     </div>
                     <div className="flex items-center gap-1 text-slate-400">
-                      <span className="text-[10px] font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded uppercase tracking-widest">Adm: 10/12/2023</span>
+                      <span className="text-[10px] font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded uppercase tracking-widest text-[9px]">Adm: {resident.admissionDate || '10/12/2023'}</span>
                     </div>
                   </div>
                 </div>
 
                 <div className="flex flex-wrap gap-1.5">
-                  <span className="px-2.5 py-1 bg-blue-50 text-blue-600 border border-blue-100 rounded-full text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 shadow-sm">
-                    <Heart size={12} className="fill-blue-600" />
-                    Active
+                  <span className={`px-2.5 py-1 ${resident.status === 'Deceased' ? 'bg-red-50 text-red-600 border-red-100' : resident.status === 'Inactive' ? 'bg-slate-50 text-slate-500 border-slate-100' : 'bg-emerald-50 text-emerald-600 border-emerald-100'} border rounded-full text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 shadow-sm`}>
+                    <Heart size={12} className={resident.status === 'Deceased' ? 'fill-red-600' : resident.status === 'Inactive' ? 'fill-slate-500' : 'fill-emerald-600'} />
+                    {resident.status || 'Active'}
                   </span>
                   <span className="px-2.5 py-1 bg-amber-50 text-amber-600 border border-amber-100 rounded-full text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 shadow-sm">
                     <AlertCircle size={12} className="fill-amber-600" />
-                    Plan G
+                    Resident
                   </span>
                 </div>
               </div>
@@ -916,7 +935,9 @@ const ResidentDetailPage = () => {
                     </div>
                     <div>
                       <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-0.5">Insurance</p>
-                      <p className="text-[11px] font-bold text-blue-600 underline underline-offset-2">BCBS PPO</p>
+                      <p className="text-[11px] font-bold text-blue-600 underline underline-offset-2">
+                        {typeof resident.insurance === 'object' ? resident.insurance.provider : (resident.insurance || 'BCBS PPO')}
+                      </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -925,7 +946,9 @@ const ResidentDetailPage = () => {
                     </div>
                     <div>
                       <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-0.5">Allergy</p>
-                      <p className="text-[11px] font-black text-red-600">Penicilin (Severe)</p>
+                      <p className="text-[11px] font-black text-red-600 truncate w-32">
+                        {resident.allergy || (Array.isArray(resident.allergies) ? resident.allergies.map(a => typeof a === 'object' ? a.name : a).join(', ') : resident.allergies) || 'None'}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -938,7 +961,7 @@ const ResidentDetailPage = () => {
                     </div>
                     <div>
                       <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-0.5">Provider</p>
-                      <p className="text-[11px] font-bold text-slate-700">Emily Roberts</p>
+                      <p className="text-[11px] font-bold text-slate-700">{resident.provider || 'Emily Roberts'}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -947,7 +970,9 @@ const ResidentDetailPage = () => {
                     </div>
                     <div>
                       <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-0.5">Condition</p>
-                      <p className="text-[11px] font-bold text-blue-600">Chronic Hypertension</p>
+                      <p className="text-[11px] font-bold text-blue-600 truncate w-32">
+                        {resident.condition || (Array.isArray(resident.medicalConditions) ? resident.medicalConditions.join(', ') : resident.medicalConditions) || 'None'}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -960,7 +985,7 @@ const ResidentDetailPage = () => {
                     </div>
                     <div>
                       <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-0.5">Location</p>
-                      <p className="text-[11px] font-bold text-slate-700">Room 102-B, West Wing</p>
+                      <p className="text-[11px] font-bold text-slate-700">{resident.room || 'Room 102-B'}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -969,7 +994,9 @@ const ResidentDetailPage = () => {
                     </div>
                     <div>
                       <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-0.5">Nutrition</p>
-                      <p className="text-[11px] font-bold text-slate-700">Low Sodium Diet</p>
+                      <p className="text-[11px] font-bold text-slate-700">
+                        {resident.nutrition?.diet || (typeof resident.nutrition === 'string' ? resident.nutrition : 'Low Sodium Diet')}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -982,7 +1009,7 @@ const ResidentDetailPage = () => {
                     </div>
                     <div>
                       <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-0.5">Phone</p>
-                      <p className="text-[11px] font-bold text-slate-700">(555) 123-4567</p>
+                      <p className="text-[11px] font-bold text-slate-700">{resident.phone || '(555) 123-4567'}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -991,7 +1018,7 @@ const ResidentDetailPage = () => {
                     </div>
                     <div>
                       <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-0.5">Address</p>
-                      <p className="text-[11px] font-bold text-slate-700 truncate w-32">123 Main St. Springfield, IL</p>
+                      <p className="text-[11px] font-bold text-slate-700 truncate w-32">{resident.address || '123 Main St.'}</p>
                     </div>
                   </div>
                 </div>
@@ -1228,14 +1255,18 @@ const ResidentDetailPage = () => {
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-                  <span className="text-[11px] font-bold text-slate-700">Language: English</span>
+                  <span className="text-[11px] font-bold text-slate-700">
+                    Language: {resident.communication?.language || (typeof resident.communication === 'string' ? resident.communication : 'English')}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2 text-[11px] text-slate-600 pl-3">
-                  <span>Interpreter: Not Required</span>
+                  <span>Interpreter: {resident.communication?.interpreter || 'Not Required'}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-slate-300" />
-                  <span className="text-[11px] font-bold text-slate-700">Hearing: Impaired (Left)</span>
+                  <span className="text-[11px] font-bold text-slate-700">
+                    Hearing: {resident.communication?.hearing || 'Normal'}
+                  </span>
                 </div>
               </div>
             </div>
@@ -1246,13 +1277,17 @@ const ResidentDetailPage = () => {
               <div className="space-y-2">
                 <div className="p-1.5 bg-slate-50 border border-slate-100 rounded flex justify-between items-center">
                   <span className="text-[10px] font-bold text-slate-500 uppercase">Assist:</span>
-                  <span className="text-[11px] font-black text-slate-700">One-Person</span>
+                  <span className="text-[11px] font-black text-slate-700">
+                    {resident.mobility?.assist || (typeof resident.mobility === 'string' ? resident.mobility : 'Independent')}
+                  </span>
                 </div>
                 <div className="grid grid-cols-2 gap-1.5">
                   <div className="p-1 bg-blue-50 text-blue-700 rounded text-[9px] font-black text-center uppercase">Walker</div>
                   <div className="p-1 bg-slate-100 text-slate-400 rounded text-[9px] font-black text-center uppercase">Wheelchair</div>
                 </div>
-                <p className="text-[9px] text-red-500 font-bold text-center mt-1 uppercase tracking-tighter">Fall Risk: HIGH (B Morse)</p>
+                <p className="text-[9px] text-red-500 font-bold text-center mt-1 uppercase tracking-tighter">
+                  Fall Risk: {resident.mobility?.fallRisk || 'LOW'}
+                </p>
               </div>
             </div>
 
@@ -1262,13 +1297,19 @@ const ResidentDetailPage = () => {
               <div className="space-y-1.5">
                 <div className="flex justify-between items-center text-[10px]">
                   <span className="font-bold text-slate-500 uppercase tracking-tight">Diet:</span>
-                  <span className="font-black text-slate-800 uppercase">Mechanical Soft</span>
+                  <span className="font-black text-slate-800 uppercase">
+                    {resident.nutrition?.diet || (typeof resident.nutrition === 'string' ? resident.nutrition : 'Regular')}
+                  </span>
                 </div>
                 <div className="flex justify-between items-center text-[10px]">
                   <span className="font-bold text-slate-500 uppercase tracking-tight">Fluids:</span>
-                  <span className="font-black text-blue-600 uppercase">Thin / No Restrict</span>
+                  <span className="font-black text-blue-600 uppercase">
+                    {resident.nutrition?.fluids || 'Regular'}
+                  </span>
                 </div>
-                <div className="p-1 px-2 bg-white/60 rounded border border-emerald-50 text-[9px] font-bold text-emerald-700"> Intake Goal: 1500ml/day </div>
+                <div className="p-1 px-2 bg-white/60 rounded border border-emerald-50 text-[9px] font-bold text-emerald-700"> 
+                  Intake Goal: {resident.nutrition?.intakeGoal || 'N/A'} 
+                </div>
               </div>
             </div>
 
@@ -1280,13 +1321,17 @@ const ResidentDetailPage = () => {
                   <div className="w-4 h-4 rounded bg-red-100 flex items-center justify-center text-red-600">
                     <AlertCircle size={10} />
                   </div>
-                  <span className="text-[10px] font-black text-slate-700 uppercase">Wander Guard Active</span>
+                  <span className="text-[10px] font-black text-slate-700 uppercase">
+                    {resident.safety?.security || 'General Safety'}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 rounded bg-blue-100 flex items-center justify-center text-blue-600">
                     <User size={10} />
                   </div>
-                  <span className="text-[10px] font-black text-slate-700 uppercase">Family Access Only</span>
+                  <span className="text-[10px] font-black text-slate-700 uppercase">
+                    {resident.safety?.accessLevel || 'Standard Access'}
+                  </span>
                 </div>
               </div>
             </div>
