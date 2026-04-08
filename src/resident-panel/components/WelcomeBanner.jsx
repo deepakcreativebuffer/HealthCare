@@ -1,14 +1,19 @@
 import React from "react";
 
 const WelcomeBanner = ({ resident }) => {
+  const userStr = localStorage.getItem("user");
+  const storedUser = userStr ? JSON.parse(userStr) : null;
+  const displayName = storedUser?.name || resident?.name || "Sarah Mitchell";
+  const firstName = displayName.split(' ')[0];
+
   return (
     <div className="bg-gradient-to-r from-[#0088FF] to-[#20D5FE] rounded-[10px] p-4 sm:p-5 text-white relative overflow-hidden shadow-sm">
       <div className="relative z-10 max-w-full sm:max-w-xl text-center sm:text-left">
         <h1 className="text-[18px] sm:text-[22px] font-bold mb-0.5 flex items-center justify-center sm:justify-start gap-2">
-          Good Morning, {resident.name.split(' ')[0]}! 👋
+          Good Morning, {firstName}! 👋
         </h1>
         <p className="text-white/90 text-[13px] mb-2">How can we assist you today?</p>
-        <p className="text-[12px] font-medium mt-4">Welcome to the Oasis Notes!</p>
+        <p className="text-[12px] font-medium mt-4">Welcome to the HealthCare Notes!</p>
       </div>
 
       {/* Doctor illustration - hidden on mobile, visible on sm and up */}

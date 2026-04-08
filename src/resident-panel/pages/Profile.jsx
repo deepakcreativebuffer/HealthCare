@@ -287,7 +287,7 @@ const Profile = () => {
 
             <Input
               label="Associated Facility"
-              defaultValue="Oasis Recovery Center"
+              defaultValue="Health Care Center"
               readOnly={!isEditing}
             />
           </Card>

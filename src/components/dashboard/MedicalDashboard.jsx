@@ -34,13 +34,7 @@ const MedicalDashboard = ({ onStatClick, onViewAll }) => {
         <h2 className="text-[16px] font-bold text-slate-800 ml-1 leading-none mb-1">Overall Statistics</h2>
         <StatsGrid 
           key={`stats-${refreshKey}`} 
-          onStatClick={(title) => {
-            if (title === "Total Residents") {
-              setIsAdmitModalOpen(true);
-            } else {
-              onStatClick(title);
-            }
-          }} 
+          onStatClick={(title) => onStatClick(title)} 
         />
       </div>
 

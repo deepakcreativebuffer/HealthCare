@@ -20,8 +20,10 @@ import {
   Eye,
   Pencil,
   Trash2,
+  Plus
 } from "lucide-react";
 import { api } from "../../data/api";
+import AdmitResidentModal from "./AdmitResidentModal";
 
 const iconMap = {
   "Total Residents": Users,
@@ -43,6 +45,7 @@ const DetailedStatsView = ({ title, onBack }) => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isAdmitModalOpen, setIsAdmitModalOpen] = useState(false);
   const [selectedDetail, setSelectedDetail] = useState(null);
   const [activeFilter, setActiveFilter] = useState("All");
   const [showFilterMenu, setShowFilterMenu] = useState(false);
@@ -325,6 +328,16 @@ const DetailedStatsView = ({ title, onBack }) => {
                 </div>
               </div>
             )}
+
+          {title === "Total Residents" && (
+            <button
+              onClick={() => setIsAdmitModalOpen(true)}
+              className="flex items-center gap-2 px-4 py-1.5 bg-emerald-600 text-white rounded-lg font-bold hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-100"
+            >
+              <Plus size={18} />
+              <span className="hidden sm:inline">Add Resident</span>
+            </button>
+          )}
 
           {title !== "Total Residents" &&
             title !== "Active Resident Records" &&
@@ -877,6 +890,15 @@ const DetailedStatsView = ({ title, onBack }) => {
           </div>
         </div>
       )}
+      {/* Registration Modal */}
+      <AdmitResidentModal
+        isOpen={isAdmitModalOpen}
+        onClose={() => setIsAdmitModalOpen(false)}
+        onResidentAdmitted={() => {
+          setIsAdmitModalOpen(false);
+          fetchData();
+        }}
+      />
     </div>
   );
 };

@@ -89,7 +89,7 @@ const MockLogin = () => {
                 type="text"
                 required
                 className="w-full bg-gray-50/50 border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-600 block pl-11 p-3.5 outline-none transition-all duration-300"
-                placeholder="email@oasisnotes.com"
+                placeholder="email@healthcare.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
