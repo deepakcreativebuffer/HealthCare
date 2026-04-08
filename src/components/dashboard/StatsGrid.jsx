@@ -72,20 +72,12 @@ const StatsGrid = ({ onStatClick }) => {
                 className={`${IconConfig.bg} ${IconConfig.color} w-8 h-8 rounded-[8px] flex items-center justify-center group-hover:scale-105 transition-transform shrink-0 relative`}
               >
                 <IconConfig.icon size={16} />
-                {isTotalResidents && (
-                  <div className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-blue-600 flex items-center justify-center border-2 border-white">
-                    <Plus size={10} className="text-white" />
-                  </div>
-                )}
               </div>
               <div className="flex flex-col items-start w-full">
                 <div className="flex items-center justify-between w-full">
                   <span className="text-[17px] font-bold text-slate-800 leading-tight">
                     {stat.value}
                   </span>
-                  {isTotalResidents && (
-                    <span className="text-[9px] font-black text-blue-600 bg-blue-50 px-1 py-0.5 rounded uppercase leading-none">Add New</span>
-                  )}
                 </div>
                 <p className="text-[11px] font-bold text-slate-400 uppercase tracking-tight">
                   {stat.title}
