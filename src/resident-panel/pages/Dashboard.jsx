@@ -219,10 +219,10 @@ const Dashboard = () => {
          </div>
 
          {/* 3. MAIN DASHBOARD CONTENT */}
-         <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch">
+         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
 
             {/* LEFT NAVIGATION COLUMN */}
-            <div className="lg:col-span-2 space-y-3 flex flex-col">
+            <div className="lg:col-span-2 space-y-4 flex flex-col">
                <Card className="p-2 space-y-1 bg-white/60">
                   <h3 className="text-[10px] font-extrabold text-gray-400 uppercase px-2 py-1 tracking-widest">My Health Record</h3>
                   <NavItem label="Recent Visits" value="25 Day" icon={Clock} isActive={activeTab === 'recent_visits'} onClick={() => setActiveTab('recent_visits')} />
@@ -302,7 +302,7 @@ const Dashboard = () => {
             </div>
 
             {/* CENTER PRIMARY COLUMN */}
-            <div className="lg:col-span-7 space-y-3 flex flex-col">
+            <div className="lg:col-span-7 space-y-4 flex flex-col">
 
                {/* TAB: RECENT VISITS (DEFAULT) */}
                {activeTab === 'recent_visits' && (
