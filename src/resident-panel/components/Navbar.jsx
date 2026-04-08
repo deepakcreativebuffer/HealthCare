@@ -40,7 +40,7 @@ const Navbar = ({ resident }) => {
               <span className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">
                 HealthCare
               </span> */}
-              <img src="logo.svg" className="h-12" alt="Logo" />
+              <img src="/logo.svg" className="h-12" alt="Logo" />
             </Link>
 
             <div className="hidden md:flex items-center space-x-2">

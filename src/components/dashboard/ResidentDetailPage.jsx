@@ -741,9 +741,7 @@ const ResidentDetailPage = () => {
   }
 
   return (
-    <div className="min-h-screen  flex flex-col font-sans">
-
-
+    <div className="min-h-screen flex flex-col font-sans">
       <main className="flex-1 overflow-y-auto p-2 lg:p-2 space-y-1.5">
         {/* Back Button */}
         <div className="flex items-center gap-2 mb-1">

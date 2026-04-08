@@ -66,7 +66,7 @@ const Navbar = ({ activeTab, onTabChange }) => {
               <span className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">
                 HealthCare
               </span> */}
-            <img src="logo.svg" className="h-12" alt="Logo" />
+            <img src="/logo.svg" className="h-12" alt="Logo" />
           </Link>
         </div>
 
@@ -96,6 +96,10 @@ const Navbar = ({ activeTab, onTabChange }) => {
 
       <div className="flex items-center gap-2 sm:gap-4 shrink-0">
         <div className="flex items-center gap-2">
+          <button className="p-2 text-slate-400 hover:bg-gray-50 rounded-full relative">
+            <Mail size={20} />
+            <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white shadow-sm" />
+          </button>
           <button className="p-2 text-slate-400 hover:bg-gray-50 rounded-full relative">
             <Bell size={20} />
             <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white shadow-sm" />
