@@ -32,10 +32,13 @@ import {
   Plus,
   Trash2,
   CheckCircle2,
+  DownloadIcon,
+  Upload,
 } from "lucide-react";
 import { api } from "../../data/api";
 import Navbar from "../layout/Navbar";
 import SubNav from "../layout/SubNav";
+import ECGReportModal from "./ECGReportModal";
 
 const ResidentDetailPage = () => {
   const { id } = useParams();
@@ -43,6 +46,7 @@ const ResidentDetailPage = () => {
   const [resident, setResident] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [activeModal, setActiveModal] = useState(null); // { type: 'LIST' | 'FORM', section: 'Visits' | ... }
+  const [isECGModalOpen, setIsECGModalOpen] = useState(false);
 
   const openModal = (section, type = 'LIST') => {
     setActiveModal({ section, type });
@@ -428,7 +432,7 @@ const ResidentDetailPage = () => {
         ],
         'Lab': [
           'name', 'orderedDate', 'resultDate', 'value',
-          'range', 'flag', 'orderedBy', 'status'
+          'range', 'flag', 'orderedBy', 'status', 'report'
         ],
         'Billing': [
           'invoiceNumber', 'serviceDate', 'charges', 'balance', 'status'
@@ -438,7 +442,7 @@ const ResidentDetailPage = () => {
           'subscriber', 'eligibility', 'status'
         ],
         'Documents': [
-          'name', 'date', 'type', 'uploadedBy'
+          'name', 'date', 'type', 'uploadedBy', 'file'
         ],
         'Fax': [
           'faxDate', 'from', 'to', 'subject', 'status'
@@ -483,19 +487,44 @@ const ResidentDetailPage = () => {
               {fields.map((field, i) => (
                 <div key={i} className="space-y-1">
                   <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest leading-tight">{field.replace(/([A-Z])/g, ' $1').toUpperCase()}</label>
-                  <input
-                    name={field}
-                    type="text"
-                    defaultValue={(() => {
-                      const val = editItem ? editItem[field] : '';
-                      if (field === 'insurance' && typeof val === 'object') return val.provider || '';
-                      if (Array.isArray(val)) return val.map(v => typeof v === 'object' ? (v.name || JSON.stringify(v)) : v).join(', ');
-                      if (typeof val === 'object' && val !== null) return val.name || JSON.stringify(val);
-                      return val;
-                    })()}
-                    placeholder={`Enter ${field}`}
-                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-sm font-bold text-slate-700"
-                  />
+                  {(field === 'report' || field === 'file') ? (
+                    <div className="flex items-center gap-2">
+                      <input
+                        name={field}
+                        type="file"
+                        className="hidden"
+                        id={`file-${field}`}
+                        onChange={(e) => {
+                          const fileName = e.target.files[0]?.name;
+                          if (fileName) {
+                            const label = e.target.parentElement.querySelector('.file-label');
+                            if (label) label.textContent = fileName;
+                          }
+                        }}
+                      />
+                      <label
+                        htmlFor={`file-${field}`}
+                        className="flex-1 px-4 py-2.5 bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl cursor-pointer hover:bg-slate-100 hover:border-blue-400 transition-all flex items-center gap-3 text-slate-500"
+                      >
+                        <Upload size={16} />
+                        <span className="file-label text-xs font-bold">{editItem && editItem[field] ? editItem[field] : 'Choose PDF Report...'}</span>
+                      </label>
+                    </div>
+                  ) : (
+                    <input
+                      name={field}
+                      type="text"
+                      defaultValue={(() => {
+                        const val = editItem ? editItem[field] : '';
+                        if (field === 'insurance' && typeof val === 'object') return val.provider || '';
+                        if (Array.isArray(val)) return val.map(v => typeof v === 'object' ? (v.name || JSON.stringify(v)) : v).join(', ');
+                        if (typeof val === 'object' && val !== null) return val.name || JSON.stringify(val);
+                        return val;
+                      })()}
+                      placeholder={`Enter ${field}`}
+                      className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-sm font-bold text-slate-700"
+                    />
+                  )}
                 </div>
               ))}
             </div>
@@ -683,10 +712,10 @@ const ResidentDetailPage = () => {
           { id: 2, date: '07:30 AM Today', type: 'Vitals', name: 'Morning Vitals Check', status: 'Completed' }
         ];
       } else if (section === 'Lab Highlights') {
-        data = [
-          { id: 1, test: 'Glucose', result: '102 mg/dL', status: 'Normal' },
-          { id: 2, test: 'HbA1c', result: '6.4%', status: 'Stable' },
-          { id: 3, test: 'Potassium', result: '4.2 mEq/L', status: 'Normal' }
+        data = (resident.labResults && resident.labResults.length > 0) ? resident.labResults : [
+          { id: 1, name: 'Glucose', value: '102 mg/dL', status: 'Normal' },
+          { id: 2, name: 'HbA1c', value: '6.4%', status: 'Stable' },
+          { id: 3, name: 'Potassium', value: '4.2 mEq/L', status: 'Normal' }
         ];
       } else if (section === 'Goals') {
         data = [
@@ -720,8 +749,8 @@ const ResidentDetailPage = () => {
       'Audit Trail': ['date', 'event', 'text', 'user'],
       'Discharge Summary': ['status', 'instruction', 'followUp', 'date'],
       'Immunizations': ['name', 'date', 'status', 'provider'],
-      'Activities': ['date', 'type', 'name', 'status'],
-      'Lab Highlights': ['test', 'result', 'status'],
+      'Lab': ['name', 'value', 'date', 'flag', 'status'],
+      'Lab Highlights': ['name', 'value', 'status'],
       'Goals': ['name', 'progress', 'status']
     };
 
@@ -783,6 +812,15 @@ const ResidentDetailPage = () => {
                       ))}
                       <td className="px-4 py-3 text-right">
                         <div className="flex justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                          {(section === 'Lab' || section === 'Documents' || section === 'Visits') && (
+                            <button
+                              onClick={(e) => { e.stopPropagation(); alert('Downloading report...'); }}
+                              className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-emerald-600 hover:border-emerald-200 transition-all"
+                              title="Download PDF"
+                            >
+                              <DownloadIcon size={14} />
+                            </button>
+                          )}
                           <button
                             onClick={() => setActiveModal({ section, type: 'FORM', editItem: item })}
                             className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-blue-600 hover:border-blue-200 transition-all"
@@ -874,7 +912,7 @@ const ResidentDetailPage = () => {
                   <User size={48} className="text-slate-300" />
                 )}
               </div>
-              <button 
+              <button
                 onClick={(e) => {
                   e.stopPropagation();
                   openModal('Patient Info', 'FORM');
@@ -1031,8 +1069,8 @@ const ResidentDetailPage = () => {
                     </div>
                     <div>
                       <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-0.5">Emergency Contact</p>
-                      <p className="text-[11px] font-bold text-slate-700 leading-none mb-0.5">Mary Smith</p>
-                      <p className="text-[10px] font-bold text-blue-600">(555) 987-6543</p>
+                      <p className="text-[11px] font-bold text-slate-700 leading-none mb-0.5">{resident.emergencyContactName || 'Mary Smith'}</p>
+                      <p className="text-[10px] font-bold text-blue-600">{resident.emergencyContactPhone || '(555) 987-6543'}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -1041,9 +1079,12 @@ const ResidentDetailPage = () => {
                     </div>
                     <div>
                       <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-0.5">Clinical Access</p>
-                      <div className="flex gap-1">
-                        <span className="text-[9px] font-black text-purple-700 bg-purple-100/50 px-1.5 py-0.5 rounded uppercase">Full Assist</span>
-                        <span className="text-[9px] font-black text-blue-700 bg-blue-100/50 px-1.5 py-0.5 rounded uppercase">Interpreter Req</span>
+                      <div className="flex flex-wrap gap-1">
+                        {(resident.clinicalAccess || 'Full Assist, Interpreter Req').split(',').map((access, i) => (
+                          <span key={i} className={`text-[9px] font-black ${i % 2 === 0 ? 'text-purple-700 bg-purple-100/50' : 'text-blue-700 bg-blue-100/50'} px-1.5 py-0.5 rounded uppercase`}>
+                            {access.trim()}
+                          </span>
+                        ))}
                       </div>
                     </div>
                   </div>
@@ -1307,8 +1348,8 @@ const ResidentDetailPage = () => {
                     {resident.nutrition?.fluids || 'Regular'}
                   </span>
                 </div>
-                <div className="p-1 px-2 bg-white/60 rounded border border-emerald-50 text-[9px] font-bold text-emerald-700"> 
-                  Intake Goal: {resident.nutrition?.intakeGoal || 'N/A'} 
+                <div className="p-1 px-2 bg-white/60 rounded border border-emerald-50 text-[9px] font-bold text-emerald-700">
+                  Intake Goal: {resident.nutrition?.intakeGoal || 'N/A'}
                 </div>
               </div>
             </div>
@@ -1448,11 +1489,17 @@ const ResidentDetailPage = () => {
                       <p className="text-[11px] font-bold text-slate-600 leading-tight">Feel as good as I can as long as I can</p>
                     </div>
                     <div className="pt-2">
-                      <div className="flex items-center gap-1.5 bg-blue-50 text-blue-600 px-2 py-1 rounded border border-blue-100 cursor-pointer hover:bg-blue-100 transition-colors w-fit">
+                      <div
+                        onClick={(e) => { e.stopPropagation(); setIsECGModalOpen(true); }}
+                        className="flex items-center gap-1.5 bg-blue-50 text-blue-600 px-2 py-1 rounded border border-blue-100 cursor-pointer hover:bg-blue-100 transition-colors w-fit"
+                      >
                         <Activity size={12} />
                         <span className="text-[9px] font-black uppercase tracking-widest">ECG Report</span>
                       </div>
-                      <div className="flex items-center gap-1.5 bg-slate-50 text-slate-600 px-2 py-1 rounded border border-slate-100 cursor-pointer hover:bg-slate-100 transition-colors mt-2 w-fit">
+                      <div
+                        onClick={(e) => { e.stopPropagation(); openModal('Documents'); }}
+                        className="flex items-center gap-1.5 bg-slate-50 text-slate-600 px-2 py-1 rounded border border-slate-100 cursor-pointer hover:bg-slate-100 transition-colors mt-2 w-fit"
+                      >
                         <FileText size={12} />
                         <span className="text-[9px] font-black uppercase tracking-widest">Documents</span>
                       </div>
@@ -1465,7 +1512,10 @@ const ResidentDetailPage = () => {
                       <p className="text-[11px] font-bold text-slate-400 italic leading-tight">No surgical procedures recorded.</p>
                     </div>
                     <div className="pt-2">
-                      <div className="flex items-center gap-1.5 bg-slate-50 text-slate-600 px-2 py-1 rounded border border-slate-100 cursor-pointer hover:bg-slate-100 transition-colors w-fit">
+                      <div
+                        onClick={(e) => { e.stopPropagation(); openModal('Visits'); }}
+                        className="flex items-center gap-1.5 bg-slate-50 text-slate-600 px-2 py-1 rounded border border-slate-100 cursor-pointer hover:bg-slate-100 transition-colors w-fit"
+                      >
                         <span className="text-[9px] font-black uppercase tracking-widest">More Details</span>
                         <ChevronRight size={12} />
                       </div>
@@ -1630,9 +1680,9 @@ const ResidentDetailPage = () => {
                     const activitiesToDisplay = (resident.activities && resident.activities.length > 0)
                       ? resident.activities
                       : [
-                          { id: 1, type: 'Medication', name: 'Lisinopril 20mg Admin.', date: '08:00 AM Today', status: 'Completed' },
-                          { id: 2, type: 'Vitals', name: 'Morning Vitals Check', date: '07:30 AM Today', status: 'Completed' }
-                        ];
+                        { id: 1, type: 'Medication', name: 'Lisinopril 20mg Admin.', date: '08:00 AM Today', status: 'Completed' },
+                        { id: 2, type: 'Vitals', name: 'Morning Vitals Check', date: '07:30 AM Today', status: 'Completed' }
+                      ];
 
                     return activitiesToDisplay.slice(0, 3).map((act, i) => (
                       <div key={i} className="flex gap-3">
@@ -1944,6 +1994,12 @@ const ResidentDetailPage = () => {
           </div>
         </div>
       )}
+      {/* ECG Modal */}
+      <ECGReportModal
+        isOpen={isECGModalOpen}
+        onClose={() => setIsECGModalOpen(false)}
+        residentId={id}
+      />
     </div>
   );
 };

@@ -44,7 +44,7 @@ const AdmitResidentModal = ({ isOpen, onClose, onResidentAdmitted, editData = nu
         allergy: Array.isArray(editData.allergies) ? editData.allergies.map(a => typeof a === 'object' ? a.name : a).join(', ') : (editData.allergy || editData.allergies || ""),
         provider: editData.provider || "",
         condition: Array.isArray(editData.medicalConditions) ? editData.medicalConditions.map(c => typeof c === 'object' ? c.name : c).join(', ') : (editData.condition || editData.medicalConditions || ""),
-        nutrition: editData.nutrition || "",
+        nutrition: (typeof editData.nutrition === 'object' ? (editData.nutrition.diet || "") : (editData.nutrition || "")),
         emergencyContactName: editData.emergencyContact?.name || editData.emergencyContactName || "",
         emergencyContactPhone: editData.emergencyContact?.phone || editData.emergencyContactPhone || "",
         photo: editData.photo || editData.image || "",
@@ -227,6 +227,23 @@ const AdmitResidentModal = ({ isOpen, onClose, onResidentAdmitted, editData = nu
               <div className="space-y-1.5">
                 <label className="text-[11px] font-bold text-slate-500 uppercase tracking-tight ml-1">Room Assignment</label>
                 <input type="text" placeholder="Unit 204-B" className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-4 focus:ring-blue-100 focus:border-blue-600 outline-none transition-all" value={formData.room} onChange={(e) => setFormData({ ...formData, room: e.target.value })} />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-[11px] font-bold text-slate-500 uppercase tracking-tight ml-1">Nutrition Plan</label>
+                <input type="text" placeholder="Low Sodium Diet" className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-4 focus:ring-blue-100 focus:border-blue-600 outline-none transition-all" value={formData.nutrition} onChange={(e) => setFormData({ ...formData, nutrition: e.target.value })} />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-[11px] font-bold text-slate-500 uppercase tracking-tight ml-1">Level of Care</label>
+                <select className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-4 focus:ring-blue-100 focus:border-blue-600 outline-none transition-all" value={formData.levelOfCare} onChange={(e) => setFormData({ ...formData, levelOfCare: e.target.value })}>
+                  <option value="Skilled Care">Skilled Care</option>
+                  <option value="Assisted Living">Assisted Living</option>
+                  <option value="Memory Care">Memory Care</option>
+                  <option value="Independent Living">Independent Living</option>
+                </select>
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-[11px] font-bold text-slate-500 uppercase tracking-tight ml-1">Clinical Access Flags</label>
+                <input type="text" placeholder="Full Assist, Interpreter Req" className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-4 focus:ring-blue-100 focus:border-blue-600 outline-none transition-all" value={formData.clinicalAccess} onChange={(e) => setFormData({ ...formData, clinicalAccess: e.target.value })} />
               </div>
             </div>
           </div>

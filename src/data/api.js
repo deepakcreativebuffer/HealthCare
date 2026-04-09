@@ -51,8 +51,23 @@ export const api = {
   getResidentData: (id) => {
     const residents = getStoredData(KEYS.RESIDENTS, mockData.residents);
     const resident = residents.find(r => r.id === id) || residents[0];
-    
-    // Ensure nested data structures exist
+    // Ensure nested data structures exist and have default high-fidelity data
+    if (!resident.emergencyContactName) resident.emergencyContactName = "Mary Smith";
+    if (!resident.emergencyContactPhone) resident.emergencyContactPhone = "(555) 987-6543";
+    if (!resident.clinicalAccess) resident.clinicalAccess = "Full Assist, Interpreter Req";
+    if (!resident.levelOfCare) resident.levelOfCare = "Skilled Care";
+    if (!resident.nutrition) resident.nutrition = "Low Sodium Diet";
+    if (!resident.provider) resident.provider = "Dr. Emily Roberts";
+    if (!resident.insurance) resident.insurance = { provider: "Medicare", plan: "Plan G", subscriber: "Maria Johnson", groupId: "HC-123456" };
+    if (!resident.mrn) resident.mrn = resident.id || "RES001";
+    if (!resident.dob) resident.dob = "03/15/1970";
+    if (!resident.gender) resident.gender = "Female";
+    if (!resident.status) resident.status = "Active";
+    if (!resident.allergy) resident.allergy = "Penicillin, Peanuts";
+    if (!resident.condition) resident.condition = "Hypertension, Type 2 Di...";
+    if (!resident.address) resident.address = "123 Main St.";
+    if (!resident.phone) resident.phone = "555-0101";
+
     if (!resident.diagnosisProblems) {
       resident.diagnosisProblems = [
         { id: 1, name: "Depression", onset: "2023", status: "Active" },
