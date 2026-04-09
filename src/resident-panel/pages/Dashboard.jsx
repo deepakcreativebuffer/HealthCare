@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import {
-   Activity, Clock, Pill, FlaskConical, Calendar, Heart, AlertCircle,
-   User, Shield, Download, FileText, UserCheck, Phone, MapPin,
-   ExternalLink, ChevronRight, Stethoscope, ChevronDown, Monitor,
-   TrendingUp, Thermometer, Droplets, CreditCard, Edit2, Plus, DownloadCloud,
-   Printer, Scissors
+    Activity, Clock, Pill, FlaskConical,
+    User, Shield, Download, FileText, UserCheck, Phone, MapPin,
+    ExternalLink, ChevronRight, Stethoscope, ChevronDown, Monitor,
+    TrendingUp, Thermometer, Droplets, CreditCard, Edit2, Plus, DownloadCloud,
+    Printer, Scissors, Fingerprint, Calendar, Heart, AlertCircle, AlertTriangle,
+    ShieldCheck, MapPinIcon, Info, Edit, ArrowLeft, Clipboard, Search
 } from 'lucide-react';
 import { Card, Avatar, Badge, Button, Modal, Input } from '../components/ui';
 import { mockUser, vitalsHistory } from '../data/mockData';
@@ -174,37 +175,187 @@ const Dashboard = () => {
    return (
       <div className="max-w-full mx-auto space-y-4 pb-10">
 
-         {/* 1. TOP PROFILE HEADER */}
-         <Card className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 p-4 bg-white/80 backdrop-blur-sm sticky top-14 z-40">
-            <div className="flex items-center gap-4">
-               <Avatar size="lg" initial="MJ" className="bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-lg ring-4 ring-blue-50 cursor-pointer hover:opacity-80 transition-opacity" onClick={() => openModal('EDIT_PROFILE')} />
-               <div>
-                  <div className="flex items-center gap-3">
-                     <h1 className="text-[18px] font-extrabold text-gray-900 tracking-tight cursor-pointer hover:text-blue-600 transition-colors" onClick={() => openModal('EDIT_PROFILE')}>{m.name}</h1>
-                     <div className="flex gap-1.5 cursor-pointer" onClick={() => openModal('GENERIC_MESSAGE', { title: 'Coverage Status', message: 'Your insurance coverage is currently ACTIVE and in good standing under PLAN G.' })}>
-                        <Badge variant="primary" className="bg-[#E0F2FE] text-[#0369A1] border-none font-bold text-[9px] hover:bg-blue-200 transition-colors">ACTIVE</Badge>
-                        <Badge variant="warning" className="bg-[#FEF3C7] text-[#92400E] border-none font-bold text-[9px] hover:bg-amber-200 transition-colors">PLAN G</Badge>
+         <Card className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden sticky top-14 z-40">
+            <div className="p-3 md:p-4 flex flex-col md:flex-row gap-4 md:gap-6 pl-4">
+               {/* Profile Sidebar */}
+               <div className="flex flex-col items-center justify-center">
+                  <div className="w-16 h-16 rounded-xl bg-slate-100 flex items-center justify-center border-2 border-white shadow-sm overflow-hidden ring-1 ring-slate-100">
+                     {resident.photo ? (
+                        <img src={resident.photo} alt={resident.name} className="w-full h-full object-cover" />
+                     ) : (
+                        <User size={48} className="text-slate-300" />
+                     )}
+                  </div>
+                  <button 
+                     onClick={() => openModal('EDIT_PROFILE')}
+                     className="mt-2 flex items-center gap-1.5 px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-[10px] font-black uppercase tracking-tight hover:bg-blue-100 transition-colors"
+                  >
+                     <Edit size={12} />
+                     Edit
+                  </button>
+               </div>
+
+               <div className="flex-1 space-y-2">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
+                     <div>
+                        <h1 className="text-xl font-black text-slate-800 tracking-tight uppercase leading-none mb-1">
+                           {resident.name}
+                        </h1>
+                        <div className="flex items-center gap-3 overflow-x-auto whitespace-nowrap scrollbar-hide">
+                           <div className="flex items-center gap-1 text-slate-400">
+                              <Fingerprint size={12} />
+                              <span className="text-[10px] font-bold uppercase tracking-tight">ID: <span className="text-slate-800">{resident.id}</span></span>
+                           </div>
+                           <div className="flex items-center gap-1 text-slate-400">
+                              <Calendar size={12} />
+                              <span className="text-[10px] font-bold uppercase tracking-tight">DOB: <span className="text-slate-800">{resident.dob}</span></span>
+                           </div>
+                           <div className="flex items-center gap-1 text-slate-400">
+                              <User size={12} />
+                              <span className="text-[10px] font-bold uppercase tracking-tight">Gender: <span className="text-slate-800">{resident.gender}</span></span>
+                           </div>
+                           <div className="flex items-center gap-1 text-slate-400 pl-3 border-l border-slate-200">
+                              <span className="text-[10px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded uppercase tracking-widest text-[9px]">Level: {resident.levelOfCare || 'Skilled Care'}</span>
+                           </div>
+                           <div className="flex items-center gap-1 text-slate-400">
+                              <span className="text-[10px] font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded uppercase tracking-widest text-[9px]">Adm: {resident.admissionDate}</span>
+                           </div>
+                        </div>
+                     </div>
+
+                     <div className="flex flex-wrap gap-1.5">
+                        <span className={`px-2.5 py-1 ${resident.status === 'Deceased' ? 'bg-red-50 text-red-600 border-red-100' : resident.status === 'Inactive' ? 'bg-slate-50 text-slate-500 border-slate-100' : 'bg-emerald-50 text-emerald-600 border-emerald-100'} border rounded-full text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 shadow-sm`}>
+                           <Heart size={12} className={resident.status === 'Deceased' ? 'fill-red-600' : resident.status === 'Inactive' ? 'fill-slate-500' : 'fill-emerald-600'} />
+                           {resident.status}
+                        </span>
+                        <span className="px-2.5 py-1 bg-amber-50 text-amber-600 border border-amber-100 rounded-full text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 shadow-sm">
+                           <AlertCircle size={12} className="fill-amber-600" />
+                           Resident
+                        </span>
                      </div>
                   </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-2 gap-y-1 mt-1.5 text-[11px] font-medium text-gray-500">
-                     <span className="flex gap-1.5 uppercase font-medium text-gray-400 cursor-pointer hover:text-gray-700 transition-colors" onClick={() => openModal('GENERIC_MESSAGE', { title: 'Patient ID', message: `Your Patient ID is ${m.id}. Have this ready when calling support.` })}><User className="w-3 h-3" /> PID: {m.id}</span>
-                     <span className="flex gap-1.5 uppercase font-medium text-gray-400 cursor-pointer hover:text-gray-700 transition-colors" onClick={() => openModal('EDIT_PROFILE')}><Calendar className="w-3 h-3" /> DOB: {m.dob}</span>
-                     <span className="flex gap-1.5 uppercase font-medium text-gray-400 cursor-pointer hover:text-gray-700 transition-colors" onClick={() => openModal('EDIT_PROFILE')}><Monitor className="w-3 h-3" /> GENDER: {m.gender}</span>
-                     <span className="flex gap-1.5 font-medium text-[#129FED] cursor-pointer hover:underline" onClick={() => openModal('VIEW_LIST', { title: 'Insurance Info', items: [m.insurance] })}><Shield className="w-3 h-3" /> {m.insurance?.provider}</span>
+
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-y-3 gap-x-6 pt-3 border-t border-slate-100">
+                     {/* Insurance & Allergy */}
+                     <div className="space-y-3">
+                        <div className="flex items-center gap-2.5">
+                           <div className="w-6 h-6 rounded bg-blue-50 flex items-center justify-center text-blue-500 border border-blue-100">
+                              <Shield size={14} />
+                           </div>
+                           <div>
+                              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Insurance</p>
+                              <p className="text-[11px] font-bold text-blue-600 underline underline-offset-2">{resident.insurance?.provider || resident.insurance}</p>
+                           </div>
+                        </div>
+                        <div className="flex items-center gap-2.5">
+                           <div className="w-6 h-6 rounded bg-red-50 flex items-center justify-center text-red-500 border border-red-100">
+                              <AlertCircle size={14} />
+                           </div>
+                           <div>
+                              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Allergy</p>
+                              <p className="text-[11px] font-black text-red-600 truncate max-w-[120px]">{resident.allergy || 'None'}</p>
+                           </div>
+                        </div>
+                     </div>
+
+                     {/* Provider & Condition */}
+                     <div className="space-y-3">
+                        <div className="flex items-center gap-2.5">
+                           <div className="w-6 h-6 rounded bg-emerald-50 flex items-center justify-center text-emerald-600 border border-emerald-100">
+                              <User size={14} />
+                           </div>
+                           <div>
+                              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Provider</p>
+                              <p className="text-[11px] font-bold text-slate-700">{resident.provider}</p>
+                           </div>
+                        </div>
+                        <div className="flex items-center gap-2.5">
+                           <div className="w-6 h-6 rounded bg-slate-50 flex items-center justify-center text-slate-400 border border-slate-100">
+                              <Clipboard size={14} />
+                           </div>
+                           <div>
+                              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Condition</p>
+                              <p className="text-[11px] font-bold text-blue-600 truncate max-w-[120px]">{resident.condition || 'None'}</p>
+                           </div>
+                        </div>
+                     </div>
+
+                     {/* Location & Nutrition */}
+                     <div className="space-y-3">
+                        <div className="flex items-center gap-2.5">
+                           <div className="w-6 h-6 rounded bg-indigo-50 flex items-center justify-center text-indigo-500 border border-indigo-100">
+                              <MapPin size={14} />
+                           </div>
+                           <div>
+                              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Location</p>
+                              <p className="text-[11px] font-bold text-slate-700">{resident.room}</p>
+                           </div>
+                        </div>
+                        <div className="flex items-center gap-2.5">
+                           <div className="w-6 h-6 rounded bg-amber-50 flex items-center justify-center text-amber-600 border border-amber-100">
+                              <FileText size={14} />
+                           </div>
+                           <div>
+                              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Nutrition</p>
+                              <p className="text-[11px] font-bold text-slate-700">
+                                 {typeof resident.nutrition === 'object' ? resident.nutrition?.diet || 'Standard Diet' : resident.nutrition}
+                              </p>
+                           </div>
+                        </div>
+                     </div>
+
+                     {/* Contact & Address */}
+                     <div className="space-y-3">
+                        <div className="flex items-center gap-2.5">
+                           <div className="w-6 h-6 rounded bg-blue-50 flex items-center justify-center text-blue-500 border border-blue-100">
+                              <Phone size={14} />
+                           </div>
+                           <div>
+                              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Phone</p>
+                              <p className="text-[11px] font-bold text-slate-700">{resident.phone}</p>
+                           </div>
+                        </div>
+                        <div className="flex items-center gap-2.5">
+                           <div className="w-6 h-6 rounded bg-slate-50 flex items-center justify-center text-slate-400 border border-slate-100">
+                              <Search size={14} />
+                           </div>
+                           <div>
+                              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Address</p>
+                              <p className="text-[11px] font-bold text-slate-700 truncate max-w-[120px]">{resident.address}</p>
+                           </div>
+                        </div>
+                     </div>
+
+                     {/* Emergency & Access */}
+                     <div className="space-y-3 border-l border-slate-100 pl-4">
+                        <div className="flex items-center gap-2.5">
+                           <div className="w-6 h-6 rounded bg-rose-50 flex items-center justify-center text-rose-500 border border-rose-100">
+                              <Heart size={14} />
+                           </div>
+                           <div>
+                              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Emergency Contact</p>
+                              <p className="text-[11px] font-bold text-slate-700 leading-none mb-0.5">{resident.emergencyContactName}</p>
+                              <p className="text-[10px] font-bold text-blue-600 leading-none">{resident.emergencyContactPhone}</p>
+                           </div>
+                        </div>
+                        <div className="flex items-center gap-2.5">
+                           <div className="w-6 h-6 rounded bg-purple-50 flex items-center justify-center text-purple-600 border border-purple-100">
+                              <Shield size={14} />
+                           </div>
+                           <div>
+                              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Clinical Access</p>
+                              <div className="flex flex-wrap gap-1">
+                                 {(resident.clinicalAccess || 'Full Assist, Interpreter Req').split(',').map((access, i) => (
+                                    <span key={i} className={`text-[8px] font-black ${i % 2 === 0 ? 'text-purple-700 bg-purple-100/50' : 'text-blue-700 bg-blue-100/50'} px-1 py-0.5 rounded uppercase`}>
+                                       {access.trim()}
+                                    </span>
+                                 ))}
+                              </div>
+                           </div>
+                        </div>
+                     </div>
                   </div>
                </div>
-            </div>
-            <div className="hidden xl:flex items-center gap-8 pl-8 border-l border-gray-100">
-               <div className="text-center cursor-pointer hover:opacity-75 transition-opacity" onClick={() => openModal('GENERIC_MESSAGE', { title: 'Primary Provider', message: `You can message ${m.careTeam?.[0]?.name} (Cardiology) through the secure portal.` })}>
-                  <p className="text-[10px] font-bold text-gray-400 uppercase mb-0.5">Primary Provider</p>
-                  <p className="text-[13px] font-bold text-[#129FED]">{m.careTeam?.[0]?.name}</p>
-               </div>
-               <div className="text-center cursor-pointer hover:opacity-75 transition-opacity" onClick={() => openModal('EDIT_PROFILE')}>
-                  <p className="text-[10px] font-bold text-gray-400 uppercase mb-0.5">Emergency Contact</p>
-                  <p className="text-[13px] font-bold text-gray-700">{m.emergencyContact?.name}</p>
-                  <p className="text-[10px] text-gray-400">{m.emergencyContact?.phone}</p>
-               </div>
-               <Button variant="outline" className="h-8 text-[11px] font-bold border-gray-200" onClick={() => openModal('EDIT_PROFILE')}>Edit Profile</Button>
             </div>
          </Card>
 
