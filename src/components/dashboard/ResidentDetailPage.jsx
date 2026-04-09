@@ -34,11 +34,14 @@ import {
   CheckCircle2,
   DownloadIcon,
   Upload,
+  Scissors,
 } from "lucide-react";
 import { api } from "../../data/api";
 import Navbar from "../layout/Navbar";
 import SubNav from "../layout/SubNav";
 import ECGReportModal from "./ECGReportModal";
+
+import AdmitResidentModal from "./AdmitResidentModal";
 
 const ResidentDetailPage = () => {
   const { id } = useParams();
@@ -47,6 +50,8 @@ const ResidentDetailPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [activeModal, setActiveModal] = useState(null); // { type: 'LIST' | 'FORM', section: 'Visits' | ... }
   const [isECGModalOpen, setIsECGModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const latestVisit = resident?.visits?.[0] || {};
 
   const openModal = (section, type = 'LIST') => {
     setActiveModal({ section, type });
@@ -87,16 +92,21 @@ const ResidentDetailPage = () => {
       'Allergies': 'allergies',
       'Audit Trail': 'auditTrail',
       'Care Plan': 'carePlan',
+      'Care Plan & Interventions': 'carePlan',
       'Social History': 'socialHistory',
+      'Social History & Lifestyle': 'socialHistory',
       'Medical History': 'medicalHistory',
+      'Surgical History': 'surgicalHistory',
       'Discharge Summary': 'dischargeSummary',
       'Communication': 'communication',
       'Mobility': 'mobility',
       'Nutrition': 'nutrition',
       'Safety': 'safety',
+      'Safety & Access': 'safety',
       'Advance Directives': 'advanceDirectives',
       'Immunizations': 'immunizations',
       'Pharmacy': 'pharmacy',
+      'Insurance Information': 'insuranceInfo',
       'Activities': 'activities'
     };
 
@@ -139,9 +149,11 @@ const ResidentDetailPage = () => {
       'Mobility': 'mobility',
       'Nutrition': 'nutrition',
       'Safety': 'safety',
+      'Safety & Access': 'safety',
       'Advance Directives': 'advanceDirectives',
       'Immunizations': 'immunizations',
       'Pharmacy': 'pharmacy',
+      'Insurance Information': 'insuranceInfo',
       'Activities': 'activities'
     };
     const key = sectionToKey[section] || section.toLowerCase();
@@ -403,6 +415,7 @@ const ResidentDetailPage = () => {
       'Allergies': 'allergies',
       'Audit Trail': 'auditTrail',
       'Care Plan': 'carePlan',
+      'Care Plan & Interventions': 'carePlan',
       'Social History': 'socialHistory',
       'Medical History': 'medicalHistory',
       'Discharge Summary': 'dischargeSummary',
@@ -410,9 +423,11 @@ const ResidentDetailPage = () => {
       'Mobility': 'mobility',
       'Nutrition': 'nutrition',
       'Safety': 'safety',
+      'Safety & Access': 'safety',
       'Advance Directives': 'advanceDirectives',
       'Immunizations': 'immunizations',
       'Pharmacy': 'pharmacy',
+      'Insurance Information': 'insuranceInfo',
       'Activities': 'activities',
       'Lab Highlights': 'labResults',
       'Goals': 'goals',
@@ -447,13 +462,15 @@ const ResidentDetailPage = () => {
         'Fax': [
           'faxDate', 'from', 'to', 'subject', 'status'
         ],
-        'Medications': ['name', 'dose', 'details', 'status'],
-        'Care Team': ['name', 'specialty', 'phone', 'email', 'organization'],
+        'Medications': ['name', 'dose', 'instructions', 'type'],
+        'Care Team': ['name', 'role', 'specialty', 'phone'],
         'Appointments': ['date', 'time', 'doctor', 'location'],
         'Allergies': ['name', 'reaction', 'severity', 'status'],
         'Audit Trail': ['date', 'text', 'user'],
-        'Care Plan': ['name', 'details', 'frequency', 'status'],
+        'Care Plan': ['title', 'instruction', 'priority'],
+        'Care Plan & Interventions': ['title', 'instruction', 'priority'],
         'Social History': ['category', 'details', 'notes'],
+        'Social History & Lifestyle': ['category', 'details', 'notes'],
         'Activities': ['date', 'type', 'name', 'status'],
         'Patient Info': [
           'name', 'mrn', 'dob', 'gender', 'status', 'phone', 'email', 'photo', 'address',
@@ -670,6 +687,21 @@ const ResidentDetailPage = () => {
     const key = sectionToKey[section] || section.toLowerCase();
     let data = resident[key] || [];
 
+    // Ensure objects are handleable as arrays for the table
+    if (!Array.isArray(data) && typeof data === 'object' && data !== null) {
+      if (section === 'Social History' || section === 'Social History & Lifestyle') {
+        data = Object.entries(data).map(([cat, det], i) => ({
+          id: i + 1,
+          category: cat.charAt(0).toUpperCase() + cat.slice(1),
+          details: typeof det === 'object' ? JSON.stringify(det) : det,
+          notes: 'Current Status'
+        }));
+      } else {
+        // For other objects (Communication, Safety, Insurance, etc.), wrap in array for single-row display
+        data = [{ ...data, id: 1 }];
+      }
+    }
+
     // Fallback for demo data if keys are empty in resident object
     if (data.length === 0) {
       if (section === 'Discharge Summary') {
@@ -734,21 +766,26 @@ const ResidentDetailPage = () => {
       'Insurance': ['company', 'plan', 'policyNumber', 'status'],
       'Documents': ['name', 'date', 'type', 'uploadedBy'],
       'Fax': ['faxDate', 'from', 'to', 'subject', 'status'],
-      'Medications': ['name', 'dose', 'details', 'status'],
-      'Care Team': ['name', 'specialty', 'phone', 'status'],
+      'Medications': ['name', 'dose', 'instructions', 'type'],
+      'Care Team': ['name', 'role', 'specialty', 'phone'],
       'Appointments': ['date', 'time', 'doctor', 'location'],
       'Allergies': ['name', 'reaction', 'severity', 'status'],
-      'Care Plan': ['name', 'details', 'frequency', 'status'],
+      'Care Plan': ['title', 'instruction', 'priority'],
+      'Care Plan & Interventions': ['title', 'instruction', 'priority'],
       'Social History': ['category', 'details', 'notes'],
+      'Social History & Lifestyle': ['category', 'details', 'notes'],
       'Medical History': ['Condition', 'Diagnosis Date', 'Doctor Notes', 'Status'],
       'Communication': ['language', 'interpreter', 'hearing', 'vision', 'notes'],
       'Mobility': ['assist', 'devices', 'fallRisk', 'status'],
       'Nutrition': ['diet', 'fluids', 'intakeGoal', 'notes'],
       'Safety': ['security', 'accessLevel', 'protocol', 'notes'],
-      'Advance Directives': ['dnrStatus', 'dniStatus', 'documentationDate', 'status'],
+      'Safety & Access': ['security', 'accessLevel', 'protocol', 'notes'],
+      'Advance Directives': ['dnrStatus', 'dniStatus', 'date', 'status'],
       'Audit Trail': ['date', 'event', 'text', 'user'],
       'Discharge Summary': ['status', 'instruction', 'followUp', 'date'],
       'Immunizations': ['name', 'date', 'status', 'provider'],
+      'Insurance Information': ['provider', 'plan', 'groupId', 'subscriber'],
+      'Pharmacy': ['name', 'address', 'phone', 'hours'],
       'Lab': ['name', 'value', 'date', 'flag', 'status'],
       'Lab Highlights': ['name', 'value', 'status'],
       'Goals': ['name', 'progress', 'status']
@@ -883,7 +920,6 @@ const ResidentDetailPage = () => {
       </div>
     );
   }
-
   return (
     <div className="min-h-screen flex flex-col font-sans">
       <main className="flex-1 overflow-y-auto p-2 lg:p-2 space-y-1.5">
@@ -901,7 +937,7 @@ const ResidentDetailPage = () => {
         </div>
 
         {/* Profile Card */}
-        <div onClick={() => openModal('Patient Info')} className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition-all group/profile relative">
+        <div onClick={() => setIsEditModalOpen(true)} className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition-all group/profile relative">
           <div className="p-2 md:p-2.5 flex flex-col md:flex-row gap-2.5 md:gap-4 pl-3">
             {/* Profile Sidebar */}
             <div className="flex flex-col items-center justify-center">
@@ -915,7 +951,7 @@ const ResidentDetailPage = () => {
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  openModal('Patient Info', 'FORM');
+                  setIsEditModalOpen(true);
                 }}
                 className="mt-1.5 flex items-center gap-1.5 px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-[10px] font-black uppercase tracking-tight hover:bg-blue-100 transition-colors"
               >
@@ -1101,7 +1137,7 @@ const ResidentDetailPage = () => {
               <AlertTriangle size={20} />
             </div>
             <div>
-              <p className="text-xl font-black leading-none text-slate-800">4</p>
+              <p className="text-xl font-black leading-none text-slate-800">{resident.diagnosisProblems?.length || 0}</p>
               <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Active Problems</p>
             </div>
           </div>
@@ -1110,7 +1146,7 @@ const ResidentDetailPage = () => {
               <Pill size={20} />
             </div>
             <div>
-              <p className="text-xl font-black leading-none text-slate-800">3</p>
+              <p className="text-xl font-black leading-none text-slate-800">{resident.medicationsList?.length || 0}</p>
               <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Medications</p>
             </div>
           </div>
@@ -1120,7 +1156,7 @@ const ResidentDetailPage = () => {
             </div>
             <div className="overflow-hidden">
               <p className="text-[11px] font-black leading-tight uppercase tracking-widest text-slate-400">Next Appt</p>
-              <p className="text-[11px] font-bold text-slate-700 truncate">12/10/2022</p>
+              <p className="text-[11px] font-bold text-slate-700 truncate">{resident.appointments?.[0]?.date || 'None'}</p>
             </div>
           </div>
           <div className="bg-white rounded-xl p-3 flex items-center gap-3 border border-amber-100 shadow-sm hover:shadow-md transition-all cursor-pointer group">
@@ -1129,7 +1165,7 @@ const ResidentDetailPage = () => {
             </div>
             <div>
               <p className="text-[11px] font-black leading-tight uppercase tracking-widest text-slate-400">Fall Risk</p>
-              <p className="text-[12px] font-black text-amber-600">High Risk</p>
+              <p className="text-[12px] font-black text-amber-600">{resident.mobility?.[0]?.fallRisk || 'Moderate'}</p>
             </div>
           </div>
           <div className="bg-white rounded-xl p-3 flex items-center gap-3 border border-indigo-100 shadow-sm hover:shadow-md transition-all cursor-pointer group">
@@ -1138,7 +1174,7 @@ const ResidentDetailPage = () => {
             </div>
             <div className="overflow-hidden">
               <p className="text-[11px] font-black leading-tight uppercase tracking-widest text-slate-400">Last Visit:</p>
-              <p className="text-[11px] font-bold text-slate-700 truncate">11/20/2022</p>
+              <p className="text-[11px] font-bold text-slate-700 truncate">{resident.visits?.[0]?.visitDate || 'Never'}</p>
             </div>
           </div>
           <div className="bg-white rounded-xl p-3 flex items-center gap-3 border border-teal-100 shadow-sm hover:shadow-md transition-all cursor-pointer group">
@@ -1147,7 +1183,7 @@ const ResidentDetailPage = () => {
             </div>
             <div className="overflow-hidden">
               <p className="text-[11px] font-black leading-tight uppercase tracking-widest text-slate-400">Latest Vitals:</p>
-              <p className="text-[11px] font-bold text-slate-700 truncate">BP: 120/80</p>
+              <p className="text-[11px] font-bold text-slate-700 truncate">BP: {resident.vitalsHistory?.bp || '120/80'}</p>
             </div>
           </div>
         </div>
@@ -1164,11 +1200,12 @@ const ResidentDetailPage = () => {
               </div>
               <div className="px-2 py-1 space-y-0.5">
                 {[
-                  { label: 'Recent Visits', count: 35, icon: Clock, color: 'text-teal-500 bg-teal-50', section: 'Visits' },
-                  { label: 'Diagnosis', count: 20, icon: AlertCircle, color: 'text-red-500 bg-red-50', section: 'Diagnosis' },
-                  { label: 'Medications', count: 18, icon: Pill, color: 'text-emerald-500 bg-emerald-50', section: 'Medications' },
-                  { label: 'Lab Results', count: 10, icon: FlaskConical, color: 'text-amber-500 bg-amber-50', section: 'Lab' },
-                  { label: 'Fax Section', count: 5, icon: Printer, color: 'text-indigo-500 bg-indigo-50', section: 'Fax' },
+                  { label: 'Recent Visits', count: resident.visits?.length || 0, icon: Clock, color: 'text-teal-500 bg-teal-50', section: 'Visits' },
+                  { label: 'Diagnosis', count: resident.diagnosisProblems?.length || 0, icon: AlertCircle, color: 'text-red-500 bg-red-50', section: 'Diagnosis' },
+                  { label: 'Medications', count: resident.medicationsList?.length || 0, icon: Pill, color: 'text-emerald-500 bg-emerald-50', section: 'Medications' },
+                  { label: 'Surgical Hist', count: resident.surgicalHistory?.length || 0, icon: Scissors, color: 'text-rose-500 bg-rose-50', section: 'Surgical History' },
+                  { label: 'Lab Results', count: resident.labResults?.length || 0, icon: FlaskConical, color: 'text-amber-500 bg-amber-50', section: 'Lab' },
+                  { label: 'Fax Section', count: resident.faxLogs?.length || 0, icon: Printer, color: 'text-indigo-500 bg-indigo-50', section: 'Fax' },
                 ].map((item, i) => (
                   <button key={i} onClick={() => openModal(item.section)} className="w-full flex items-center justify-between py-1 px-2 rounded-xl hover:bg-slate-50 transition-all group">
                     <div className="flex items-center gap-3">
@@ -1177,7 +1214,7 @@ const ResidentDetailPage = () => {
                       </div>
                       <span className="text-[11px] font-bold text-slate-600 group-hover:text-blue-600 transition-colors uppercase tracking-tight">{item.label}</span>
                     </div>
-                    <span className="text-[11px] font-black text-slate-400 bg-slate-50 px-2 py-0.5 rounded-full">{item.count} Day</span>
+                    <span className="text-[11px] font-black text-slate-400 bg-slate-50 px-2 py-0.5 rounded-full">{item.count}</span>
                   </button>
                 ))}
               </div>
@@ -1189,20 +1226,15 @@ const ResidentDetailPage = () => {
                 <ChevronDown size={14} className="text-slate-400" />
               </div>
               <div className="p-2.5 space-y-2">
-                <div className="flex items-center gap-3">
-                  <Heart size={14} className="text-red-500" />
-                  <div>
-                    <p className="text-[11px] font-bold text-slate-700">Penicilin</p>
-                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">12/10/2022</p>
+                {resident.diagnosisProblems?.slice(0, 2).map((d, i) => (
+                  <div key={i} className="flex items-center gap-3">
+                    {i === 0 ? <Heart size={14} className="text-red-500" /> : <Activity size={14} className="text-emerald-500" />}
+                    <div>
+                      <p className="text-[11px] font-bold text-slate-700">{d.name}</p>
+                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">{d.date}</p>
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Activity size={14} className="text-emerald-500" />
-                  <div>
-                    <p className="text-[11px] font-bold text-slate-700">Diabetes</p>
-                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">10/15/2018</p>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
 
@@ -1212,36 +1244,18 @@ const ResidentDetailPage = () => {
                 <ChevronDown size={14} className="text-blue-500" />
               </div>
               <div className="p-2.5 space-y-1.5">
-                <div className="flex items-center justify-between group cursor-pointer">
-                  <div className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-                    <p className="text-[11px] font-bold text-slate-700 transition-colors group-hover:text-blue-600">Cholesterol</p>
+                {resident.labResults?.slice(0, 3).map((lab, i) => (
+                  <div key={i} className="flex items-center justify-between group cursor-pointer">
+                    <div className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+                      <p className="text-[11px] font-bold text-slate-700 transition-colors group-hover:text-blue-600">{lab.name}</p>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[11px] font-black text-slate-400 ">{lab.value}</span>
+                      <ChevronRight size={14} className="text-slate-300" />
+                    </div>
                   </div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[11px] font-black text-slate-400 ">210 mg/dl</span>
-                    <ChevronRight size={14} className="text-slate-300" />
-                  </div>
-                </div>
-                <div className="flex items-center justify-between group cursor-pointer">
-                  <div className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-                    <p className="text-[11px] font-bold text-slate-700 transition-colors group-hover:text-blue-600">Blood Glucose</p>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[11px] font-black text-slate-400 ">110 mg/dl</span>
-                    <ChevronRight size={14} className="text-slate-300" />
-                  </div>
-                </div>
-                <div className="flex items-center justify-between group cursor-pointer">
-                  <div className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-                    <p className="text-[11px] font-bold text-slate-700 transition-colors group-hover:text-blue-600">Blood Glucose</p>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[11px] font-black text-slate-400 ">110 mg/dl</span>
-                    <ChevronRight size={14} className="text-slate-300" />
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
 
@@ -1254,40 +1268,15 @@ const ResidentDetailPage = () => {
                 </div>
               </div>
               <div className="p-2 space-y-0.5">
-                <div className="flex items-center justify-between p-2 bg-blue-50/30 rounded-xl border border-transparent hover:border-blue-100 transition-all cursor-pointer group">
-                  <div className="flex items-center gap-3">
-                    <FileText size={14} className="text-blue-500" />
-                    <span className="text-[11px] font-bold text-slate-700 group-hover:text-blue-600">ID Proof</span>
+                {resident.recentDocuments?.slice(0, 4).map((doc, i) => (
+                  <div key={i} className="flex items-center justify-between p-2 rounded-xl border border-transparent hover:border-blue-100 transition-all cursor-pointer group">
+                    <div className="flex items-center gap-3">
+                      {doc.type === 'PDF' ? <FileText size={14} className="text-blue-500" /> : <Shield size={14} className="text-emerald-500" />}
+                      <span className="text-[11px] font-bold text-slate-700 group-hover:text-blue-600">{doc.name}</span>
+                    </div>
+                    <span className={`text-[11px] font-black ${doc.status === 'Signed' ? 'text-emerald-500 bg-emerald-50' : 'text-slate-400'} px-2 rounded font-bold `}>{doc.status}</span>
                   </div>
-                  <span className="text-[11px] font-black text-slate-400 ">No Files</span>
-                </div>
-                <div className="flex items-center justify-between p-2 rounded-xl border border-transparent hover:border-blue-100 transition-all cursor-pointer group">
-                  <div className="flex items-center gap-3">
-                    <Shield size={14} className="text-emerald-500" />
-                    <span className="text-[11px] font-bold text-slate-700 group-hover:text-blue-600">Insurance Card</span>
-                  </div>
-                  <span className="text-[11px] font-black text-emerald-500 bg-emerald-50 px-2 rounded font-bold ">Defined</span>
-                </div>
-                <div className="flex items-center justify-between p-2 rounded-xl border border-transparent hover:border-blue-100 transition-all cursor-pointer group">
-                  <div className="flex items-center gap-3">
-                    <FlaskConical size={14} className="text-blue-500" />
-                    <span className="text-[11px] font-bold text-slate-700 group-hover:text-blue-600">Lab Reports</span>
-                  </div>
-                  <div className="flex gap-1">
-                    <span className="text-[9px] font-bold text-slate-400 border border-slate-200 px-1 rounded">Switch</span>
-                    <span className="text-[9px] font-bold text-slate-400 border border-slate-200 px-1 rounded">Update</span>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between p-2 rounded-xl border border-transparent hover:border-blue-100 transition-all cursor-pointer group">
-                  <div className="flex items-center gap-3">
-                    <Mail size={14} className="text-blue-500" />
-                    <span className="text-[11px] font-bold text-slate-700 group-hover:text-blue-600">RP Scrip</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[9px] font-bold text-slate-400 uppercase ">Renewal</span>
-                    <span className="text-[11px] font-black text-slate-800 bg-slate-100 px-2 rounded">45.03</span>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
             {/* Communication & Language */}
@@ -1388,7 +1377,6 @@ const ResidentDetailPage = () => {
               </div>
               <div className="p-2 md:p-3">
                 {resident.visits && resident.visits.length > 0 ? (() => {
-                  const latestVisit = resident.visits[0];
                   return (
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 md:gap-3">
                       <div className="space-y-1">
@@ -1472,13 +1460,13 @@ const ResidentDetailPage = () => {
                     <div>
                       <h4 className="text-[10px] font-black text-slate-800 uppercase tracking-tight mb-1">HISTORY OF PRESENT ILLNESS</h4>
                       <p className="text-[11px] font-bold text-slate-600 leading-tight max-w-none">
-                        55-year-old male with independent chest, fast pain for the past 3 days, described as pressure-like, radiating to left arm, associated with mild shortness of breath, ECG shows changes.
+                        {latestVisit.historyOfPresentIllness || resident.condition || 'No description available.'}
                       </p>
                     </div>
                     <div>
                       <h4 className="text-[10px] font-black text-slate-800 uppercase tracking-tight mb-1">REVIEW OF SYSTEMS</h4>
                       <p className="text-[11px] font-bold text-slate-600 leading-tight max-w-none">
-                        Cardiovascular positive for chest pain and mild shortness of breath.
+                        {latestVisit.reviewOfSystems || 'Standard assessment performed.'}
                       </p>
                     </div>
                   </div>
@@ -1486,7 +1474,7 @@ const ResidentDetailPage = () => {
                   <div className="space-y-2">
                     <div>
                       <h4 className="text-[10px] font-black text-slate-800 uppercase tracking-tight mb-1">PATIENT GOAL</h4>
-                      <p className="text-[11px] font-bold text-slate-600 leading-tight">Feel as good as I can as long as I can</p>
+                      <p className="text-[11px] font-bold text-slate-600 leading-tight">{resident.patientGoal || 'Maintain quality of life and independence.'}</p>
                     </div>
                     <div className="pt-2">
                       <div
@@ -1509,7 +1497,16 @@ const ResidentDetailPage = () => {
                   <div className="space-y-2">
                     <div>
                       <h4 className="text-[10px] font-black text-slate-800 uppercase tracking-tight mb-1">SURGICAL HISTORY</h4>
-                      <p className="text-[11px] font-bold text-slate-400 italic leading-tight">No surgical procedures recorded.</p>
+                      {resident.surgicalHistory && resident.surgicalHistory.length > 0 ? (
+                        resident.surgicalHistory.map((s, i) => (
+                          <div key={i} className="mb-2">
+                            <p className="text-[11px] font-bold text-slate-700">{s.name} <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">({s.date})</span></p>
+                            <p className="text-[9px] text-slate-500">{s.location}</p>
+                          </div>
+                        ))
+                      ) : (
+                        <p className="text-[11px] font-bold text-slate-400 italic leading-tight">No surgical procedures recorded.</p>
+                      )}
                     </div>
                     <div className="pt-2">
                       <div
@@ -1587,22 +1584,17 @@ const ResidentDetailPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 mt-2.5">
               {/* Care Plan & Goals */}
               <div onClick={() => openModal('Care Plan')} className="bg-white rounded-xl border border-slate-200 shadow-sm p-3 cursor-pointer hover:shadow-md transition-all">
-                <h3 className="text-[12px] font-bold text-[#0f5b78] mb-2">Care Plan & Interventions</h3>
+                <h3 className="text-[12px] font-bold text-[#0f5b78] mb-2 uppercase tracking-tight">Care Plan & Interventions</h3>
                 <div className="space-y-2">
-                  <div className="p-2 border border-blue-100 bg-blue-50/30 rounded-lg">
-                    <div className="flex items-center gap-2 mb-1">
-                      <Activity size={14} className="text-blue-500" />
-                      <span className="text-[11px] font-bold text-slate-700">Cardiac Output Management</span>
+                  {resident.carePlan?.slice(0, 2).map((plan, i) => (
+                    <div key={i} className={`p-2 border ${i === 0 ? 'border-blue-100 bg-blue-50/30' : 'border-emerald-100 bg-emerald-50/30'} rounded-lg`}>
+                      <div className="flex items-center gap-2 mb-1">
+                        {i === 0 ? <Activity size={14} className="text-blue-500" /> : <Heart size={14} className="text-emerald-500" />}
+                        <span className="text-[11px] font-bold text-slate-700">{plan.title}</span>
+                      </div>
+                      <p className="text-[10px] text-slate-600 pl-6">{plan.instruction}</p>
                     </div>
-                    <p className="text-[10px] text-slate-600 pl-6">Monitor weight daily. Report weight gain &gt; 2 lbs/day or 5 lbs/wk. Restrict sodium to 2g/day.</p>
-                  </div>
-                  <div className="p-2 border border-emerald-100 bg-emerald-50/30 rounded-lg">
-                    <div className="flex items-center gap-2 mb-1">
-                      <Heart size={14} className="text-emerald-500" />
-                      <span className="text-[11px] font-bold text-slate-700">Activity Tolerance</span>
-                    </div>
-                    <p className="text-[10px] text-slate-600 pl-6">Encourage progressive ambulation. Refer to cardiac rehab phase II program.</p>
-                  </div>
+                  ))}
                 </div>
               </div>
 
@@ -1612,33 +1604,27 @@ const ResidentDetailPage = () => {
                 <div className="grid grid-cols-3 gap-2 flex-1">
                   <div className="p-2 bg-slate-50 border border-slate-100 rounded-lg text-center flex flex-col justify-center">
                     <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Tobacco</p>
-                    <p className="text-[11px] font-bold text-slate-700 leading-tight">Former Smoker</p>
-                    <p className="text-[9px] text-slate-500 mt-0.5">Quit 2010</p>
+                    <p className="text-[11px] font-bold text-slate-700 leading-tight">{resident.socialHistory?.tobacco || 'N/A'}</p>
                   </div>
                   <div className="p-2 bg-slate-50 border border-slate-100 rounded-lg text-center flex flex-col justify-center">
                     <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Alcohol</p>
-                    <p className="text-[11px] font-bold text-slate-700 leading-tight">Occasional</p>
-                    <p className="text-[9px] text-slate-500 mt-0.5">1-2 drinks/mo</p>
+                    <p className="text-[11px] font-bold text-slate-700 leading-tight">{resident.socialHistory?.alcohol || 'N/A'}</p>
                   </div>
                   <div className="p-2 bg-slate-50 border border-slate-100 rounded-lg text-center flex flex-col justify-center">
                     <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Diet</p>
-                    <p className="text-[11px] font-bold text-slate-700 leading-tight">Low Sodium</p>
-                    <p className="text-[9px] text-slate-500 mt-0.5">Cardiac Diet</p>
+                    <p className="text-[11px] font-bold text-slate-700 leading-tight">{resident.socialHistory?.diet || 'N/A'}</p>
                   </div>
                   <div className="p-2 bg-slate-50 border border-slate-100 rounded-lg text-center flex flex-col justify-center">
                     <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Exercise</p>
-                    <p className="text-[11px] font-bold text-slate-700 leading-tight">Light</p>
-                    <p className="text-[9px] text-slate-500 mt-0.5">2 days/wk</p>
+                    <p className="text-[11px] font-bold text-slate-700 leading-tight">{resident.socialHistory?.exercise || 'N/A'}</p>
                   </div>
                   <div className="p-2 bg-slate-50 border border-slate-100 rounded-lg text-center flex flex-col justify-center">
                     <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Sleep</p>
-                    <p className="text-[11px] font-bold text-slate-700 leading-tight">Good</p>
-                    <p className="text-[9px] text-slate-500 mt-0.5">7-8 hours</p>
+                    <p className="text-[11px] font-bold text-slate-700 leading-tight">{resident.socialHistory?.sleep || 'N/A'}</p>
                   </div>
                   <div className="p-2 bg-slate-50 border border-slate-100 rounded-lg text-center flex flex-col justify-center">
                     <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Living</p>
-                    <p className="text-[11px] font-bold text-slate-700 leading-tight">With Spouse</p>
-                    <p className="text-[9px] text-slate-500 mt-0.5">Independent</p>
+                    <p className="text-[11px] font-bold text-slate-700 leading-tight">{resident.socialHistory?.living || 'N/A'}</p>
                   </div>
                 </div>
               </div>
@@ -1650,11 +1636,7 @@ const ResidentDetailPage = () => {
               <div onClick={() => openModal('Immunizations')} className="bg-white rounded-xl border border-slate-200 shadow-sm p-3 cursor-pointer hover:shadow-md transition-all">
                 <h3 className="text-[12px] font-bold text-[#0f5b78] mb-3 uppercase tracking-tight">Immunization Record</h3>
                 <div className="space-y-2">
-                  {[
-                    { name: 'Influenza (Flu)', date: '10/12/2023', status: 'Up-to-date', provider: 'Monterey Clinic' },
-                    { name: 'Pneumococcal', date: '05/20/2022', status: 'Up-to-date', provider: 'General Hospital' },
-                    { name: 'COVID-19 Bivalent', date: '01/15/2024', status: 'Required', provider: 'N/A' }
-                  ].map((imm, i) => (
+                  {(resident.immunizations || []).map((imm, i) => (
                     <div key={i} className="flex items-center justify-between py-1.5 border-b border-slate-50 last:border-0">
                       <div>
                         <p className="text-[11px] font-bold text-slate-700">{imm.name}</p>
@@ -1706,16 +1688,12 @@ const ResidentDetailPage = () => {
                   <FlaskConical size={14} className="text-slate-400" />
                 </div>
                 <div className="space-y-1.5">
-                  {[
-                    { test: 'Glucose', result: '102 mg/dL', status: 'Normal' },
-                    { test: 'HbA1c', result: '6.4%', status: 'Stable' },
-                    { test: 'Potassium', result: '4.2 mEq/L', status: 'Normal' }
-                  ].map((lab, i) => (
+                  {(resident.labResults || []).slice(0, 3).map((lab, i) => (
                     <div key={i} className="flex justify-between items-center py-1 border-b border-slate-50 last:border-0">
-                      <span className="text-[11px] font-bold text-slate-700">{lab.test}</span>
+                      <span className="text-[11px] font-bold text-slate-700">{lab.name}</span>
                       <div className="text-right">
-                        <span className="text-[11px] font-black text-slate-800 mr-2">{lab.result}</span>
-                        <span className="text-[8px] font-black uppercase text-emerald-500">{lab.status}</span>
+                        <span className="text-[11px] font-black text-slate-800 mr-2">{lab.value}</span>
+                        <span className={`text-[8px] font-black uppercase ${lab.status === 'High' ? 'text-red-500' : 'text-emerald-500'}`}>{lab.status}</span>
                       </div>
                     </div>
                   ))}
@@ -1759,28 +1737,28 @@ const ResidentDetailPage = () => {
                     <Shield size={14} className="text-blue-500 shrink-0" />
                     <div>
                       <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Plan</p>
-                      <p className="text-[11px] font-bold text-slate-700 uppercase">PPO</p>
+                      <p className="text-[11px] font-bold text-slate-700 uppercase">{resident.insurance?.plan || 'N/A'}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
                     <Fingerprint size={14} className="text-slate-400 shrink-0" />
                     <div>
                       <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Subscriber</p>
-                      <p className="text-[11px] font-bold text-slate-700 leading-tight">John A. Smith</p>
+                      <p className="text-[11px] font-bold text-slate-700 leading-tight">{resident.insurance?.subscriber || 'N/A'}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
                     <Calendar size={14} className="text-slate-400 shrink-0" />
                     <div>
                       <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Group ID</p>
-                      <p className="text-[11px] font-bold text-slate-700">ABC122456</p>
+                      <p className="text-[11px] font-bold text-slate-700">{resident.insurance?.groupId || 'N/A'}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
                     <Calendar size={14} className="text-slate-400 shrink-0" />
                     <div>
                       <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">DOB</p>
-                      <p className="text-[11px] font-bold text-slate-700">03/15/1970</p>
+                      <p className="text-[11px] font-bold text-slate-700">{resident.dob || 'N/A'}</p>
                     </div>
                   </div>
                 </div>
@@ -1793,16 +1771,12 @@ const ResidentDetailPage = () => {
                   <ChevronDown size={14} className="text-slate-400" />
                 </div>
                 <div className="p-2.5 space-y-3 flex-1">
-                  {[
-                    { date: '11/20/2022', text: 'EHR: Updated Diagnosis', user: 'Dr. Roberts', color: 'bg-blue-500' },
-                    { date: '11/15/2022', text: 'Insurance: Verified Plan', user: 'Admin', color: 'bg-emerald-500' },
-                    { date: '11/10/2022', text: 'Prescription: New Script', user: 'Dr. Miller', color: 'bg-amber-500' },
-                  ].map((audit, i, arr) => (
+                  {(resident.auditTrail || []).map((audit, i, arr) => (
                     <div key={i} className="relative flex gap-2.5">
                       {i !== arr.length - 1 && (
                         <div className="absolute left-[7px] top-4 -bottom-4 w-[2px] bg-slate-100 z-0" />
                       )}
-                      <div className={`w-4 h-4 rounded-full ${audit.color} ring-4 ring-white z-10 shrink-0 mt-1`} />
+                      <div className={`w-4 h-4 rounded-full ${audit.color || 'bg-blue-600'} ring-4 ring-white z-10 shrink-0 mt-1`} />
                       <div className="space-y-1 w-full pb-0.5">
                         <p className="text-[11px] font-bold text-slate-700 leading-tight">{audit.text}</p>
                         <div className="flex flex-wrap items-center gap-1.5 mt-0.5">
@@ -1825,11 +1799,11 @@ const ResidentDetailPage = () => {
               <div className="p-2.5 space-y-2">
                 <div className="flex items-center gap-2 mb-1.5 pb-1.5 border-b border-slate-50">
                   <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Status:</span>
-                  <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">Stable / Discharged</span>
+                  <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">{resident.dischargeSummary?.status || 'Stable'}</span>
                 </div>
                 <div>
                   <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-0.5">Primary instruction</p>
-                  <p className="text-[11px] font-bold text-slate-700 leading-tight">Patient advised to maintain light activity. Specialist follow-up required within 2 weeks.</p>
+                  <p className="text-[11px] font-bold text-slate-700 leading-tight">{resident.dischargeSummary?.instruction || 'N/A'}</p>
                 </div>
                 <div className="pt-1">
                   <div className="flex items-center gap-1.5 bg-blue-50 text-blue-600 px-2 py-1.5 rounded border border-blue-100 cursor-pointer hover:bg-blue-100 transition-colors w-fit">
@@ -1846,13 +1820,13 @@ const ResidentDetailPage = () => {
               <div className="space-y-1.5">
                 <div className="flex justify-between items-center text-[11px]">
                   <span className="font-bold text-slate-600">DNR Status:</span>
-                  <span className="font-black text-red-600 uppercase">Active (DNR)</span>
+                  <span className="font-black text-red-600 uppercase">{resident.advanceDirectives?.dnrStatus || 'N/A'}</span>
                 </div>
                 <div className="flex justify-between items-center text-[11px]">
                   <span className="font-bold text-slate-600">DNI Status:</span>
-                  <span className="font-black text-red-600 uppercase">Active (DNI)</span>
+                  <span className="font-black text-red-600 uppercase">{resident.advanceDirectives?.dniStatus || 'N/A'}</span>
                 </div>
-                <p className="text-[9px] text-amber-700 font-bold bg-amber-100/50 p-1 rounded mt-1">Full code documentation on file (02/2024)</p>
+                <p className="text-[9px] text-amber-700 font-bold bg-amber-100/50 p-1 rounded mt-1">Full code documentation on file ({resident.advanceDirectives?.date || 'N/A'})</p>
               </div>
             </div>
 
@@ -1999,6 +1973,17 @@ const ResidentDetailPage = () => {
         isOpen={isECGModalOpen}
         onClose={() => setIsECGModalOpen(false)}
         residentId={id}
+      />
+
+      {/* Resident Edit Modal */}
+      <AdmitResidentModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        onResidentAdmitted={() => {
+          fetchResident();
+          setIsEditModalOpen(false);
+        }}
+        editData={resident}
       />
     </div>
   );

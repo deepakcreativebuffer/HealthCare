@@ -182,8 +182,49 @@ const AdmitResidentModal = ({ isOpen, onClose, onResidentAdmitted, editData = nu
                 <input type="email" placeholder="john@example.com" className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-4 focus:ring-blue-100 focus:border-blue-600 outline-none transition-all" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} />
               </div>
               <div className="space-y-1.5">
-                <label className="text-[11px] font-bold text-slate-500 uppercase tracking-tight ml-1">Patient Photo URL</label>
-                <input type="text" placeholder="https://image-url.com/photo.jpg" className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-4 focus:ring-blue-100 focus:border-blue-600 outline-none transition-all" value={formData.photo} onChange={(e) => setFormData({ ...formData, photo: e.target.value })} />
+                <label className="text-[11px] font-bold text-slate-500 uppercase tracking-tight ml-1">Patient Photo</label>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden shrink-0">
+                    {formData.photo ? (
+                      <img src={formData.photo} alt="Preview" className="w-full h-full object-cover" />
+                    ) : (
+                      <User size={20} className="text-slate-300" />
+                    )}
+                  </div>
+                  <div className="flex-1 relative">
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      className="hidden" 
+                      id="photo-upload"
+                      onChange={(e) => {
+                        const file = e.target.files[0];
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onloadend = () => {
+                            setFormData({ ...formData, photo: reader.result });
+                          };
+                          reader.readAsDataURL(file);
+                        }
+                      }}
+                    />
+                    <label 
+                      htmlFor="photo-upload" 
+                      className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-[11px] font-bold text-slate-500 cursor-pointer hover:bg-slate-100 hover:border-blue-400 transition-all block text-center uppercase tracking-widest"
+                    >
+                      {formData.photo ? 'Change Photo' : 'Upload Photo'}
+                    </label>
+                  </div>
+                  {formData.photo && (
+                    <button 
+                      type="button" 
+                      onClick={() => setFormData({ ...formData, photo: '' })}
+                      className="text-red-500 hover:text-red-700 text-[10px] font-bold uppercase"
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
               </div>
               <div className="space-y-1.5 col-span-full">
                 <label className="text-[11px] font-bold text-slate-500 uppercase tracking-tight ml-1">Home Address</label>
