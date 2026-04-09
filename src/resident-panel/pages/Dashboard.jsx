@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import {
-    Activity, Clock, Pill, FlaskConical,
-    User, Shield, Download, FileText, UserCheck, Phone, MapPin,
-    ExternalLink, ChevronRight, Stethoscope, ChevronDown, Monitor,
-    TrendingUp, Thermometer, Droplets, CreditCard, Edit2, Plus, DownloadCloud,
-    Printer, Scissors, Fingerprint, Calendar, Heart, AlertCircle, AlertTriangle,
-    ShieldCheck, MapPinIcon, Info, Edit, ArrowLeft, Clipboard, Search
+   Activity, Clock, Pill, FlaskConical,
+   User, Shield, Download, FileText, UserCheck, Phone, MapPin,
+   ExternalLink, ChevronRight, Stethoscope, ChevronDown, Monitor,
+   TrendingUp, Thermometer, Droplets, CreditCard, Edit2, Plus, DownloadCloud,
+   Printer, Scissors, Fingerprint, Calendar, Heart, AlertCircle, AlertTriangle,
+   ShieldCheck, MapPinIcon, Info, Edit, ArrowLeft, Clipboard, Search
 } from 'lucide-react';
 import { Card, Avatar, Badge, Button, Modal, Input } from '../components/ui';
 import { mockUser, vitalsHistory } from '../data/mockData';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 // SUB-COMPONENT: Quick Stat Card
 const StatCard = ({ label, value, subValue, icon: Icon, colorClass, borderClass, onClick }) => (
@@ -42,10 +44,254 @@ const NavItem = ({ icon: Icon, label, value, isActive, onClick }) => (
 
 const Dashboard = () => {
    const { resident } = useOutletContext();
-   const m = mockUser; // Use rich mock data to populate all dashboard cards
+
+   // Map resident data to the format expected by the dashboard UI
+   const m = {
+      ...resident,
+      activeProblems: resident.diagnosisProblems?.length || 0,
+      medicationsCount: resident.medicationsList?.length || 0,
+      fallRisk: resident.mobility?.[0]?.fallRisk || "Moderate",
+      lastVisit: resident.visits?.[0]?.visitDate || "Never",
+      latestVitals: resident.vitalsHistory || {},
+      upcomingAppointments: resident.appointments || [],
+      diagnoses: resident.diagnosisProblems || [],
+      documents: resident.recentDocuments || [],
+      faxes: resident.faxLogs || []
+   };
 
    const [modalState, setModalState] = useState({ isOpen: false, type: null, data: null });
    const [activeTab, setActiveTab] = useState('recent_visits');
+
+   const handleDownloadReport = () => {
+      if (!resident) return;
+
+      const doc = new jsPDF();
+      const margin = 20;
+      const pageWidth = doc.internal.pageSize.getWidth();
+      let y = 20;
+
+      // BRANDING & HEADER
+      doc.setFillColor(15, 91, 120); // Medical blue
+      doc.rect(0, 0, pageWidth, 40, 'F');
+
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(24);
+      doc.setFont(undefined, 'bold');
+      doc.text("PATIENT CLINICAL SUMMARY", margin, 25);
+
+      doc.setFontSize(10);
+      doc.setFont(undefined, 'normal');
+      doc.text(`HealthCare EHR System - Confidential Medical Record`, margin, 33);
+      doc.text(`Generated: ${new Date().toLocaleString()}`, pageWidth - margin - 50, 33);
+
+      y = 50;
+
+      // SECTION 1: PERSONAL & DEMOGRAPHICS
+      doc.setTextColor(15, 91, 120);
+      doc.setFontSize(14);
+      doc.setFont(undefined, 'bold');
+      doc.text("1. PERSONAL INFORMATION", margin, y);
+      y += 4;
+      doc.setDrawColor(15, 91, 120);
+      doc.setLineWidth(0.5);
+      doc.line(margin, y, pageWidth - margin, y);
+      y += 10;
+
+      doc.setTextColor(0);
+      doc.setFontSize(10);
+      doc.setFont(undefined, 'bold');
+      doc.text("Name:", margin, y);
+      doc.setFont(undefined, 'normal');
+      doc.text(resident.name, margin + 20, y);
+
+      doc.setFont(undefined, 'bold');
+      doc.text("Patient ID:", margin + 80, y);
+      doc.setFont(undefined, 'normal');
+      doc.text(resident.id, margin + 110, y);
+      y += 7;
+
+      doc.setFont(undefined, 'bold');
+      doc.text("DOB/Age:", margin, y);
+      doc.setFont(undefined, 'normal');
+      doc.text(`${resident.age || resident.dob} years, ${resident.gender || 'N/A'}`, margin + 20, y);
+
+      doc.setFont(undefined, 'bold');
+      doc.text("Room:", margin + 80, y);
+      doc.setFont(undefined, 'normal');
+      doc.text(resident.roomNumber || resident.room || 'N/A', margin + 110, y);
+      y += 7;
+
+      doc.setFont(undefined, 'bold');
+      doc.text("Admission:", margin, y);
+      doc.setFont(undefined, 'normal');
+      doc.text(resident.admissionDate || 'N/A', margin + 20, y);
+
+      doc.setFont(undefined, 'bold');
+      doc.text("Status:", margin + 80, y);
+      doc.setFont(undefined, 'normal');
+      doc.text(resident.status || 'Active', margin + 110, y);
+      y += 15;
+
+      // SECTION 2: VITALS SUMMARY
+      doc.setTextColor(15, 91, 120);
+      doc.setFontSize(14);
+      doc.setFont(undefined, 'bold');
+      doc.text("2. VITALS SUMMARY", margin, y);
+      y += 4;
+      doc.line(margin, y, pageWidth - margin, y);
+      y += 10;
+
+      const vitals = resident.vitalsHistory || resident.vitals || {};
+      const vitalsData = [
+         ["Blood Pressure", vitals.bp || "N/A", "Heart Rate", `${vitals.hr || vitals.heartRate || "N/A"} bpm`],
+         ["Weight", vitals.weight || "N/A", "Temp", `${vitals.temp || "N/A"}`]
+      ];
+
+      autoTable(doc, {
+         startY: y,
+         body: vitalsData,
+         theme: 'plain',
+         styles: { fontSize: 10, cellPadding: 2 },
+         columnStyles: { 0: { fontStyle: 'bold', width: 40 }, 2: { fontStyle: 'bold', width: 40 } },
+         margin: { left: margin }
+      });
+
+      y = doc.lastAutoTable.finalY + 15;
+
+      // SECTION 3: ALLERGIES (CRITICAL)
+      doc.setTextColor(200, 0, 0); // Warning Red
+      doc.setFontSize(14);
+      doc.setFont(undefined, 'bold');
+      doc.text("3. KNOWN ALLERGIES", margin, y);
+      y += 4;
+      doc.setDrawColor(200, 0, 0);
+      doc.line(margin, y, pageWidth - margin, y);
+      y += 10;
+
+      doc.setTextColor(0);
+      const allergies = resident.allergies || [];
+      if (allergies.length > 0) {
+         const allergyTable = allergies.map(a => [a.name, a.severity || 'N/A', a.reaction]);
+         autoTable(doc, {
+            startY: y,
+            head: [['Allergen', 'Severity', 'Reaction']],
+            body: allergyTable,
+            theme: 'striped',
+            headStyles: { fillColor: [200, 50, 50] },
+            styles: { fontSize: 9 },
+            margin: { left: margin }
+         });
+         y = doc.lastAutoTable.finalY + 15;
+      } else {
+         doc.setFont(undefined, 'italic');
+         doc.text("NKDA (No Known Drug Allergies) recorded.", margin + 5, y);
+         y += 15;
+      }
+
+      // SECTION 4: MEDICATIONS
+      doc.setTextColor(15, 91, 120);
+      doc.setFontSize(14);
+      doc.setFont(undefined, 'bold');
+      doc.text("4. CURRENT MEDICATIONS", margin, y);
+      y += 4;
+      doc.setDrawColor(15, 91, 120);
+      doc.line(margin, y, pageWidth - margin, y);
+      y += 10;
+
+      const meds = resident.medicationsList || [];
+      if (meds.length > 0) {
+         const medTable = meds.map(m => [m.name, m.dose, m.instructions || m.details, m.status || 'Active']);
+         autoTable(doc, {
+            startY: y,
+            head: [['Medication', 'Dose', 'Instructions', 'Status']],
+            body: medTable,
+            theme: 'grid',
+            headStyles: { fillColor: [15, 91, 120] },
+            styles: { fontSize: 9 },
+            margin: { left: margin }
+         });
+         y = doc.lastAutoTable.finalY + 15;
+      } else {
+         doc.setFont(undefined, 'italic');
+         doc.text("No active medications records found.", margin + 5, y);
+         y += 15;
+      }
+
+      // PAGE BREAK CHECK
+      if (y > 220) { doc.addPage(); y = 20; }
+
+      // SECTION 5: DIAGNOSIS & PROBLEMS
+      doc.setTextColor(15, 91, 120);
+      doc.setFontSize(14);
+      doc.setFont(undefined, 'bold');
+      doc.text("5. DIAGNOSIS & ACTIVE PROBLEMS", margin, y);
+      y += 4;
+      doc.line(margin, y, pageWidth - margin, y);
+      y += 10;
+
+      const problems = resident.diagnosisProblems || [];
+      if (problems.length > 0) {
+         const probTable = problems.map(p => [p.name, p.onset || p.date, p.type || 'Chronic', p.status]);
+         autoTable(doc, {
+            startY: y,
+            head: [['Condition', 'Onset', 'Type', 'Status']],
+            body: probTable,
+            theme: 'striped',
+            headStyles: { fillColor: [15, 91, 120] },
+            styles: { fontSize: 9 },
+            margin: { left: margin }
+         });
+         y = doc.lastAutoTable.finalY + 15;
+      } else {
+         doc.text("No active diagnosis records found.", margin + 5, y);
+         y += 15;
+      }
+
+      // SECTION 6: INSURANCE & CONTACTS
+      doc.setTextColor(15, 91, 120);
+      doc.setFontSize(14);
+      doc.setFont(undefined, 'bold');
+      doc.text("6. INSURANCE & EMERGENCY CONTACT", margin, y);
+      y += 4;
+      doc.line(margin, y, pageWidth - margin, y);
+      y += 10;
+
+      doc.setTextColor(0);
+      doc.setFontSize(10);
+      const ins = resident.insuranceInfo || resident.insurance || {};
+      const emergency = { name: resident.emergencyContactName, phone: resident.emergencyContactPhone };
+
+      doc.setFont(undefined, 'bold');
+      doc.text("Insurance Provider:", margin, y);
+      doc.setFont(undefined, 'normal');
+      doc.text(ins.provider || "N/A", margin + 40, y);
+
+      doc.setFont(undefined, 'bold');
+      doc.text("Policy ID:", margin + 100, y);
+      doc.setFont(undefined, 'normal');
+      doc.text(ins.policyNumber || ins.id || "N/A", margin + 125, y);
+      y += 10;
+
+      doc.setFont(undefined, 'bold');
+      doc.text("Emergency Contact:", margin, y);
+      doc.setFont(undefined, 'normal');
+      const contactInfo = emergency.name ? `${emergency.name} - ${emergency.phone}` : "N/A";
+      doc.text(contactInfo, margin + 40, y);
+      y += 15;
+
+      // FOOTER
+      const pageCount = doc.internal.getNumberOfPages();
+      for (let i = 1; i <= pageCount; i++) {
+         doc.setPage(i);
+         doc.setFontSize(8);
+         doc.setTextColor(150);
+         doc.text(`HealthCare EHR Automated Report - Electronic Signature Not Required`, margin, 285);
+         doc.text(`Page ${i} of ${pageCount}`, pageWidth - margin - 20, 285);
+      }
+
+      // Save
+      doc.save(`${resident.name.replace(/\s+/g, "_")}_Health_Record.pdf`);
+   };
 
    const openModal = (type, data = null) => {
       setModalState({ isOpen: true, type, data });
@@ -186,7 +432,7 @@ const Dashboard = () => {
                         <User size={48} className="text-slate-300" />
                      )}
                   </div>
-                  <button 
+                  <button
                      onClick={() => openModal('EDIT_PROFILE')}
                      className="mt-2 flex items-center gap-1.5 px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-[10px] font-black uppercase tracking-tight hover:bg-blue-100 transition-colors"
                   >
@@ -370,10 +616,10 @@ const Dashboard = () => {
          </div>
 
          {/* 3. MAIN DASHBOARD CONTENT */}
-         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
+         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
 
             {/* LEFT NAVIGATION COLUMN */}
-            <div className="lg:col-span-2 space-y-4 flex flex-col">
+            <div className="lg:col-span-2 space-y-4">
                <Card className="p-2 space-y-1 bg-white/60">
                   <h3 className="text-[10px] font-extrabold text-gray-400 uppercase px-2 py-1 tracking-widest">My Health Record</h3>
                   <NavItem label="Recent Visits" value="25 Day" icon={Clock} isActive={activeTab === 'recent_visits'} onClick={() => setActiveTab('recent_visits')} />
@@ -384,54 +630,60 @@ const Dashboard = () => {
                   <NavItem label="Fax" value="3 Rec" icon={Printer} isActive={activeTab === 'faxes'} onClick={() => setActiveTab('faxes')} />
                </Card>
 
-               {/* SURGICAL HISTORY CARD */}
-               <Card className="p-3 space-y-3">
-                  <div className="flex items-center justify-between border-b pb-2 cursor-pointer group" onClick={() => openModal('VIEW_LIST', { title: 'Surgical History', items: m.surgicalHistory })}>
-                     <h3 className="text-[11px] font-bold text-gray-900 uppercase tracking-tight group-hover:text-blue-600 transition-colors">Surgical History</h3>
-                     <Scissors className="w-3 h-3 text-gray-400 group-hover:text-blue-500 transition-colors" />
-                  </div>
-                  <div className="space-y-2 max-h-[120px] overflow-x-hidden overflow-y-auto custom-scrollbar pr-1">
-                     {m.surgicalHistory?.map((s, i) => (
-                        <div key={i} className="flex flex-col cursor-pointer hover:bg-gray-50 p-1 -mx-1 px-1 rounded transition-colors" onClick={() => openModal('GENERIC_MESSAGE', { title: s.name, message: `${s.date} @ ${s.location}. ${s.notes}` })}>
-                           <span className="text-[11px] font-bold text-gray-700">{s.name}</span>
-                           <span className="text-[9px] text-gray-400 uppercase font-medium">{s.date}</span>
-                        </div>
-                     ))}
-                  </div>
-               </Card>
-
-               <Card className="p-3 space-y-3">
-                  <div className="flex items-center justify-between border-b pb-2 cursor-pointer group" onClick={() => openModal('VIEW_LIST', { title: 'All Diagnoses', items: m.diagnoses })}>
-                     <h3 className="text-[11px] font-bold text-gray-900 uppercase tracking-tight group-hover:text-blue-600 transition-colors">Diagnosis</h3>
-                     <ChevronRight className="w-3 h-3 text-gray-400 group-hover:text-blue-500 transition-colors" />
-                  </div>
-                  <div className="space-y-2 max-h-[260px] overflow-x-hidden overflow-y-auto custom-scrollbar pr-1">
-                     {m.diagnoses?.map((d, i) => (
-                        <div key={i} className="flex flex-col cursor-pointer hover:bg-gray-50 p-1 -mx-1 px-1 rounded transition-colors" onClick={() => openModal('GENERIC_MESSAGE', { title: d.name, message: `Diagnosed on: ${d.date}` })}>
-                           <span className="text-[12px] font-bold text-gray-700">{d.name}</span>
-                           <span className="text-[10px] text-gray-400">{d.date}</span>
-                        </div>
-                     ))}
-                  </div>
-               </Card>
-
-               <Card className="p-3 space-y-3">
-                  <div className="flex items-center justify-between border-b pb-2 cursor-pointer group" onClick={() => openModal('VIEW_LIST', { title: 'All Lab Results', items: m.labResults })}>
-                     <h3 className="text-[11px] font-bold text-gray-900 uppercase group-hover:text-blue-600 transition-colors">Lab Results</h3>
-                     <ChevronDown className="w-3 h-3 text-gray-400 group-hover:text-blue-500 transition-colors" />
-                  </div>
-                  <div className="space-y-2.5 max-h-[240px] overflow-x-hidden overflow-y-auto custom-scrollbar pr-1">
-                     {m.labResults?.map((l, i) => (
-                        <div key={i} className="flex justify-between items-center group cursor-pointer hover:bg-gray-50 p-1 -mx-1 px-1 rounded transition-colors" onClick={() => openModal('VIEW_METRIC', { title: l.name, value: l.value, icon: FlaskConical })}>
-                           <span className="text-[11px] text-gray-600 font-medium group-hover:text-gray-900 transition-colors">{l.name}</span>
-                           <div className="flex items-center gap-2">
-                              <span className="text-[11px] font-bold text-gray-900">{l.value}</span>
-                              <ChevronRight className="w-3 h-3 text-gray-300 group-hover:text-blue-500" />
+               {/* SURGICAL HISTORY CARD - ONLY VISIBLE IF DATA EXISTS */}
+               {m.surgicalHistory?.length > 0 && (
+                  <Card className="p-3 space-y-3">
+                     <div className="flex items-center justify-between border-b pb-2 cursor-pointer group" onClick={() => openModal('VIEW_LIST', { title: 'Surgical History', items: m.surgicalHistory })}>
+                        <h3 className="text-[11px] font-bold text-gray-900 uppercase tracking-tight group-hover:text-blue-600 transition-colors">Surgical History</h3>
+                        <Scissors className="w-3 h-3 text-gray-400 group-hover:text-blue-500 transition-colors" />
+                     </div>
+                     <div className="space-y-2 max-h-[120px] overflow-x-hidden overflow-y-auto custom-scrollbar pr-1">
+                        {m.surgicalHistory.map((s, i) => (
+                           <div key={i} className="flex flex-col cursor-pointer hover:bg-gray-50 p-1 -mx-1 px-1 rounded transition-colors" onClick={() => openModal('GENERIC_MESSAGE', { title: s.name, message: `${s.date} @ ${s.location}. ${s.notes}` })}>
+                              <span className="text-[11px] font-bold text-gray-700">{s.name}</span>
+                              <span className="text-[9px] text-gray-400 uppercase font-medium">{s.date}</span>
                            </div>
-                        </div>
-                     ))}
-                  </div>
-               </Card>
+                        ))}
+                     </div>
+                  </Card>
+               )}
+
+               {m.diagnoses?.length > 0 && (
+                  <Card className="p-3 space-y-3">
+                     <div className="flex items-center justify-between border-b pb-2 cursor-pointer group" onClick={() => openModal('VIEW_LIST', { title: 'All Diagnoses', items: m.diagnoses })}>
+                        <h3 className="text-[11px] font-bold text-gray-900 uppercase tracking-tight group-hover:text-blue-600 transition-colors">Diagnosis</h3>
+                        <ChevronRight className="w-3 h-3 text-gray-400 group-hover:text-blue-500 transition-colors" />
+                     </div>
+                     <div className="space-y-2 max-h-[260px] overflow-x-hidden overflow-y-auto custom-scrollbar pr-1">
+                        {m.diagnoses.map((d, i) => (
+                           <div key={i} className="flex flex-col cursor-pointer hover:bg-gray-50 p-1 -mx-1 px-1 rounded transition-colors" onClick={() => openModal('GENERIC_MESSAGE', { title: d.name, message: `Diagnosed on: ${d.date}` })}>
+                              <span className="text-[12px] font-bold text-gray-700">{d.name}</span>
+                              <span className="text-[10px] text-gray-400">{d.date}</span>
+                           </div>
+                        ))}
+                     </div>
+                  </Card>
+               )}
+
+               {m.labResults?.length > 0 && (
+                  <Card className="p-3 space-y-3">
+                     <div className="flex items-center justify-between border-b pb-2 cursor-pointer group" onClick={() => openModal('VIEW_LIST', { title: 'All Lab Results', items: m.labResults })}>
+                        <h3 className="text-[11px] font-bold text-gray-900 uppercase group-hover:text-blue-600 transition-colors">Lab Results</h3>
+                        <ChevronDown className="w-3 h-3 text-gray-400 group-hover:text-blue-500 transition-colors" />
+                     </div>
+                     <div className="space-y-2.5 max-h-[240px] overflow-x-hidden overflow-y-auto custom-scrollbar pr-1">
+                        {m.labResults.map((l, i) => (
+                           <div key={i} className="flex justify-between items-center group cursor-pointer hover:bg-gray-50 p-1 -mx-1 px-1 rounded transition-colors" onClick={() => openModal('VIEW_METRIC', { title: l.name, value: l.value, icon: FlaskConical })}>
+                              <span className="text-[11px] text-gray-600 font-medium group-hover:text-gray-900 transition-colors">{l.name}</span>
+                              <div className="flex items-center gap-2">
+                                 <span className="text-[11px] font-bold text-gray-900">{l.value}</span>
+                                 <ChevronRight className="w-3 h-3 text-gray-300 group-hover:text-blue-500" />
+                              </div>
+                           </div>
+                        ))}
+                     </div>
+                  </Card>
+               )}
 
                <Card className="p-3 space-y-3 mt-auto">
                   <div className="flex items-center justify-between border-b pb-2 cursor-pointer group" onClick={() => openModal('VIEW_LIST', { title: 'Available Documents', items: m.documents })}>
@@ -439,7 +691,7 @@ const Dashboard = () => {
                      <ChevronRight className="w-3 h-3 text-gray-400 group-hover:text-blue-500 transition-colors" />
                   </div>
                   <div className="space-y-2.5 mt-1 max-h-[240px] overflow-x-hidden overflow-y-auto custom-scrollbar pr-1">
-                     {m.documents?.map((d, i) => (
+                     {m.documents?.length > 0 ? m.documents.map((d, i) => (
                         <div key={i} className="flex justify-between items-center group cursor-pointer hover:bg-gray-50 p-1 -mx-1 px-1 rounded transition-colors" onClick={() => openModal('VIEW_DOCUMENT', { name: d.name })}>
                            <div className="flex items-center gap-2">
                               <FileText className="w-3.5 h-3.5 text-gray-400 group-hover:text-blue-500 transition-colors" />
@@ -447,13 +699,15 @@ const Dashboard = () => {
                            </div>
                            <span className={`text-[10px] font-bold ${d.status === 'No Files' ? 'text-gray-300' : d.status === 'Defined' ? 'text-emerald-500' : 'text-blue-500'}`}>{d.status}</span>
                         </div>
-                     ))}
+                     )) : (
+                        <p className="text-[10px] text-gray-400 italic text-center py-4">No documents available.</p>
+                     )}
                   </div>
                </Card>
             </div>
 
             {/* CENTER PRIMARY COLUMN */}
-            <div className="lg:col-span-7 space-y-4 flex flex-col">
+            <div className="lg:col-span-7 space-y-4">
 
                {/* TAB: RECENT VISITS (DEFAULT) */}
                {activeTab === 'recent_visits' && (
@@ -697,120 +951,132 @@ const Dashboard = () => {
                )}
 
                {/* CARE PLAN & SURGICAL HISTORY GRID */}
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  <Card className="p-0 overflow-hidden shadow-sm h-full flex flex-col">
-                     <div className="p-3 bg-gray-50 border-b border-gray-100 flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                           <Activity className="w-4 h-4 text-[#129FED]" />
-                           <h3 className="text-[12px] font-extrabold text-gray-900 uppercase">Care Plan & Interventions</h3>
-                        </div>
-                        <Button variant="ghost" className="p-0 h-5 w-5" onClick={() => openModal('GENERIC_MESSAGE', { title: 'Add Intervention', message: 'Functionality to request new care plan tasks will be available shortly.' })}><Plus className="w-4 h-4 text-blue-500" /></Button>
-                     </div>
-                     <div className="p-3 space-y-3 max-h-[140px] overflow-x-hidden overflow-y-auto custom-scrollbar pr-2">
-                        {m.carePlan?.map((plan, i) => (
-                           <div key={i} className="flex gap-3 items-center group cursor-pointer hover:bg-gray-50 p-1 -mx-1 px-1 rounded transition-colors" onClick={() => openModal('GENERIC_MESSAGE', { title: plan.title, message: plan.instruction })}>
-                              <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
-                                 {plan.icon === 'Activity' ? <TrendingUp className="w-4 h-4 text-[#129FED]" /> : <UserCheck className="w-4 h-4 text-[#129FED]" />}
+               {(m.carePlan?.length > 0 || m.surgicalHistory?.length > 0) && (
+                  <div className={`grid grid-cols-1 ${m.carePlan?.length > 0 && m.surgicalHistory?.length > 0 ? 'md:grid-cols-2' : ''} gap-5`}>
+                     {m.carePlan?.length > 0 && (
+                        <Card className="p-0 overflow-hidden shadow-sm h-full flex flex-col">
+                           <div className="p-3 bg-gray-50 border-b border-gray-100 flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                 <Activity className="w-4 h-4 text-[#129FED]" />
+                                 <h3 className="text-[12px] font-extrabold text-gray-900 uppercase">Care Plan & Interventions</h3>
                               </div>
-                              <div className="space-y-1">
-                                 <p className="text-[12px] font-extrabold text-gray-900 group-hover:text-blue-600 transition-colors">{plan.title}</p>
-                                 <p className="text-[11px] text-gray-500 leading-snug">{plan.instruction}</p>
-                              </div>
+                              <Button variant="ghost" className="p-0 h-5 w-5" onClick={() => openModal('GENERIC_MESSAGE', { title: 'Add Intervention', message: 'Functionality to request new care plan tasks will be available shortly.' })}><Plus className="w-4 h-4 text-blue-500" /></Button>
                            </div>
-                        ))}
-                     </div>
-                  </Card>
+                           <div className="p-3 space-y-3 max-h-[140px] overflow-x-hidden overflow-y-auto custom-scrollbar pr-2">
+                              {m.carePlan.map((plan, i) => (
+                                 <div key={i} className="flex gap-3 items-center group cursor-pointer hover:bg-gray-50 p-1 -mx-1 px-1 rounded transition-colors" onClick={() => openModal('GENERIC_MESSAGE', { title: plan.title, message: plan.instruction })}>
+                                    <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
+                                       {plan.icon === 'Activity' ? <TrendingUp className="w-4 h-4 text-[#129FED]" /> : <UserCheck className="w-4 h-4 text-[#129FED]" />}
+                                    </div>
+                                    <div className="space-y-1">
+                                       <p className="text-[12px] font-extrabold text-gray-900 group-hover:text-blue-600 transition-colors">{plan.title}</p>
+                                       <p className="text-[11px] text-gray-500 leading-snug">{plan.instruction}</p>
+                                    </div>
+                                 </div>
+                              ))}
+                           </div>
+                        </Card>
+                     )}
 
-                  <Card className="p-0 overflow-hidden shadow-sm h-full flex flex-col">
-                     <div className="p-3 bg-gray-50 border-b border-gray-100 flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                           <Scissors className="w-4 h-4 text-[#129FED]" />
-                           <h3 className="text-[12px] font-extrabold text-gray-900 uppercase">Surgical History</h3>
-                        </div>
-                        <Button variant="ghost" className="p-0 h-5 w-5" onClick={() => openModal('VIEW_LIST', { title: 'Surgical History', items: m.surgicalHistory })}><ChevronRight className="w-4 h-4 text-gray-400" /></Button>
-                     </div>
-                     <div className="p-4 space-y-4 max-h-[140px] overflow-x-hidden overflow-y-auto custom-scrollbar">
-                        {m.surgicalHistory?.map((s, i) => (
-                           <div key={i} className="flex gap-3 items-center group cursor-pointer hover:bg-gray-50 p-1 -mx-1 rounded transition-colors" onClick={() => openModal('GENERIC_MESSAGE', { title: s.name, message: `${s.date} @ ${s.location}. ${s.notes}` })}>
-                              <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center shrink-0">
-                                 <Monitor className="w-4 h-4 text-indigo-500" />
+                     {m.surgicalHistory?.length > 0 && (
+                        <Card className="p-0 overflow-hidden shadow-sm h-full flex flex-col">
+                           <div className="p-3 bg-gray-50 border-b border-gray-100 flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                 <Scissors className="w-4 h-4 text-[#129FED]" />
+                                 <h3 className="text-[12px] font-extrabold text-gray-900 uppercase">Surgical History</h3>
                               </div>
-                              <div>
-                                 <p className="text-[12px] font-extrabold text-gray-900 uppercase group-hover:text-blue-600 tracking-tight">{s.name}</p>
-                                 <p className="text-[10px] text-gray-500 font-bold uppercase">{s.date} • {s.location}</p>
-                              </div>
+                              <Button variant="ghost" className="p-0 h-5 w-5" onClick={() => openModal('VIEW_LIST', { title: 'Surgical History', items: m.surgicalHistory })}><ChevronRight className="w-4 h-4 text-gray-400" /></Button>
                            </div>
-                        ))}
-                     </div>
-                  </Card>
-               </div>
+                           <div className="p-4 space-y-4 max-h-[140px] overflow-x-hidden overflow-y-auto custom-scrollbar">
+                              {m.surgicalHistory.map((s, i) => (
+                                 <div key={i} className="flex gap-3 items-center group cursor-pointer hover:bg-gray-50 p-1 -mx-1 rounded transition-colors" onClick={() => openModal('GENERIC_MESSAGE', { title: s.name, message: `${s.date} @ ${s.location}. ${s.notes}` })}>
+                                    <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center shrink-0">
+                                       <Monitor className="w-4 h-4 text-indigo-500" />
+                                    </div>
+                                    <div>
+                                       <p className="text-[12px] font-extrabold text-gray-900 uppercase group-hover:text-blue-600 tracking-tight">{s.name}</p>
+                                       <p className="text-[10px] text-gray-500 font-bold uppercase">{s.date} • {s.location}</p>
+                                    </div>
+                                 </div>
+                              ))}
+                           </div>
+                        </Card>
+                     )}
+                  </div>
+               )}
 
                {/* VITALS & SOCIAL HISTORY GRID */}
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  <Card className="p-0 overflow-hidden shadow-sm h-full flex flex-col">
-                     <div className="p-3 bg-gray-50 border-b border-gray-100 flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                           <Thermometer className="w-4 h-4 text-[#129FED]" />
-                           <h3 className="text-[12px] font-extrabold text-gray-900 uppercase">Vitals Overview</h3>
-                        </div>
-                        <Button variant="ghost" className="p-0 h-5 w-5" onClick={() => setActiveTab('vitals')}><ExternalLink className="w-3.5 h-3.5 text-blue-500" /></Button>
-                     </div>
-                     <div className="p-3 grid grid-cols-3 gap-2">
-                        <div className="bg-gray-50 p-2 rounded text-center border border-gray-100 cursor-pointer hover:border-blue-200 transition-colors" onClick={() => openModal('VIEW_METRIC', { title: 'Weight', value: m.latestVitals?.weight, icon: Scale })}>
-                           <p className="text-[8px] font-bold text-gray-400 uppercase">Weight</p>
-                           <p className="text-[13px] font-black text-gray-900">{m.latestVitals?.weight}</p>
-                        </div>
-                        <div className="bg-gray-50 p-2 rounded text-center border border-gray-100 cursor-pointer hover:border-blue-200 transition-colors" onClick={() => openModal('VIEW_METRIC', { title: 'Height', value: m.latestVitals?.height, icon: Ruler })}>
-                           <p className="text-[8px] font-bold text-gray-400 uppercase">Height</p>
-                           <p className="text-[13px] font-black text-gray-900">{m.latestVitals?.height}</p>
-                        </div>
-                        <div className="bg-gray-50 p-2 rounded text-center border border-gray-100 cursor-pointer hover:border-blue-200 transition-colors" onClick={() => openModal('VIEW_METRIC', { title: 'BMI', value: m.latestVitals?.bmi, icon: Activity })}>
-                           <p className="text-[8px] font-bold text-gray-400 uppercase">BMI</p>
-                           <p className="text-[13px] font-black text-blue-600">{m.latestVitals?.bmi}</p>
-                        </div>
-                        <div className="bg-gray-50 p-2 rounded text-center border border-gray-100 cursor-pointer hover:border-blue-200 transition-colors" onClick={() => openModal('VIEW_METRIC', { title: 'Glucose', value: '105', subValue: 'mg/dL', icon: Droplets })}>
-                           <p className="text-[8px] font-bold text-gray-400 uppercase">Glucose</p>
-                           <p className="text-[13px] font-black text-orange-600">105</p>
-                        </div>
-                        <div className="bg-gray-50 p-2 rounded text-center border border-gray-100 cursor-pointer hover:border-blue-200 transition-colors" onClick={() => openModal('VIEW_METRIC', { title: 'RR', value: '16', subValue: 'bpm', icon: Activity })}>
-                           <p className="text-[8px] font-bold text-gray-400 uppercase">Respiration</p>
-                           <p className="text-[13px] font-black text-gray-900">16</p>
-                        </div>
-                        <div className="bg-gray-50 p-2 rounded text-center border border-gray-100 cursor-pointer hover:border-blue-200 transition-colors" onClick={() => openModal('VIEW_METRIC', { title: 'Pain', value: '0/10', icon: AlertCircle })}>
-                           <p className="text-[8px] font-bold text-gray-400 uppercase">Pain</p>
-                           <p className="text-[13px] font-black text-emerald-600">0/10</p>
-                        </div>
-                     </div>
-                  </Card>
+               {(m.latestVitals || m.socialHistory) && (
+                  <div className={`grid grid-cols-1 ${m.latestVitals && m.socialHistory ? 'md:grid-cols-2' : ''} gap-5`}>
+                     {m.latestVitals && (
+                        <Card className="p-0 overflow-hidden shadow-sm h-full flex flex-col">
+                           <div className="p-3 bg-gray-50 border-b border-gray-100 flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                 <Thermometer className="w-4 h-4 text-[#129FED]" />
+                                 <h3 className="text-[12px] font-extrabold text-gray-900 uppercase">Vitals Overview</h3>
+                              </div>
+                              <Button variant="ghost" className="p-0 h-5 w-5" onClick={() => setActiveTab('vitals')}><ExternalLink className="w-3.5 h-3.5 text-blue-500" /></Button>
+                           </div>
+                           <div className="p-3 grid grid-cols-3 gap-2">
+                              <div className="bg-gray-50 p-2 rounded text-center border border-gray-100 cursor-pointer hover:border-blue-200 transition-colors" onClick={() => openModal('VIEW_METRIC', { title: 'Weight', value: m.latestVitals?.weight, icon: Scale })}>
+                                 <p className="text-[8px] font-bold text-gray-400 uppercase">Weight</p>
+                                 <p className="text-[13px] font-black text-gray-900">{m.latestVitals?.weight}</p>
+                              </div>
+                              <div className="bg-gray-50 p-2 rounded text-center border border-gray-100 cursor-pointer hover:border-blue-200 transition-colors" onClick={() => openModal('VIEW_METRIC', { title: 'Height', value: m.latestVitals?.height, icon: Ruler })}>
+                                 <p className="text-[8px] font-bold text-gray-400 uppercase">Height</p>
+                                 <p className="text-[13px] font-black text-gray-900">{m.latestVitals?.height}</p>
+                              </div>
+                              <div className="bg-gray-50 p-2 rounded text-center border border-gray-100 cursor-pointer hover:border-blue-200 transition-colors" onClick={() => openModal('VIEW_METRIC', { title: 'BMI', value: m.latestVitals?.bmi, icon: Activity })}>
+                                 <p className="text-[8px] font-bold text-gray-400 uppercase">BMI</p>
+                                 <p className="text-[13px] font-black text-blue-600">{m.latestVitals?.bmi}</p>
+                              </div>
+                              <div className="bg-gray-50 p-2 rounded text-center border border-gray-100 cursor-pointer hover:border-blue-200 transition-colors" onClick={() => openModal('VIEW_METRIC', { title: 'Glucose', value: '105', subValue: 'mg/dL', icon: Droplets })}>
+                                 <p className="text-[8px] font-bold text-gray-400 uppercase">Glucose</p>
+                                 <p className="text-[13px] font-black text-orange-600">105</p>
+                              </div>
+                              <div className="bg-gray-50 p-2 rounded text-center border border-gray-100 cursor-pointer hover:border-blue-200 transition-colors" onClick={() => openModal('VIEW_METRIC', { title: 'RR', value: '16', subValue: 'bpm', icon: Activity })}>
+                                 <p className="text-[8px] font-bold text-gray-400 uppercase">Respiration</p>
+                                 <p className="text-[13px] font-black text-gray-900">16</p>
+                              </div>
+                              <div className="bg-gray-50 p-2 rounded text-center border border-gray-100 cursor-pointer hover:border-blue-200 transition-colors" onClick={() => openModal('VIEW_METRIC', { title: 'Pain', value: '0/10', icon: AlertCircle })}>
+                                 <p className="text-[8px] font-bold text-gray-400 uppercase">Pain</p>
+                                 <p className="text-[13px] font-black text-emerald-600">0/10</p>
+                              </div>
+                           </div>
+                        </Card>
+                     )}
 
-                  <Card className="p-0 overflow-hidden shadow-sm h-full flex flex-col">
-                     <div className="p-3 bg-gray-50 border-b border-gray-100 flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                           <User className="w-4 h-4 text-[#129FED]" />
-                           <h3 className="text-[12px] font-extrabold text-gray-900 uppercase">Social History & Lifestyle</h3>
-                        </div>
-                        <Button variant="ghost" className="p-0 h-5 w-5" onClick={() => openModal('EDIT_PROFILE')}><Edit2 className="w-3.5 h-3.5 text-gray-400" /></Button>
-                     </div>
-                     <div className="p-3 grid grid-cols-2 gap-3">
-                        <div className="space-y-1 cursor-pointer group" onClick={() => openModal('GENERIC_MESSAGE', { title: 'Tobacco Use', message: `Current Status: ${m.socialHistory?.tobacco}` })}>
-                           <p className="text-[9px] font-extrabold text-gray-400 uppercase">Tobacco</p>
-                           <p className="text-[11px] font-bold text-gray-700 group-hover:text-blue-600 transition-colors">{m.socialHistory?.tobacco}</p>
-                        </div>
-                        <div className="space-y-1 cursor-pointer group" onClick={() => openModal('GENERIC_MESSAGE', { title: 'Alcohol Use', message: `Current Status: ${m.socialHistory?.alcohol}` })}>
-                           <p className="text-[9px] font-extrabold text-gray-400 uppercase">Alcohol</p>
-                           <p className="text-[11px] font-bold text-gray-700 group-hover:text-blue-600 transition-colors">{m.socialHistory?.alcohol}</p>
-                        </div>
-                        <div className="space-y-1 cursor-pointer group" onClick={() => openModal('GENERIC_MESSAGE', { title: 'Dietary Intake', message: `Current Status: ${m.socialHistory?.diet}` })}>
-                           <p className="text-[9px] font-extrabold text-gray-400 uppercase">Diet</p>
-                           <p className="text-[11px] font-bold text-gray-700 group-hover:text-blue-600 transition-colors">{m.socialHistory?.diet}</p>
-                        </div>
-                        <div className="space-y-1 cursor-pointer group" onClick={() => openModal('GENERIC_MESSAGE', { title: 'Exercise Routine', message: `Current Status: ${m.socialHistory?.exercise}` })}>
-                           <p className="text-[9px] font-extrabold text-gray-400 uppercase">Exercise</p>
-                           <p className="text-[11px] font-bold text-gray-700 group-hover:text-blue-600 transition-colors">{m.socialHistory?.exercise}</p>
-                        </div>
-                     </div>
-                  </Card>
-               </div>
+                     {m.socialHistory && (
+                        <Card className="p-0 overflow-hidden shadow-sm h-full flex flex-col">
+                           <div className="p-3 bg-gray-50 border-b border-gray-100 flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                 <User className="w-4 h-4 text-[#129FED]" />
+                                 <h3 className="text-[12px] font-extrabold text-gray-900 uppercase">Social History & Lifestyle</h3>
+                              </div>
+                              <Button variant="ghost" className="p-0 h-5 w-5" onClick={() => openModal('EDIT_PROFILE')}><Edit2 className="w-3.5 h-3.5 text-gray-400" /></Button>
+                           </div>
+                           <div className="p-3 grid grid-cols-2 gap-3">
+                              <div className="space-y-1 cursor-pointer group" onClick={() => openModal('GENERIC_MESSAGE', { title: 'Tobacco Use', message: `Current Status: ${m.socialHistory?.tobacco}` })}>
+                                 <p className="text-[9px] font-extrabold text-gray-400 uppercase">Tobacco</p>
+                                 <p className="text-[11px] font-bold text-gray-700 group-hover:text-blue-600 transition-colors">{m.socialHistory?.tobacco}</p>
+                              </div>
+                              <div className="space-y-1 cursor-pointer group" onClick={() => openModal('GENERIC_MESSAGE', { title: 'Alcohol Use', message: `Current Status: ${m.socialHistory?.alcohol}` })}>
+                                 <p className="text-[9px] font-extrabold text-gray-400 uppercase">Alcohol</p>
+                                 <p className="text-[11px] font-bold text-gray-700 group-hover:text-blue-600 transition-colors">{m.socialHistory?.alcohol}</p>
+                              </div>
+                              <div className="space-y-1 cursor-pointer group" onClick={() => openModal('GENERIC_MESSAGE', { title: 'Dietary Intake', message: `Current Status: ${m.socialHistory?.diet}` })}>
+                                 <p className="text-[9px] font-extrabold text-gray-400 uppercase">Diet</p>
+                                 <p className="text-[11px] font-bold text-gray-700 group-hover:text-blue-600 transition-colors">{m.socialHistory?.diet}</p>
+                              </div>
+                              <div className="space-y-1 cursor-pointer group" onClick={() => openModal('GENERIC_MESSAGE', { title: 'Exercise Routine', message: `Current Status: ${m.socialHistory?.exercise}` })}>
+                                 <p className="text-[9px] font-extrabold text-gray-400 uppercase">Exercise</p>
+                                 <p className="text-[11px] font-bold text-gray-700 group-hover:text-blue-600 transition-colors">{m.socialHistory?.exercise}</p>
+                              </div>
+                           </div>
+                        </Card>
+                     )}
+                  </div>
+               )}
 
                {/* BILLING SUMMARY */}
                <Card className="p-0 overflow-hidden shadow-sm">
@@ -853,23 +1119,25 @@ const Dashboard = () => {
                   </div>
                </Card>
 
-               <Card className="p-0 overflow-hidden shadow-sm border-l-4 border-l-emerald-500 cursor-pointer hover:shadow-md transition-shadow mt-auto" onClick={() => openModal('GENERIC_MESSAGE', { title: 'Discharge Active Status', message: `Discharge Status: ${m.dischargeSummary?.status}. The discharge instructions were released to patient.` })}>
-                  <div className="p-3 bg-emerald-50 content-center flex items-center justify-between">
-                     <div className="flex items-center gap-2">
-                        <FileText className="w-4 h-4 text-emerald-600" />
-                        <h3 className="text-[12px] font-extrabold text-emerald-900 uppercase">Discharge Summary</h3>
+               {m.dischargeSummary && (
+                  <Card className="p-0 overflow-hidden shadow-sm border-l-4 border-l-emerald-500 cursor-pointer hover:shadow-md transition-shadow" onClick={() => openModal('GENERIC_MESSAGE', { title: 'Discharge Active Status', message: `Discharge Status: ${m.dischargeSummary?.status}. The discharge instructions were released to patient.` })}>
+                     <div className="p-3 bg-emerald-50 content-center flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                           <FileText className="w-4 h-4 text-emerald-600" />
+                           <h3 className="text-[12px] font-extrabold text-emerald-900 uppercase">Discharge Summary</h3>
+                        </div>
+                        <Badge className="bg-emerald-200 text-emerald-800 border-none font-black text-[9px] uppercase">{m.dischargeSummary?.status}</Badge>
                      </div>
-                     <Badge className="bg-emerald-200 text-emerald-800 border-none font-black text-[9px] uppercase">{m.dischargeSummary?.status}</Badge>
-                  </div>
-                  <div className="p-3 flex flex-col md:flex-row items-center justify-between gap-3">
-                     <p className="text-[11px] text-gray-600 font-medium italic truncate max-w-md"><span className="text-[10px] font-extrabold text-gray-400 not-italic uppercase mr-2">Primary Instruction:</span> "{m.dischargeSummary?.instruction}"</p>
-                     <Button className="bg-[#129FED] hover:bg-blue-600 text-white font-black text-[9px] h-7 shrink-0 py-0 uppercase tracking-widest px-3" onClick={(e) => { e.stopPropagation(); openModal('VIEW_DOCUMENT', { name: "Discharge_Summary.pdf" }); }}><Download className="w-3.5 h-3.5 mr-2" /> Download PDF</Button>
-                  </div>
-               </Card>
+                     <div className="p-3 flex flex-col md:flex-row items-center justify-between gap-3">
+                           <p className="text-[11px] text-gray-600 font-medium italic truncate max-w-md"><span className="text-[10px] font-extrabold text-gray-400 not-italic uppercase mr-2">Primary Instruction:</span> "{m.dischargeSummary?.instruction}"</p>
+                           <Button className="bg-[#129FED] hover:bg-blue-600 text-white font-black text-[9px] h-7 shrink-0 py-0 uppercase tracking-widest px-3" onClick={(e) => { e.stopPropagation(); handleDownloadReport(); }}><Download className="w-3.5 h-3.5 mr-2" /> Download PDF</Button>
+                     </div>
+                  </Card>
+               )}
             </div>
 
             {/* RIGHT SIDEBAR COLUMN */}
-            <div className="lg:col-span-3 space-y-3 flex flex-col">
+            <div className="lg:col-span-3 space-y-3">
 
                <Card className="p-3 space-y-3 cursor-pointer hover:shadow-md transition-shadow" onClick={() => openModal('VIEW_LIST', { title: 'Insurance Details', items: [m.insurance] })}>
                   <div className="flex items-center justify-between border-b pb-2">
@@ -884,20 +1152,22 @@ const Dashboard = () => {
                   </div>
                </Card>
 
-               <Card className="p-3 space-y-3 cursor-pointer hover:shadow-md transition-shadow" onClick={() => openModal('VIEW_LIST', { title: 'Active Allergies', items: m.allergies })}>
-                  <div className="flex justify-between items-center border-b pb-2">
-                     <h3 className="text-[12px] font-extrabold text-gray-900 uppercase">Allergies</h3>
-                     <span className="text-[10px] font-black text-rose-500">{m.allergies?.length} ACTIVE</span>
-                  </div>
-                  <div className="space-y-3 mt-1 max-h-[140px] overflow-x-hidden overflow-y-auto custom-scrollbar pr-1">
-                     {m.allergies?.map((a, i) => (
-                        <div key={i} className="flex justify-between items-center group">
-                           <span className={`text-[12px] font-black uppercase ${a.color === 'red' ? 'text-rose-600' : 'text-orange-500'} group-hover:text-blue-600 transition-colors`}>{a.name}</span>
-                           <Badge className={`${a.color === 'red' ? 'bg-rose-50 text-rose-600' : 'bg-orange-50 text-orange-600'} border-none text-[8px] font-black px-1.5 py-0`}>{a.reaction}</Badge>
-                        </div>
-                     ))}
-                  </div>
-               </Card>
+               {m.allergies?.length > 0 && (
+                  <Card className="p-3 space-y-3 cursor-pointer hover:shadow-md transition-shadow" onClick={() => openModal('VIEW_LIST', { title: 'Active Allergies', items: m.allergies })}>
+                     <div className="flex justify-between items-center border-b pb-2">
+                        <h3 className="text-[12px] font-extrabold text-gray-900 uppercase">Allergies</h3>
+                        <span className="text-[10px] font-black text-rose-500">{m.allergies.length} ACTIVE</span>
+                     </div>
+                     <div className="space-y-3 mt-1 max-h-[140px] overflow-x-hidden overflow-y-auto custom-scrollbar pr-1">
+                        {m.allergies.map((a, i) => (
+                           <div key={i} className="flex justify-between items-center group">
+                              <span className={`text-[12px] font-black uppercase ${a.color === 'red' ? 'text-rose-600' : 'text-orange-500'} group-hover:text-blue-600 transition-colors`}>{a.name}</span>
+                              <Badge className={`${a.color === 'red' ? 'bg-rose-50 text-rose-600' : 'bg-orange-50 text-orange-600'} border-none text-[8px] font-black px-1.5 py-0`}>{a.reaction}</Badge>
+                           </div>
+                        ))}
+                     </div>
+                  </Card>
+               )}
 
                <Card className="p-3 space-y-3 cursor-pointer hover:shadow-md transition-shadow" onClick={() => openModal('VIEW_LIST', { title: 'Active Scripts', items: m.medicationsList })}>
                   <div className="flex justify-between items-center border-b pb-2">
@@ -943,7 +1213,7 @@ const Dashboard = () => {
                   </div>
                </Card>
 
-               <div className="grid grid-cols-2 gap-3 mt-auto">
+               <div className="grid grid-cols-2 gap-3">
                   <Card className="p-3 text-center space-y-2 cursor-pointer hover:border-blue-300 transition-colors group h-full flex flex-col justify-between" onClick={() => openModal('MAP_VIEW', { name: "CVS Pharmacy #1234", address: '492 Pharmacy Ave, Suite B' })}>
                      <div className="w-10 h-10 rounded-full bg-blue-100 mx-auto flex items-center justify-center text-[#129FED] group-hover:scale-110 transition-transform">
                         <Shield className="w-5 h-5" />
@@ -975,8 +1245,7 @@ const Dashboard = () => {
                <span className="text-[11px] font-bold text-gray-300">LAST SYNC: 2 MINS AGO</span>
             </div>
             <div className="flex gap-4">
-               <Button variant="outline" className="h-9 px-6 text-[11px] font-black uppercase tracking-widest border-gray-200 text-gray-600" onClick={() => window.print()}>Print Profile</Button>
-               <Button className="h-9 px-8 text-[11px] font-black uppercase tracking-widest bg-gray-900 text-white hover:bg-black" onClick={() => openModal('VIEW_DOCUMENT', { name: "Mariaa_Johnson_health_record_export.pdf" })}>Health Record PDF</Button>
+               <Button className="h-9 px-8 text-[11px] font-black uppercase tracking-widest bg-gray-900 text-white hover:bg-black" onClick={handleDownloadReport}>Health Record PDF</Button>
             </div>
          </div>
 

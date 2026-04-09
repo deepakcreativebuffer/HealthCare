@@ -1,238 +1,328 @@
+// src/data/api.js
 import { mockData } from './mockData';
 
-// Helper to simulate API delay
-const simulateAPI = (data, delay = 800) => 
-  new Promise((resolve) => setTimeout(() => resolve(data), delay));
-
-// Storage Keys
 const KEYS = {
-  RESIDENTS: 'hc_residents',
-  STAFF: 'hc_staff',
-  BILLING: 'hc_billing',
-  ACTIVITY: 'hc_activity',
-  PTO: 'hc_pto',
-  SICK_LEAVE: 'hc_sick',
-  APPOINTMENTS: 'hc_appointments',
-  USER: 'user'
+  RESIDENTS: 'healthcare_residents',
+  USERS: 'healthcare_users',
+  LOGS: 'healthcare_logs'
 };
 
-// Generic getter with localStorage fallback
 const getStoredData = (key, defaultValue) => {
   const stored = localStorage.getItem(key);
   return stored ? JSON.parse(stored) : defaultValue;
 };
 
-// Generic setter
 const setStoredData = (key, data) => {
   localStorage.setItem(key, JSON.stringify(data));
 };
 
+const simulateAPI = (data) => new Promise(resolve => setTimeout(() => resolve(data), 300));
+
 export const api = {
+  // Authentication
+  login: async (email, password) => {
+    // Admin check
+    if (email === 'admin@care.com' && password === 'admin123') {
+      const user = { id: 'admin', name: 'Admin User', role: 'admin', email: 'admin' };
+      localStorage.setItem('user', JSON.stringify(user));
+      return simulateAPI({ user });
+    }
+
+    // Resident check
+    const residents = getStoredData(KEYS.RESIDENTS, mockData.residents);
+    const residentFound = residents.find(r => r.email === email && r.password === password);
+
+    if (residentFound) {
+      const user = { 
+        id: residentFound.id, 
+        name: residentFound.name, 
+        role: 'resident', 
+        email: residentFound.email,
+        photo: residentFound.photo
+      };
+      localStorage.setItem('user', JSON.stringify(user));
+      return simulateAPI({ user });
+    }
+
+    throw new Error('Invalid email or password');
+  },
+
+  logout: () => {
+    localStorage.removeItem('user');
+  },
+
+  // Activities / Logs
+  getActivity: () => {
+    const logs = mockData.activityLogs.map(log => ({
+      ...log,
+      user: log.userName // Map userName to user for component compatibility
+    }));
+    return simulateAPI(logs);
+  },
+
+  getStaff: () => simulateAPI(mockData.staff),
+
+  getStats: () => simulateAPI(mockData.mainStats),
+
+  getDashboardStats: () => {
+    const stats = [
+      { title: "Total Residents", value: mockData.dashboardStats.totalResidents, icon: "Users", trend: "12%", trendUp: true },
+      { title: "Occupancy Rate", value: mockData.dashboardStats.occupancyRate, icon: "UserCheck", trend: "5%", trendUp: true },
+      { title: "Revenue", value: mockData.dashboardStats.monthlyRevenue, icon: "FileText", trend: "8%", trendUp: true },
+      { title: "Pending", value: mockData.dashboardStats.pendingPayments, icon: "CalendarClock", trend: "3%", trendUp: false },
+      { title: "Staff", value: mockData.dashboardStats.staffOnDuty, icon: "Stethoscope", trend: "2%", trendUp: true },
+      { title: "Admissions", value: mockData.dashboardStats.recentAdmissions, icon: "CalendarDays", trend: "15%", trendUp: true },
+    ];
+    return simulateAPI(stats);
+  },
+
+  addActivity: (action, category, user = 'Admin') => {
+    const logs = getStoredData(KEYS.LOGS, mockData.activityLogs);
+    const newLog = { 
+      action, 
+      category, 
+      userName: user, 
+      time: 'Just now', 
+      status: 'Created', 
+      date: new Date().toISOString().split('T')[0] 
+    };
+    logs.unshift(newLog);
+    setStoredData(KEYS.LOGS, logs);
+    return simulateAPI(newLog);
+  },
+
   // Residents
   getResidents: () => simulateAPI(getStoredData(KEYS.RESIDENTS, mockData.residents)),
-  addResident: (newResident) => {
-    const residents = getStoredData(KEYS.RESIDENTS, mockData.residents);
-    const updated = [...residents, { ...newResident, id: `RES${(residents.length + 1).toString().padStart(3, '0')}` }];
-    setStoredData(KEYS.RESIDENTS, updated);
-    return simulateAPI({ success: true, data: updated });
-  },
-  updateResident: (id, updates) => {
-    const residents = getStoredData(KEYS.RESIDENTS, mockData.residents);
-    const updated = residents.map(r => r.id === id ? { ...r, ...updates } : r);
-    setStoredData(KEYS.RESIDENTS, updated);
-    return simulateAPI({ success: true, data: updated });
-  },
-  deleteResident: (id) => {
-    const residents = getStoredData(KEYS.RESIDENTS, mockData.residents);
-    const updated = residents.filter(r => r.id !== id);
-    setStoredData(KEYS.RESIDENTS, updated);
-    return simulateAPI({ success: true, data: updated });
-  },
+
   getResidentData: (id) => {
     const residents = getStoredData(KEYS.RESIDENTS, mockData.residents);
     const resident = residents.find(r => r.id === id) || residents[0];
-    // Ensure nested data structures exist and have default high-fidelity data
-    if (!resident.emergencyContactName) resident.emergencyContactName = "Mary Smith";
-    if (!resident.emergencyContactPhone) resident.emergencyContactPhone = "(555) 987-6543";
-    if (!resident.clinicalAccess) resident.clinicalAccess = "Full Assist, Interpreter Req";
-    if (!resident.levelOfCare) resident.levelOfCare = "Skilled Care";
-    if (!resident.nutrition) resident.nutrition = "Low Sodium Diet";
-    if (!resident.provider) resident.provider = "Dr. Emily Roberts";
-    if (!resident.insurance) resident.insurance = { provider: "Medicare", plan: "Plan G", subscriber: "Maria Johnson", groupId: "HC-123456" };
-    if (!resident.mrn) resident.mrn = resident.id || "RES001";
-    if (!resident.dob) resident.dob = "03/15/1970";
-    if (!resident.gender) resident.gender = "Female";
+    
+    // Seeded randomness helper based on ID
+    const getSeed = (str) => {
+      let seed = 0;
+      if (!str) return 0;
+      for (let i = 0; i < str.length; i++) seed += str.charCodeAt(i);
+      return seed;
+    };
+    const seed = getSeed(resident.id);
+    
+    // Ensure all shared base fields exist
+    if (!resident.mrn) resident.mrn = `MRN-${10000 + (seed % 90000)}-X`;
+    if (!resident.dob) resident.dob = `03/${15 + (seed % 10)}/19${50 + (seed % 40)}`;
+    if (!resident.gender) resident.gender = seed % 2 === 0 ? "Female" : "Male";
     if (!resident.status) resident.status = "Active";
-    if (!resident.allergy) resident.allergy = "Penicillin, Peanuts";
-    if (!resident.condition) resident.condition = "Hypertension, Type 2 Di...";
-    if (!resident.address) resident.address = "123 Main St.";
-    if (!resident.phone) resident.phone = "555-0101";
+    if (!resident.provider) resident.provider = seed % 2 === 0 ? "Dr. Emily Roberts" : "Dr. John Chen";
+    if (!resident.condition) resident.condition = seed % 2 === 0 ? "Hypertension, Type 2 Diabetes" : "Dementia, Arthritis";
+    if (!resident.room) resident.room = `Room ${100 + (seed % 500)}-${seed % 2 === 0 ? 'A' : 'B'}`;
+    if (!resident.phone) resident.phone = `(555) ${100 + (seed % 900)}-${1000 + (seed % 9000)}`;
+    if (!resident.address) resident.address = `${100 + (seed % 900)} Healthcare Blvd, Springfield, IL`;
+    if (!resident.emergencyContactName) resident.emergencyContactName = seed % 2 === 0 ? "Mary Smith" : "Robert Wilson";
+    if (!resident.emergencyContactPhone) resident.emergencyContactPhone = `(555) ${100 + (seed % 900)}-${1000 + (seed % 9000)}`;
+    if (!resident.clinicalAccess) resident.clinicalAccess = seed % 3 === 0 ? "Full Assist, Interpreter Req" : seed % 3 === 1 ? "Independent, English" : "Partial Assist";
+    if (!resident.levelOfCare) resident.levelOfCare = seed % 3 === 0 ? "Skilled Care" : seed % 3 === 1 ? "Assisted Living" : "Memory Care";
+    if (!resident.admissionDate) resident.admissionDate = `01/${10 + (seed % 15)}/2022`;
+    if (!resident.patientGoal) resident.patientGoal = seed % 2 === 0 ? "Maintain current mobility levels." : "Improve cognitive engagement through activities.";
+    
+    if (!resident.insurance) {
+      resident.insurance = { 
+        provider: seed % 2 === 0 ? "Medicare" : "BlueCross BlueShield", 
+        plan: "Plan G", 
+        subscriber: resident.name, 
+        groupId: `HC-${100000 + (seed % 900000)}` 
+      };
+    }
+    
+    if (!resident.allergy) resident.allergy = seed % 2 === 0 ? "Penicillin, Peanuts" : "Sulfa Drugs, Shellfish";
+    if (!resident.allergies || resident.allergies.length === 0) {
+       resident.allergies = [
+         { id: 1, name: seed % 2 === 0 ? 'Penicillin' : 'Sulfa Drugs', reaction: seed % 2 === 0 ? 'Anaphylaxis' : 'Hives', severity: 'Severe', color: 'red' },
+         { id: 2, name: seed % 2 === 0 ? 'Peanuts' : 'Shellfish', reaction: 'Skin Rash', severity: 'Moderate', color: 'orange' }
+       ];
+    }
 
-    if (!resident.diagnosisProblems) {
-      resident.diagnosisProblems = [
-        { id: 1, name: "Depression", onset: "2023", status: "Active" },
-        { id: 2, name: "Degenerative Arthritis", type: "Chronic", status: "Chronic" },
-        { id: 3, name: "Skin Reactions", type: "Recurrent", status: "Recurrent" }
-      ];
-    }
-    if (!resident.medicationsList) {
-      resident.medicationsList = [
-        { id: 1, name: "Lisinopril", dose: "20 mg", details: "20 MG • Oral • Daily", status: "Active" },
-        { id: 2, name: "Metformin", dose: "500 mg", details: "500 MG • Oral • Daily", status: "Active" },
-        { id: 3, name: "Sertraline", dose: "50 mg", details: "50 MG • Oral • Daily", status: "Active" }
-      ];
-    }
-    if (!resident.vitalsHistory) {
-      resident.vitalsHistory = {
-        bloodPressure: "120/80 mmHg",
-        heartRate: "74 bpm",
-        bmi: "17.1 lbs",
-        respirationRate: "60 bpm"
-      };
-    }
-    if (!resident.appointments) {
-      resident.appointments = [
-        { id: 1, doctor: "Dr. Amanda Roberts", date: "Thursday, Apr 25", time: "10:30 AM", location: "Monterey Clinic" },
-        { id: 2, doctor: "Dr. James Williams", date: "Friday, Apr 26", time: "02:00 PM", location: "Health Center" }
-      ];
-    }
-    if (!resident.assignedForms) {
-      resident.assignedForms = [
-        { id: 1, name: "Annual Health Assessment", status: "Pending", lastUpdated: "04/2024" },
-        { id: 2, name: "Medication Consent Form", status: "Signed", lastUpdated: "03/2024" }
-      ];
-    }
-    if (!resident.recentDocuments) {
-      resident.recentDocuments = [
-        { id: 1, name: "Lab Report - December 10", date: "22 Feb 2024" },
-        { id: 2, name: "Insurance Documentation", date: "02 Jan 2024" }
-      ];
-    }
-    if (!resident.billingSummary) {
-      resident.billingSummary = {
-        balanceDue: 250.00,
-        lastPayment: { amount: 30.00, date: "20 Mar 2024" },
-        progress: 60
-      };
-    }
-    let needsUpdate = false;
+    // 1. Visit History (Admin and Resident usage)
     if (!resident.visits || resident.visits.length === 0) {
       resident.visits = [
-        { id: 1, visitDate: '11/20/2022', visitType: 'Office Visit', providerName: 'Dr. Emily Roberts', chiefComplaint: 'Chest Pain', diagnosis: 'I20.9 - Angina Pectoris', procedure: '93000 - ECG', bp: '120/80', pulse: '72', temp: '98.6°F', weight: '185 lbs', notes: 'Patient presented with independent chest pain. ECG shows minor changes. RADIATING TO LEFT ARM.' }
+        { 
+          id: 1, 
+          visitDate: seed % 2 === 0 ? '11/20/2022' : '01/15/2023', 
+          visitType: seed % 2 === 0 ? 'Office Visit' : 'Follow-up', 
+          providerName: resident.provider, 
+          chiefComplaint: seed % 2 === 0 ? 'Chest Pain' : 'Joint Stiffness', 
+          diagnosis: seed % 2 === 0 ? 'I20.9 - Angina Pectoris' : 'M19.9 - Osteoarthritis', 
+          procedure: seed % 2 === 0 ? '93000 - ECG' : '99214 - Office Level 4', 
+          bp: seed % 2 === 0 ? '120/80' : '135/85', 
+          pulse: seed % 2 === 0 ? '72' : '68', 
+          temp: '98.6°F', 
+          weight: seed % 2 === 0 ? '185 lbs' : '172 lbs', 
+          notes: seed % 2 === 0 ? 'Patient presented with chest pain. ECG shows minor changes.' : 'Patient reports morning stiffness in knees.',
+          historyOfPresentIllness: seed % 2 === 0 ? 'Chronic condition management.' : 'Acute onset of symptoms in recent days.',
+          reviewOfSystems: 'Assessments indicate stable condition within normal limits for age.'
+        }
       ];
-      needsUpdate = true;
     }
-    if (!resident.allergies || (Array.isArray(resident.allergies) && (resident.allergies.length === 0 || typeof resident.allergies[0] === 'string'))) {
-      resident.allergies = [
-        { id: 1, name: 'Penicillin', reaction: 'Anaphylaxis', severity: 'Severe', status: 'Active' },
-        { id: 2, name: 'Peanuts', reaction: 'Hives', severity: 'Moderate', status: 'Active' }
-      ];
-      needsUpdate = true;
-    }
+
+    // 2. Billing Records
     if (!resident.billingRecords || resident.billingRecords.length === 0) {
       resident.billingRecords = [
-        { id: 1, invoiceNumber: 'INV-98765', serviceDate: '11/20/2022', charges: '$300.00', balance: '$300.00', status: 'Pending' },
-        { id: 2, invoiceNumber: 'INV-98764', serviceDate: '11/15/2022', charges: '$150.00', balance: '$50.00', status: 'Partial' }
+        { id: 1, invoiceNumber: `INV-${100 + (seed % 900)}`, serviceDate: '03/01/2024', charges: '$300.00', balance: '$300.00', status: 'Pending' }
       ];
-      needsUpdate = true;
     }
+    
+    if (!resident.billing) {
+       resident.billing = {
+          totalBalance: 350.00,
+          records: [
+             { id: `INV-${100 + (seed % 900)}`, date: '2024-03-01', amount: 300.00, status: 'PENDING' },
+             { id: `INV-${100 + (seed % 890)}`, date: '2024-02-15', amount: 50.00, status: 'PAID' }
+          ]
+       };
+    }
+
+    // 3. Medical History / Diagnosis Problems
     if (!resident.medicalHistory || resident.medicalHistory.length === 0) {
-      resident.medicalHistory = [
-        { id: 1, Condition: 'Unspecified atrial fibrillation', 'Diagnosis Date': '2018', 'Doctor Notes': 'Controlled with medication', Status: 'Chronic' },
-        { id: 2, Condition: 'Essential (primary) hypertension', 'Diagnosis Date': '2015', 'Doctor Notes': 'Stable', Status: 'Controlled' }
+      resident.medicalHistory = seed % 2 === 0 ? [
+        { id: 1, Condition: 'Atrial fibrillation', 'Diagnosis Date': '2018', Status: 'Chronic' }
+      ] : [
+        { id: 1, Condition: 'Dementia', 'Diagnosis Date': '2021', Status: 'Chronic' }
       ];
-      needsUpdate = true;
     }
-    if (!resident.insuranceInfo || resident.insuranceInfo.length === 0) {
-      resident.insuranceInfo = [
-        { id: 1, company: 'Medicare', plan: 'Plan G', policyNumber: 'MC123456789', status: 'Active' }
-      ];
-      needsUpdate = true;
+    
+    if (!resident.diagnosisProblems || resident.diagnosisProblems.length === 0) {
+      resident.diagnosisProblems = resident.medicalHistory.map(m => ({
+        id: m.id,
+        name: m.Condition,
+        onset: m['Diagnosis Date'],
+        status: m.Status,
+        date: m['Diagnosis Date'], // for resident dashboard mapping
+        notes: "Historical record."
+      }));
     }
+
+    // 3a. Surgical History (Shared)
+    if (!resident.surgicalHistory || resident.surgicalHistory.length === 0) {
+       resident.surgicalHistory = [
+          { id: 1, name: seed % 2 === 0 ? "Appendectomy" : "Knee Arthroscopy", date: seed % 2 === 0 ? "05/12/2010" : "09/20/2015", location: "Springfield Gen.", notes: "No complications." },
+          { id: 2, name: seed % 2 === 0 ? "Cataract Surgery" : "Hernia Repair", date: seed % 2 === 0 ? "11/02/2019" : "03/15/2018", location: "Ophthal Center", notes: "Routine procedure." }
+       ];
+    }
+
+    // 4. Lab Results
     if (!resident.labResults || resident.labResults.length === 0) {
       resident.labResults = [
-        { id: 1, name: 'Comprehensive Metabolic Panel', orderedDate: '12/10/2022', value: 'Normal', status: 'Final' },
-        { id: 2, name: 'Lipid Panel', orderedDate: '12/10/2022', value: 'High Cholesterol', status: 'Final' }
+        { id: 1, name: 'HbA1c', value: seed % 2 === 0 ? '6.4%' : '6.8%', status: 'Stable', date: '11/15/2022', range: '4.0-5.6%', orderedDate: '11/15/2022' },
+        { id: 2, name: 'LDL Cholesterol', value: seed % 2 === 0 ? '135 mg/dL' : '142 mg/dL', status: 'High', date: '11/15/2022', range: '<100 mg/dL', orderedDate: '11/15/2022' }
       ];
-      needsUpdate = true;
     }
+
+    // 5. Documents / Recent Documents
+    if (!resident.recentDocuments || resident.recentDocuments.length === 0) {
+      resident.recentDocuments = [
+        { name: "Discharge Summary", status: "Signed", date: "11/18/2022", type: "PDF" },
+        { name: "EKG Waveform Trace", status: "Defined", date: "11/20/2022", type: "Image" }
+      ];
+    }
+
+    // 6. Care Plan & Social History
+    if (!resident.carePlan || resident.carePlan.length === 0) {
+      resident.carePlan = [
+        { title: "Cardiac Output Management", instruction: "Monitor BP daily. Report weight gain > 2 lbs/day.", icon: "Activity", priority: "High" },
+        { title: "Mobility Assist", instruction: "Use walker for all ambulation.", icon: "UserCheck", priority: "Medium" }
+      ];
+    }
+
+    if (!resident.socialHistory || (typeof resident.socialHistory === 'object' && Object.keys(resident.socialHistory).length === 0)) {
+       resident.socialHistory = {
+          tobacco: seed % 2 === 0 ? "Former Smoker (Quit 2012)" : "Never Smoked",
+          alcohol: seed % 2 === 0 ? "Occasional" : "None",
+          diet: seed % 2 === 0 ? "Low Sodium" : "Regular",
+          exercise: "Light Walk",
+          sleep: "7-8 hours/night",
+          living: "Assisted Living",
+          occupation: "Retired",
+          pets: "None"
+       };
+    }
+
+    // 7. Vitals Context
+    if (!resident.vitalsHistory) {
+       const latestVisit = resident.visits[0] || {};
+       resident.vitalsHistory = {
+          bp: latestVisit.bp || (seed % 2 === 0 ? "120/80" : "135/85"),
+          hr: latestVisit.pulse || (seed % 2 === 0 ? "72" : "68"),
+          temp: latestVisit.temp || "98.6°F",
+          o2: "98%",
+          weight: latestVisit.weight || (seed % 2 === 0 ? "185 lbs" : "172 lbs"),
+          height: "5'10\"",
+          bmi: "26.5"
+       };
+    }
+
+    // 8. Care Team & Pharmacy
     if (!resident.careTeam || resident.careTeam.length === 0) {
-      resident.careTeam = [
-        { id: 1, name: 'Dr. Emily Roberts', specialty: 'Primary Care', phone: '(555) 123-4567', email: 'emily.r@care.com', status: 'Active' },
-        { id: 2, name: 'Dr. John Chen', specialty: 'Cardiology', phone: '(555) 987-6543', email: 'john.c@care.com', status: 'Active' }
-      ];
-      needsUpdate = true;
+       resident.careTeam = [
+          { name: "Dr. Emily Roberts", role: "CARDIOLOGIST", phone: "(555) 444-3322", email: "e.roberts@care.com", specialty: 'Cardiology' },
+          { name: "Dr. John Chen", role: "PRIMARY CARE", phone: "(555) 111-2233", email: "j.chen@care.com", specialty: 'Primary Care' }
+       ];
     }
-    if (!resident.pharmacy || resident.pharmacy.length === 0) {
-      resident.pharmacy = [
-        { id: 1, name: 'CVS Pharmacy #1234', address: '123 Main St, Springfield IL', phone: '(555) 987-6543', status: 'Active' }
-      ];
-      needsUpdate = true;
+
+    if (!resident.pharmacy) {
+       resident.pharmacy = {
+          name: "CVS Pharmacy #1234",
+          address: "123 Main St, Springfield IL",
+          phone: "(555) 987-6543",
+          hours: "Open 24 Hours"
+       };
     }
+
+    // 9. Specific Admin Page Sections (Audit, Safety, Mobility, Comm)
     if (!resident.communication || resident.communication.length === 0) {
-      resident.communication = [
-        { id: 1, language: 'English', interpreter: 'Not Required', hearing: 'Impaired (Left)', vision: 'Normal', notes: 'Prefers written instructions' }
-      ];
-      needsUpdate = true;
+      resident.communication = { language: 'English', interpreter: 'Not Required', hearing: 'Normal', vision: 'Normal' };
     }
     if (!resident.mobility || resident.mobility.length === 0) {
-      resident.mobility = [
-        { id: 1, assist: 'One-Person', devices: 'Walker', fallRisk: 'High', status: 'Supervised' }
-      ];
-      needsUpdate = true;
-    }
-    if (!resident.nutrition || resident.nutrition.length === 0) {
-      resident.nutrition = [
-        { id: 1, diet: 'Mechanical Soft', fluids: 'Thin', intakeGoal: '1500ml/day', notes: 'Low sodium requirement' }
-      ];
-      needsUpdate = true;
+      resident.mobility = [{ assist: seed % 2 === 0 ? 'One-Person' : 'Independent', devices: 'Walker', fallRisk: seed % 2 === 0 ? 'High Risk' : 'Low Risk', status: 'Active' }];
     }
     if (!resident.safety || resident.safety.length === 0) {
-      resident.safety = [
-        { id: 1, security: 'Wander Guard Active', accessLevel: 'Family Only', protocol: 'Standard', notes: 'Check bracelet daily' }
-      ];
-      needsUpdate = true;
-    }
-    if (!resident.advanceDirectives || resident.advanceDirectives.length === 0) {
-      resident.advanceDirectives = [
-        { id: 1, dnrStatus: 'Active (DNR)', dniStatus: 'Active (DNI)', documentationDate: '02/20/2024', status: 'Verified' }
-      ];
-      needsUpdate = true;
+      resident.safety = { security: 'Wander Guard Active', accessLevel: 'Standard Access' };
     }
     if (!resident.auditTrail || resident.auditTrail.length === 0) {
       resident.auditTrail = [
-        { id: 1, date: '11/20/2022', event: 'Record Access', text: 'EHR: Updated Diagnosis', user: 'Dr. Roberts' },
-        { id: 2, date: '11/15/2022', event: 'Insurance Check', text: 'Insurance: Verified Plan', user: 'Admin' }
+        { date: '11/20/2022', text: 'EHR: Updated Diagnosis', user: 'Dr. Roberts', color: 'bg-blue-500' },
+        { date: '11/15/2022', text: 'Insurance: Verified Plan', user: 'Admin', color: 'bg-emerald-500' }
       ];
-      needsUpdate = true;
     }
-    if (!resident.dischargeSummary || resident.dischargeSummary.length === 0) {
-      resident.dischargeSummary = [
-        { id: 1, status: 'Stable', instruction: 'Maintain light activity', followUp: '2 Weeks Out', date: '02/25/2024' }
-      ];
-      needsUpdate = true;
+    if (!resident.dischargeSummary) {
+      resident.dischargeSummary = { status: 'Stable / Discharged', instruction: 'Patient advised to maintain light activity. Specialist follow-up required within 2 weeks.' };
+    }
+    if (!resident.advanceDirectives) {
+      resident.advanceDirectives = { dnrStatus: 'Active (DNR)', dniStatus: 'Active (DNI)', date: '02/2024' };
     }
     if (!resident.immunizations || resident.immunizations.length === 0) {
       resident.immunizations = [
-        { id: 1, name: 'Influenza (Flu)', date: '10/12/2023', status: 'Up-to-date', provider: 'Monterey Clinic' },
-        { id: 2, name: 'Pneumococcal', date: '05/20/2022', status: 'Up-to-date', provider: 'General Hospital' }
+        { name: 'Influenza (Flu)', date: '10/12/2023', status: 'Up-to-date', provider: 'Monterey Clinic' },
+        { name: 'Pneumococcal', date: '05/20/2022', status: 'Up-to-date', provider: 'General Hospital' }
       ];
-      needsUpdate = true;
     }
     if (!resident.activities || resident.activities.length === 0) {
       resident.activities = [
         { id: 1, type: 'Medication', name: 'Lisinopril 20mg Admin.', date: '08:00 AM Today', status: 'Completed' },
-        { id: 2, type: 'Vitals', name: 'Morning Vitals Check', date: '07:30 AM Today', status: 'Completed' },
-        { id: 3, type: 'Social', name: 'Art Therapy Session', date: '02:00 PM Today', status: 'Pending' }
+        { id: 2, type: 'Vitals', name: 'Morning Vitals Check', date: '07:30 AM Today', status: 'Completed' }
       ];
-      needsUpdate = true;
+    }
+    if (!resident.medicationsList || resident.medicationsList.length === 0) {
+      resident.medicationsList = [
+        { id: 1, name: "Lisinopril", dose: "10mg", instructions: "1 Tablet PO DAILY", type: "Antihypertensive" },
+        { id: 2, name: "Atorvastatin", dose: "40mg", instructions: "1 Tablet PO AT BEDTIME", type: "Statin" }
+      ];
+    }
+    if (!resident.faxLogs || resident.faxLogs.length === 0) {
+       resident.faxLogs = [
+          { name: "Inbound: Radiology Report", date: "11/20/2022", from: "City Radiology", status: "Success" },
+          { name: "Outbound: Referral", date: "11/18/2022", to: "Dr. Roberts", status: "Sent" }
+       ];
     }
 
-    if (needsUpdate) {
-      const updatedResidents = residents.map(r => r.id === resident.id ? resident : r);
-      setStoredData(KEYS.RESIDENTS, updatedResidents);
-    }
-    
     return simulateAPI(resident);
   },
 
@@ -248,7 +338,7 @@ export const api = {
   updateResidentSubData: (residentId, key, itemId, updates) => {
     const residents = getStoredData(KEYS.RESIDENTS, mockData.residents);
     const updated = residents.map(r => {
-      if (r.id === residentId || (residentId === undefined && r.name === 'Maria Johnson')) {
+      if (r.id === residentId) {
         const subData = Array.isArray(r[key]) ? r[key].map(item => item.id === itemId ? { ...item, ...updates } : item) : { ...r[key], ...updates };
         return { ...r, [key]: subData };
       }
@@ -258,12 +348,11 @@ export const api = {
     return simulateAPI({ success: true });
   },
 
-  addResidentSubData: (residentId, key, newItem) => {
+  addResidentSubData: (residentId, key, data) => {
     const residents = getStoredData(KEYS.RESIDENTS, mockData.residents);
     const updated = residents.map(r => {
-      if (r.id === residentId || (residentId === undefined && r.name === 'Maria Johnson')) {
-        const id = (r[key]?.length || 0) + 1;
-        const subData = [...(r[key] || []), { ...newItem, id }];
+      if (r.id === residentId) {
+        const subData = Array.isArray(r[key]) ? [...r[key], { ...data, id: Date.now() }] : { ...r[key], ...data };
         return { ...r, [key]: subData };
       }
       return r;
@@ -275,7 +364,7 @@ export const api = {
   deleteResidentSubData: (residentId, key, itemId) => {
     const residents = getStoredData(KEYS.RESIDENTS, mockData.residents);
     const updated = residents.map(r => {
-      if (r.id === residentId || (residentId === undefined && r.name === 'Maria Johnson')) {
+      if (r.id === residentId && Array.isArray(r[key])) {
         const subData = r[key].filter(item => item.id !== itemId);
         return { ...r, [key]: subData };
       }
@@ -285,181 +374,11 @@ export const api = {
     return simulateAPI({ success: true });
   },
 
-  // Staff
-  getStaff: () => simulateAPI(getStoredData(KEYS.STAFF, mockData.staff)),
-  
-  // Billing
-  getBilling: () => simulateAPI(getStoredData(KEYS.BILLING, mockData.billing)),
-  getBillingData: () => {
-    const data = getStoredData(KEYS.BILLING, mockData.billing);
-    // Enriched structure for the dashboard
-    const dashboardData = {
-      metrics: [
-        { label: 'Total Claims This Month', value: '105', icon: 'FileText', color: 'green' },
-        { label: 'Submitted Today', value: '14', icon: 'FileUp', color: 'blue' },
-        { label: 'Pending Review', value: '12', icon: 'Clock', color: 'orange' },
-        { label: 'Rejected', value: '3', icon: 'AlertCircle', color: 'red' },
-        { label: 'Revenue MTD', value: '$64k', icon: 'DollarSign', color: 'blue' },
-        { label: 'Avg Days to Payment', value: '18', icon: 'Clock3', color: 'green' },
-      ],
-      provider: {
-        name: 'Behavioral Health LLC',
-        npi: '(555) 555-0199',
-        address: '123 Wellness Dr, Suite 200, Austin',
-        phone: '(512) 555-0199'
-      },
-      locations: [
-        { name: 'Recovery Center', address: '456 Serenity Ln, Austin, TX 78702', npi: '9876543210', pos: '55' },
-        { name: 'Outpatient Clinic', address: '789 Hope Ave, Austin, TX 78703', npi: '5678901234', pos: '11' }
-      ],
-      encounter: {
-        patient: 'David Smith',
-        provider: 'Dr. Emily Roberts',
-        facility: 'Recovery Center',
-        dos: '02/12/2025',
-        diagnoses: [
-          { code: 'F10.20', description: 'Alcohol dependence, uncomplicated' },
-          { code: 'F32.1', description: 'Major depressive disorder, single episode, moderate' }
-        ],
-        procedures: [
-          { code: '90837', qty: 1, amount: '$150' }
-        ]
-      },
-      recentClaims: [
-        { id: 'CLM-00123', patient: 'David Smith', payer: 'BlueCross BlueShield', amount: '$350.00', status: 'Submitted' },
-        { id: 'CLM-00122', patient: 'Maria Santos', payer: 'Aetna PPO', amount: '$350.00', status: 'Paid' },
-        { id: 'CLM-00121', patient: 'John Doe', payer: 'UnitedHealth', amount: '$350.00', status: 'Denied' },
-        { id: 'CLM-00120', patient: 'Sarah Johnson', payer: 'Cigna', amount: '$350.00', status: 'Pending' },
-        { id: 'CLM-00119', patient: 'Alex Kim', payer: 'Medicare', amount: '$350.00', status: 'Paid' }
-      ],
-      statusBreakdown: [
-        { label: 'Paid', percentage: 65, color: '#10b981' },
-        { label: 'Pending', percentage: 15, color: '#f59e0b' },
-        { label: 'Denied', percentage: 18, color: '#ef4444' },
-        { label: 'Draft', percentage: 5, color: '#94a3b8' }
-      ],
-      submissionHistory: [
-        { id: 'CLM-00123', patient: 'David Smith', payer: 'BlueCross BlueShield', submitted: '02/12/2025 09:30 AM', status: 'Accepted' },
-        { id: 'CLM-00122', patient: 'Maria Santos', payer: 'Aetna PPO', submitted: '02/11/2025 02:15 PM', status: 'Accepted' },
-        { id: 'CLM-00121', patient: 'John Doe', payer: 'UnitedHealth', submitted: '02/10/2025 11:45 AM', status: 'Rejected' },
-        { id: 'CLM-00120', patient: 'Sarah Johnson', payer: 'Cigna', submitted: '02/10/2025 10:00 AM', status: 'Pending' },
-        { id: 'CLM-00119', patient: 'Alex Kim', payer: 'Medicare', submitted: '02/09/2025 03:20 PM', status: 'Accepted' }
-      ],
-      revenueTrend: {
-        totalRevenue: '$152K',
-        outstanding: '$24.3K',
-        totalTrend: '+12.5%',
-        outstandingTrend: '-8.2%',
-        points: [
-          { month: 'Sep', value: 25000 },
-          { month: 'Oct', value: 38000 },
-          { month: 'Nov', value: 45000 },
-          { month: 'Dec', value: 42000 },
-          { month: 'Jan', value: 48000 },
-          { month: 'Feb', value: 55000 }
-        ]
-      },
-    };
-    return simulateAPI(dashboardData);
-  },
-  // Users / Staff
-  getUsersData: () => {
-    const staff = getStoredData(KEYS.STAFF, mockData.staff);
-    const metrics = [
-      { label: 'Total Users', value: staff.length.toString(), icon: 'Users', color: 'blue' },
-      { label: 'Active Staff', value: staff.filter(s => s.status === 'Active').length.toString(), icon: 'UserCheck', color: 'green' },
-      { label: 'Pending Access', value: Math.round(staff.length * 0.1).toString(), icon: 'Clock', color: 'orange' },
-      { label: 'System Admins', value: staff.filter(s => s.role === 'Admin').length.toString(), icon: 'Shield', color: 'red' },
-    ];
-    
-    return simulateAPI({ metrics, users: staff });
-  },
-  addUser: (newUser) => {
-    const staff = getStoredData(KEYS.STAFF, mockData.staff);
-    const updated = [...staff, { ...newUser, id: `EMP${(staff.length + 1).toString().padStart(3, '0')}` }];
-    setStoredData(KEYS.STAFF, updated);
-    return simulateAPI({ success: true, data: updated });
-  },
-  updateUser: (id, updates) => {
-    const staff = getStoredData(KEYS.STAFF, mockData.staff);
-    const updated = staff.map(s => s.id === id ? { ...s, ...updates } : s);
-    setStoredData(KEYS.STAFF, updated);
-    return simulateAPI({ success: true, data: updated });
-  },
-  deleteUser: (id) => {
-    const staff = getStoredData(KEYS.STAFF, mockData.staff);
-    const updated = staff.filter(s => s.id !== id);
-    setStoredData(KEYS.STAFF, updated);
-    return simulateAPI({ success: true, data: updated });
-  },
-  deleteUsersBulk: (ids) => {
-    const staff = getStoredData(KEYS.STAFF, mockData.staff);
-    const updated = staff.filter(s => !ids.includes(s.id));
-    setStoredData(KEYS.STAFF, updated);
-    return simulateAPI({ success: true, data: updated });
-  },
-
-  updateClaimStatus: (id, status) => {
-    // In a real app, we'd update the list in localStorage here
-    return simulateAPI({ success: true });
-  },
-  updateInvoiceStatus: (invoiceId, status) => {
-    const billing = getStoredData(KEYS.BILLING, mockData.billing);
-    const updated = billing.map(b => b.invoiceId === invoiceId ? { ...b, status } : b);
-    setStoredData(KEYS.BILLING, updated);
-    return simulateAPI({ success: true, data: updated });
-  },
-
-  // Activity Log
-  getActivity: () => simulateAPI(getStoredData(KEYS.ACTIVITY, mockData.activityLogs)),
-  getPTO: () => simulateAPI(getStoredData(KEYS.PTO, mockData.ptoRequests)),
-  getSickLeave: () => simulateAPI(getStoredData(KEYS.SICK_LEAVE, mockData.sickLeave)),
-  getAppointments: () => simulateAPI(getStoredData(KEYS.APPOINTMENTS, mockData.appointments)),
-  addActivity: (message, type = 'System', user = 'System') => {
-    const log = getStoredData(KEYS.ACTIVITY, mockData.activityLog);
-    const newEntry = {
-      id: log.length + 1,
-      type,
-      message,
-      user,
-      timestamp: new Date().toISOString()
-    };
-    const updated = [newEntry, ...log];
-    setStoredData(KEYS.ACTIVITY, updated);
-    return simulateAPI(updated);
-  },
-
-  // Dashboard
-  getDashboardStats: () => {
-    const stats = [
-      { title: "Total Residents", value: "128", trend: "+12%", trendUp: true, icon: "Users" },
-      { title: "Total Employees", value: "10", trend: "+5%", trendUp: true, icon: "UserCheck" },
-      { title: "Pending PTO", value: "6", trend: "+5%", trendUp: true, icon: "CalendarClock" },
-      { title: "Sick Time", value: "5", trend: "+5%", trendUp: true, icon: "Stethoscope" },
-      { title: "Total Appointments", value: "18", trend: "+5%", trendUp: true, icon: "CalendarDays" },
-      { title: "Claims Pending", value: "12", trend: "-8%", trendUp: false, icon: "FileText" },
-    ];
-    return simulateAPI(stats);
-  },
-
-  // Auth
-  login: (email, password) => {
-    return simulateAPI(new Promise((resolve, reject) => {
-      if (email === 'admin@care.com' && password === 'Admin@123') {
-        const user = { name: 'Admin User', role: 'admin', email };
-        localStorage.setItem(KEYS.USER, JSON.stringify(user));
-        resolve({ success: true, user });
-      } else if (email.startsWith('res')) {
-        const user = { name: 'Jimmy Chu', role: 'resident', email };
-        localStorage.setItem(KEYS.USER, JSON.stringify(user));
-        resolve({ success: true, user });
-      } else {
-        reject({ success: false, message: 'Invalid credentials' });
-      }
-    }));
-  },
-  logout: () => {
-    localStorage.removeItem(KEYS.USER);
-    return simulateAPI({ success: true });
+  addResident: (resident) => {
+    const residents = getStoredData(KEYS.RESIDENTS, mockData.residents);
+    const newResident = { ...resident, id: `RES${Date.now()}` };
+    residents.push(newResident);
+    setStoredData(KEYS.RESIDENTS, residents);
+    return simulateAPI(newResident);
   }
 };
