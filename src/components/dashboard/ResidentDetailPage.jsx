@@ -35,6 +35,8 @@ import {
   DownloadIcon,
   Upload,
   Scissors,
+  Circle,
+  Siren,
 } from "lucide-react";
 import { api } from "../../data/api";
 import Navbar from "../layout/Navbar";
@@ -848,7 +850,7 @@ const ResidentDetailPage = () => {
                         </td>
                       ))}
                       <td className="px-4 py-3 text-right">
-                        <div className="flex justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="flex justify-end gap-1.5  transition-opacity">
                           {(section === 'Lab' || section === 'Documents' || section === 'Visits') && (
                             <button
                               onClick={(e) => { e.stopPropagation(); alert('Downloading report...'); }}
@@ -990,7 +992,7 @@ const ResidentDetailPage = () => {
 
                 <div className="flex flex-wrap gap-1.5">
                   <span className={`px-2.5 py-1 ${resident.status === 'Deceased' ? 'bg-red-50 text-red-600 border-red-100' : resident.status === 'Inactive' ? 'bg-slate-50 text-slate-500 border-slate-100' : 'bg-emerald-50 text-emerald-600 border-emerald-100'} border rounded-full text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 shadow-sm`}>
-                    <Heart size={12} className={resident.status === 'Deceased' ? 'fill-red-600' : resident.status === 'Inactive' ? 'fill-slate-500' : 'fill-emerald-600'} />
+                    <AlertCircle size={12} className={resident.status === 'Deceased' ? 'fill-red-600' : resident.status === 'Inactive' ? 'fill-slate-500' : 'fill-emerald-600'} />
                     {resident.status || 'Active'}
                   </span>
                   <span className="px-2.5 py-1 bg-amber-50 text-amber-600 border border-amber-100 rounded-full text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 shadow-sm">
@@ -1101,7 +1103,7 @@ const ResidentDetailPage = () => {
                 <div className="space-y-2 lg:col-span-2 border-l border-slate-100 pl-4">
                   <div className="flex items-center gap-2">
                     <div className="w-5 h-5 rounded bg-rose-50 flex items-center justify-center text-rose-500 border border-rose-100 shadow-sm">
-                      <Heart size={12} />
+                      <Siren size={12} />
                     </div>
                     <div>
                       <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-0.5">Emergency Contact</p>
