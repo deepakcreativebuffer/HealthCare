@@ -100,10 +100,9 @@ const AdmitResidentModal = ({ isOpen, onClose, onResidentAdmitted, editData = nu
       if (response.success) {
         onResidentAdmitted(response.data);
         onClose();
-        alert(editData ? "Profile updated successfully!" : "Resident admitted successfully!");
       }
     } catch (error) {
-      alert(editData ? "Failed to update profile" : "Failed to admit resident");
+      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -125,7 +124,7 @@ const AdmitResidentModal = ({ isOpen, onClose, onResidentAdmitted, editData = nu
             </div>
             <div>
               <h2 className="text-lg font-bold text-slate-800">
-                {editData ? 'Update Resident Profile' : 'Admit New Resident'}
+                {editData ? 'Update Resident' : 'Add Resident'}
               </h2>
               <p className="text-[10px] font-bold text-slate-400 uppercase  mt-0.5">
                 {editData ? `Editing Profile: ${editData.id}` : 'General Information & Clinical Intake'}

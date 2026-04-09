@@ -852,7 +852,7 @@ const ResidentDetailPage = () => {
         {/* Back Button */}
         <div className="flex items-center gap-2 mb-1">
           <button
-            onClick={() => navigate("/admin")}
+            onClick={() => navigate("/admin?view=residents")}
             className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-500 hover:text-blue-600 transition-all shadow-sm group"
           >
             <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
