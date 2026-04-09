@@ -22,7 +22,7 @@ export const api = {
   // Authentication
   login: async (email, password) => {
     // Admin check
-    if (email === 'admin@care.com' && password === 'admin123') {
+    if (email === 'admin@care.com' && password === 'Admin@123') {
       const user = { id: 'admin', name: 'Admin User', role: 'admin', email: 'admin' };
       localStorage.setItem('user', JSON.stringify(user));
       return simulateAPI({ user });
