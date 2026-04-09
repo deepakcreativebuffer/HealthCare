@@ -40,6 +40,8 @@ import Navbar from "../layout/Navbar";
 import SubNav from "../layout/SubNav";
 import ECGReportModal from "./ECGReportModal";
 
+import AdmitResidentModal from "./AdmitResidentModal";
+
 const ResidentDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -47,6 +49,7 @@ const ResidentDetailPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [activeModal, setActiveModal] = useState(null); // { type: 'LIST' | 'FORM', section: 'Visits' | ... }
   const [isECGModalOpen, setIsECGModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const openModal = (section, type = 'LIST') => {
     setActiveModal({ section, type });
@@ -883,7 +886,6 @@ const ResidentDetailPage = () => {
       </div>
     );
   }
-
   return (
     <div className="min-h-screen flex flex-col font-sans">
       <main className="flex-1 overflow-y-auto p-2 lg:p-2 space-y-1.5">
@@ -901,7 +903,7 @@ const ResidentDetailPage = () => {
         </div>
 
         {/* Profile Card */}
-        <div onClick={() => openModal('Patient Info')} className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition-all group/profile relative">
+        <div onClick={() => setIsEditModalOpen(true)} className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition-all group/profile relative">
           <div className="p-2 md:p-2.5 flex flex-col md:flex-row gap-2.5 md:gap-4 pl-3">
             {/* Profile Sidebar */}
             <div className="flex flex-col items-center justify-center">
@@ -915,7 +917,7 @@ const ResidentDetailPage = () => {
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  openModal('Patient Info', 'FORM');
+                  setIsEditModalOpen(true);
                 }}
                 className="mt-1.5 flex items-center gap-1.5 px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-[10px] font-black uppercase tracking-tight hover:bg-blue-100 transition-colors"
               >
@@ -1999,6 +2001,17 @@ const ResidentDetailPage = () => {
         isOpen={isECGModalOpen}
         onClose={() => setIsECGModalOpen(false)}
         residentId={id}
+      />
+      
+      {/* Resident Edit Modal */}
+      <AdmitResidentModal 
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        onResidentAdmitted={() => {
+          fetchResident();
+          setIsEditModalOpen(false);
+        }}
+        editData={resident}
       />
     </div>
   );
