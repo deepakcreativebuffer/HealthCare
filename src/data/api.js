@@ -154,6 +154,64 @@ export const api = {
       ];
       needsUpdate = true;
     }
+    if (!resident.communication || resident.communication.length === 0) {
+      resident.communication = [
+        { id: 1, language: 'English', interpreter: 'Not Required', hearing: 'Impaired (Left)', vision: 'Normal', notes: 'Prefers written instructions' }
+      ];
+      needsUpdate = true;
+    }
+    if (!resident.mobility || resident.mobility.length === 0) {
+      resident.mobility = [
+        { id: 1, assist: 'One-Person', devices: 'Walker', fallRisk: 'High', status: 'Supervised' }
+      ];
+      needsUpdate = true;
+    }
+    if (!resident.nutrition || resident.nutrition.length === 0) {
+      resident.nutrition = [
+        { id: 1, diet: 'Mechanical Soft', fluids: 'Thin', intakeGoal: '1500ml/day', notes: 'Low sodium requirement' }
+      ];
+      needsUpdate = true;
+    }
+    if (!resident.safety || resident.safety.length === 0) {
+      resident.safety = [
+        { id: 1, security: 'Wander Guard Active', accessLevel: 'Family Only', protocol: 'Standard', notes: 'Check bracelet daily' }
+      ];
+      needsUpdate = true;
+    }
+    if (!resident.advanceDirectives || resident.advanceDirectives.length === 0) {
+      resident.advanceDirectives = [
+        { id: 1, dnrStatus: 'Active (DNR)', dniStatus: 'Active (DNI)', documentationDate: '02/20/2024', status: 'Verified' }
+      ];
+      needsUpdate = true;
+    }
+    if (!resident.auditTrail || resident.auditTrail.length === 0) {
+      resident.auditTrail = [
+        { id: 1, date: '11/20/2022', event: 'Record Access', text: 'EHR: Updated Diagnosis', user: 'Dr. Roberts' },
+        { id: 2, date: '11/15/2022', event: 'Insurance Check', text: 'Insurance: Verified Plan', user: 'Admin' }
+      ];
+      needsUpdate = true;
+    }
+    if (!resident.dischargeSummary || resident.dischargeSummary.length === 0) {
+      resident.dischargeSummary = [
+        { id: 1, status: 'Stable', instruction: 'Maintain light activity', followUp: '2 Weeks Out', date: '02/25/2024' }
+      ];
+      needsUpdate = true;
+    }
+    if (!resident.immunizations || resident.immunizations.length === 0) {
+      resident.immunizations = [
+        { id: 1, name: 'Influenza (Flu)', date: '10/12/2023', status: 'Up-to-date', provider: 'Monterey Clinic' },
+        { id: 2, name: 'Pneumococcal', date: '05/20/2022', status: 'Up-to-date', provider: 'General Hospital' }
+      ];
+      needsUpdate = true;
+    }
+    if (!resident.activities || resident.activities.length === 0) {
+      resident.activities = [
+        { id: 1, type: 'Medication', name: 'Lisinopril 20mg Admin.', date: '08:00 AM Today', status: 'Completed' },
+        { id: 2, type: 'Vitals', name: 'Morning Vitals Check', date: '07:30 AM Today', status: 'Completed' },
+        { id: 3, type: 'Social', name: 'Art Therapy Session', date: '02:00 PM Today', status: 'Pending' }
+      ];
+      needsUpdate = true;
+    }
 
     if (needsUpdate) {
       const updatedResidents = residents.map(r => r.id === resident.id ? resident : r);
@@ -161,6 +219,15 @@ export const api = {
     }
     
     return simulateAPI(resident);
+  },
+
+  updateResident: (residentId, updates) => {
+    const residents = getStoredData(KEYS.RESIDENTS, mockData.residents);
+    const updated = residents.map(r => 
+      r.id === residentId ? { ...r, ...updates } : r
+    );
+    setStoredData(KEYS.RESIDENTS, updated);
+    return simulateAPI({ success: true });
   },
 
   updateResidentSubData: (residentId, key, itemId, updates) => {

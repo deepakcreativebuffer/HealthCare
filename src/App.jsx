@@ -7,6 +7,7 @@ import {
   Navigate,
   useNavigate,
   useLocation,
+  useSearchParams,
   Link,
   Outlet
 } from "react-router-dom";
@@ -249,21 +250,48 @@ const AdminLayout = () => {
 
 // Admin Dashboard Component (Home view for /admin)
 const AdminHome = () => {
-  const [activeDetailView, setActiveDetailView] = useState(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const viewParam = searchParams.get('view');
+  
+  // Initialize state based on URL parameter
+  const [activeDetailView, setActiveDetailView] = useState(
+    viewParam === 'residents' ? 'Active Resident Records' : null
+  );
+
+  // Sync state if URL param changes
+  useEffect(() => {
+    if (viewParam === 'residents' && activeDetailView !== 'Active Resident Records') {
+      setActiveDetailView('Active Resident Records');
+    } else if (!viewParam && activeDetailView) {
+      setActiveDetailView(null);
+    }
+  }, [viewParam]);
+
+  const handleBack = () => {
+    setActiveDetailView(null);
+    setSearchParams({}); // Clear URL search params
+  };
+
+  const handleViewAll = (title) => {
+    setActiveDetailView(title);
+    if (title === 'Active Resident Records') {
+      setSearchParams({ view: 'residents' });
+    }
+  };
 
   if (activeDetailView) {
     return (
       <DetailedStatsView
         title={activeDetailView}
-        onBack={() => setActiveDetailView(null)}
+        onBack={handleBack}
       />
     );
   }
 
   return (
     <MedicalDashboard
-      onStatClick={setActiveDetailView}
-      onViewAll={setActiveDetailView}
+      onStatClick={handleViewAll}
+      onViewAll={handleViewAll}
     />
   );
 };

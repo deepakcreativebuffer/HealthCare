@@ -13,7 +13,7 @@ const ActionButton = ({ icon: Icon, onClick, color = 'blue' }) => {
       <button
         onClick={(e) => {
           e.stopPropagation();
-          onClick();
+          onClick(e);
         }}
         className={`p-2 rounded-lg transition-all border ${colorClasses[color] || colorClasses.blue}`}
       >
