@@ -98,9 +98,34 @@ export const api = {
         { id: "CLM-00121", patient: "William Anderson", payer: "BlueCross", submitted: "5 hours ago", status: "Pending" },
         { id: "CLM-00122", patient: "Elizabeth Thomas", payer: "Aetna", submitted: "1 day ago", status: "Rejected" },
       ],
+      payments: [
+        { id: "ERA-2024-001", payer: "Medicare", amount: "$4,500.00", date: "03/25/2024", type: "ERA", status: "Processed" },
+        { id: "CHK-100293", payer: "BlueCross", amount: "$1,200.00", date: "03/24/2024", type: "Check", status: "Matched" },
+        { id: "ERA-2024-002", payer: "Aetna", amount: "$3,850.00", date: "03/22/2024", type: "ERA", status: "Pending" },
+        { id: "ERA-2024-003", payer: "UnitedHealth", amount: "$2,100.00", date: "03/20/2024", type: "ERA", status: "Processed" },
+      ],
+      reportData: {
+        revenueByMonth: [
+          { month: "Sep", amount: 45000 },
+          { month: "Oct", amount: 42000 },
+          { month: "Nov", amount: 48000 },
+          { month: "Dec", amount: 51000 },
+          { month: "Jan", amount: 49000 },
+          { month: "Feb", amount: 55000 },
+        ],
+        payerDistribution: [
+          { name: "Medicare", value: 45 },
+          { name: "BlueCross", value: 25 },
+          { name: "Aetna", value: 15 },
+          { name: "UnitedHealth", value: 10 },
+          { name: "Others", value: 5 },
+        ],
+      },
       revenueTrend: {
         totalRevenue: "$152K",
         outstanding: "$24.3K",
+        totalTrend: "+12.5%",
+        outstandingTrend: "-2.4%",
       },
       statusBreakdown: [
         { label: "Paid", percentage: 65, color: "#10B981" },
@@ -136,8 +161,8 @@ export const api = {
     return simulateAPI(data);
   },
 
-  updateClaimStatus: (claimId, status) => {
-    return simulateAPI({ success: true });
+  updateClaimStatus: async (claimId, status) => {
+    return simulateAPI({ success: true, claimId, status });
   },
 
   getPTO: () => simulateAPI(mockData.ptoRequests),

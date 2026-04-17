@@ -12,23 +12,23 @@ import {
   ChevronDown,
 } from "lucide-react";
 
-const BillingSubnav = () => {
+const BillingSubnav = ({ activeBillingTab, setActiveBillingTab }) => {
   const secondaryTabs = [
-    { label: "Staff Schedule", icon: Users, active: false },
-    { label: "Notes Library", icon: BookOpen, active: false },
-    { label: "Measurable Goal", icon: Target, active: false },
-    { label: "Objective", icon: Crosshair, active: false },
-    { label: "Interventions", icon: HandHeart, active: false },
-    { label: "Activity Schedule", icon: Activity, active: false },
-    { label: "Special Notes", icon: FileText, active: false },
-    { label: "Employee", icon: UserCircle, active: false },
-    { label: "Residents", icon: Users, active: false },
+    { label: "Staff Schedule", icon: Users },
+    { label: "Notes Library", icon: BookOpen },
+    { label: "Measurable Goal", icon: Target },
+    { label: "Objective", icon: Crosshair },
+    { label: "Interventions", icon: HandHeart },
+    { label: "Activity Schedule", icon: Activity },
+    { label: "Special Notes", icon: FileText },
+    { label: "Employee", icon: UserCircle },
+    { label: "Residents", icon: Users },
   ];
 
   const billingTabs = [
-    { label: "Billing Dashboard", active: true },
-    { label: "Payments / ERA", active: false },
-    { label: "Reports", active: false },
+    { label: "Billing Dashboard" },
+    { label: "Payments / ERA" },
+    { label: "Reports" },
   ];
 
   return (
@@ -38,11 +38,7 @@ const BillingSubnav = () => {
         {secondaryTabs.map((tab) => (
           <button
             key={tab.label}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[12px] font-bold transition-all border border-transparent ${
-              tab.active
-                ? "bg-white text-blue-600 shadow-sm border-slate-100"
-                : "text-slate-400 hover:text-slate-600 hover:bg-white hover:border-slate-100"
-            }`}
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[12px] font-bold transition-all border border-transparent text-slate-400 hover:text-slate-600 hover:bg-white hover:border-slate-100 whitespace-nowrap"
           >
             <tab.icon size={16} />
             {tab.label}
@@ -57,8 +53,9 @@ const BillingSubnav = () => {
           {billingTabs.map((tab) => (
             <button
               key={tab.label}
+              onClick={() => setActiveBillingTab(tab.label)}
               className={`px-3 py-1.5 rounded-lg text-[12px] font-bold transition-all whitespace-nowrap ${
-                tab.active
+                activeBillingTab === tab.label
                   ? "bg-blue-600 text-white shadow-md shadow-blue-200"
                   : "text-slate-400 hover:text-slate-600"
               }`}
