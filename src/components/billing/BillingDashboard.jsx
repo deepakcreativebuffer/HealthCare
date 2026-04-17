@@ -293,13 +293,13 @@ const BillingDashboard = () => {
         className={`max-w-full mx-auto space-y-3 transition-opacity duration-300 ${refreshing ? "opacity-40" : "opacity-100"}`}
       >
         {/* Row 1: Billing-Specific Navigation & Filters */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
+        <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+          <div className="flex items-center gap-3 overflow-x-auto no-scrollbar pb-1 flex-nowrap">
             {billingTabs.map((tab) => (
               <button
                 key={tab.label}
                 onClick={() => setActiveBillingTab(tab.label)}
-                className={`px-3.5 py-1.5 rounded-lg text-[12px] font-bold transition-all flex items-center gap-1.5 border ${activeBillingTab === tab.label
+                className={`px-3.5 py-1.5 rounded-lg text-[12px] font-bold transition-all flex items-center gap-1.5 border whitespace-nowrap ${activeBillingTab === tab.label
                   ? "bg-[#129FED] text-white border-[#129FED] shadow-lg shadow-blue-100"
                   : "bg-white text-slate-500 border-slate-200 hover:bg-slate-50"
                   }`}
@@ -310,7 +310,7 @@ const BillingDashboard = () => {
             ))}
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <div className="relative">
               <div
                 onClick={() => {
@@ -414,7 +414,7 @@ const BillingDashboard = () => {
         </div>
 
         {/* Row 2: Top Metrics Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
           {metrics.map((stat, idx) => (
             <MetricCard
               key={idx}
@@ -603,13 +603,13 @@ const BillingDashboard = () => {
               id="claims-table-section"
               className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col"
             >
-              <div className="flex items-center justify-between px-6 border-b border-slate-100">
-                <div className="flex items-center gap-8">
+              <div className="flex items-center justify-between px-4 sm:px-6 border-b border-slate-100 overflow-x-auto no-scrollbar">
+                <div className="flex items-center gap-6 sm:gap-8 flex-nowrap">
                   {["Claims", "Submissions"].map((tab) => (
                     <button
                       key={tab}
                       onClick={() => setActiveTableTab(tab)}
-                      className={`py-2 text-[12px] font-bold transition-all relative ${activeTableTab === tab
+                      className={`py-3 text-[12px] font-bold transition-all relative whitespace-nowrap ${activeTableTab === tab
                         ? "text-[#129FED] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-[#129FED]"
                         : "text-slate-400 hover:text-slate-600"
                         }`}

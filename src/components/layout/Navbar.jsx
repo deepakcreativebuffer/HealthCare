@@ -15,11 +15,14 @@ import {
   History,
   UserPlus,
   Pencil,
+  Menu,
+  X,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = ({ activeTab, onTabChange }) => {
   const [isProfileOpen, setIsProfileOpen] = React.useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
   const navigate = useNavigate();
   const dropdownRef = React.useRef(null);
 
@@ -70,7 +73,7 @@ const Navbar = ({ activeTab, onTabChange }) => {
           </Link>
         </div>
 
-        {/* Main Navigation */}
+        {/* Main Navigation - Desktop */}
         <div className="hidden lg:flex items-center gap-2 overflow-x-auto no-scrollbar max-w-[40vw] xl:max-w-none">
           {navItems.map((item) => (
             <button
@@ -91,6 +94,16 @@ const Navbar = ({ activeTab, onTabChange }) => {
               {item.name}
             </button>
           ))}
+        </div>
+
+        {/* Mobile Menu Toggle */}
+        <div className="lg:hidden flex items-center">
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="p-2 text-slate-500 hover:bg-slate-50 rounded-lg transition-all"
+          >
+            {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
         </div>
       </div>
 
@@ -151,6 +164,29 @@ const Navbar = ({ activeTab, onTabChange }) => {
           )}
         </div>
       </div>
+      {/* Mobile Navigation Menu */}
+      {isMobileMenuOpen && (
+        <div className="absolute top-[60px] left-0 right-0 bg-white border-b border-slate-100 p-4 z-40 lg:hidden shadow-xl animate-in slide-in-from-top duration-200">
+          <div className="flex flex-col gap-2">
+            {navItems.map((item) => (
+              <button
+                key={item.name}
+                onClick={() => {
+                  onTabChange(item.name);
+                  setIsMobileMenuOpen(false);
+                }}
+                className={`w-full px-4 py-2.5 text-[14px] font-bold rounded-xl transition-all border flex items-center gap-3 ${activeTab === item.name
+                  ? "bg-[#E3F2FD] text-[#129FED] border-[#129FED]"
+                  : "bg-white text-slate-500 border-slate-100 hover:bg-slate-50"
+                  }`}
+              >
+                <item.icon size={18} strokeWidth={2.5} />
+                {item.name}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </nav>
   );
 };

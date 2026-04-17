@@ -239,7 +239,7 @@ const AdminLayout = () => {
             </div>
           </div>
         }>
-          <main className="flex-1 overflow-y-auto p-6 scroll-smooth custom-scrollbar">
+          <main className="flex-1 overflow-y-auto lg:p-6 scroll-smooth custom-scrollbar">
             <Outlet />
           </main>
         </Suspense>
@@ -252,7 +252,7 @@ const AdminLayout = () => {
 const AdminHome = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const viewParam = searchParams.get('view');
-  
+
   // Initialize state based on URL parameter
   const [activeDetailView, setActiveDetailView] = useState(
     viewParam === 'residents' ? 'Active Resident Records' : null

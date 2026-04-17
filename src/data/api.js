@@ -76,6 +76,76 @@ export const api = {
     return simulateAPI(stats);
   },
 
+  getBillingData: () => {
+    const data = {
+      metrics: [
+        { label: "Total Claims", value: "105", icon: "FileText", color: "green" },
+        { label: "Submitted Today", value: "14", icon: "FileUp", color: "blue" },
+        { label: "Pending Review", value: "12", icon: "Clock", color: "orange" },
+        { label: "Rejected", value: "3", icon: "AlertCircle", color: "red" },
+        { label: "Revenue MTD", value: "$64k", icon: "DollarSign", color: "blue" },
+        { label: "Avg Days", value: "18", icon: "Clock3", color: "green" },
+      ],
+      recentClaims: [
+        { id: "CLM-00123", patient: "Maria Johnson", payer: "Medicare", amount: "$1,250.00", status: "Submitted" },
+        { id: "CLM-00124", patient: "James Williams", payer: "BlueCross", amount: "$850.00", status: "Paid" },
+        { id: "CLM-00125", patient: "Sarah Miller", payer: "Aetna", amount: "$2,100.00", status: "Denied" },
+        { id: "CLM-00126", patient: "Robert Jones", payer: "Medicare", amount: "$1,500.00", status: "Pending" },
+        { id: "CLM-00127", patient: "Emily Davis", payer: "UnitedHealth", amount: "$980.00", status: "Submitted" },
+      ],
+      submissionHistory: [
+        { id: "CLM-00120", patient: "Barbara Taylor", payer: "Medicare", submitted: "2 hours ago", status: "Accepted" },
+        { id: "CLM-00121", patient: "William Anderson", payer: "BlueCross", submitted: "5 hours ago", status: "Pending" },
+        { id: "CLM-00122", patient: "Elizabeth Thomas", payer: "Aetna", submitted: "1 day ago", status: "Rejected" },
+      ],
+      revenueTrend: {
+        totalRevenue: "$152K",
+        outstanding: "$24.3K",
+      },
+      statusBreakdown: [
+        { label: "Paid", percentage: 65, color: "#10B981" },
+        { label: "Pending", percentage: 15, color: "#F59E0B" },
+        { label: "Denied", percentage: 12, color: "#EF4444" },
+        { label: "Rejected", percentage: 8, color: "#94A3B8" },
+      ],
+      provider: {
+        name: "Subodh Pal",
+        npi: "1234567890",
+        address: "742 Evergreen Terrace, Springfield",
+        phone: "(555) 123-4567",
+      },
+      locations: [
+        { name: "Main Facility", address: "123 Healthcare Blvd", npi: "9876543210", pos: "11" },
+        { name: "West Wing Clinic", address: "456 Wellness Way", npi: "8765432109", pos: "11" },
+      ],
+      encounter: {
+        patient: "Maria Johnson",
+        provider: "Dr. Emily Roberts",
+        facility: "Main Facility",
+        dos: "03/28/2024",
+        diagnoses: [
+          { code: "I10", description: "Essential hypertension" },
+          { code: "E11.9", description: "Type 2 diabetes mellitus" },
+        ],
+        procedures: [
+          { code: "99214", qty: 1, amount: "$150.00" },
+          { code: "80053", qty: 1, amount: "$45.00" },
+        ],
+      },
+    };
+    return simulateAPI(data);
+  },
+
+  updateClaimStatus: (claimId, status) => {
+    return simulateAPI({ success: true });
+  },
+
+  getPTO: () => simulateAPI(mockData.ptoRequests),
+
+  getSickLeave: () => simulateAPI(mockData.sickLeave),
+
+  getAppointments: () => simulateAPI(mockData.appointments),
+
   addActivity: (action, category, user = 'Admin') => {
     const logs = getStoredData(KEYS.LOGS, mockData.activityLogs);
     const newLog = { 
@@ -380,5 +450,12 @@ export const api = {
     residents.push(newResident);
     setStoredData(KEYS.RESIDENTS, residents);
     return simulateAPI(newResident);
+  },
+
+  deleteResident: (id) => {
+    const residents = getStoredData(KEYS.RESIDENTS, mockData.residents);
+    const updated = residents.filter(r => r.id !== id);
+    setStoredData(KEYS.RESIDENTS, updated);
+    return simulateAPI({ success: true });
   }
 };

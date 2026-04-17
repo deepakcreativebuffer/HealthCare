@@ -51,13 +51,13 @@ const BillingSubnav = () => {
       </div>
 
       {/* Billing Context Header */}
-      <div className="flex items-center justify-between pb-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 gap-4">
         {/* Billing Tabs */}
-        <div className="flex items-center gap-2 bg-slate-100/50 p-1 rounded-xl border border-slate-100">
+        <div className="flex items-center gap-2 bg-slate-100/50 p-1 rounded-xl border border-slate-100 overflow-x-auto no-scrollbar max-w-full">
           {billingTabs.map((tab) => (
             <button
               key={tab.label}
-              className={`px-3 py-1.5 rounded-lg text-[12px] font-bold transition-all ${
+              className={`px-3 py-1.5 rounded-lg text-[12px] font-bold transition-all whitespace-nowrap ${
                 tab.active
                   ? "bg-blue-600 text-white shadow-md shadow-blue-200"
                   : "text-slate-400 hover:text-slate-600"
@@ -69,15 +69,15 @@ const BillingSubnav = () => {
         </div>
 
         {/* Filters */}
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-slate-100 shadow-sm">
+        <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto no-scrollbar flex-nowrap pb-1">
+          <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-slate-100 shadow-sm whitespace-nowrap">
             <Calendar size={14} className="text-slate-400" />
             <span className="text-[12px] font-bold text-slate-700">
               Sep 1, 2025 - Feb 28, 2025
             </span>
           </div>
 
-          <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-slate-100 shadow-sm cursor-pointer hover:bg-slate-50 transition-all">
+          <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-slate-100 shadow-sm cursor-pointer hover:bg-slate-50 transition-all whitespace-nowrap">
             <span className="text-[12px] font-bold text-slate-700">
               Last 6 months
             </span>

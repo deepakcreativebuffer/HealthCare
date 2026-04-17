@@ -10,9 +10,12 @@ import {
   FileText,
   Activity,
   UserCircle,
+  Menu,
+  X,
 } from "lucide-react";
 
 const BillingNavbar = () => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
   const tabs = [
     { label: "Dashboard", icon: LayoutDashboard, active: false },
     { label: "Billing & Claims", icon: Receipt, active: true },
@@ -35,20 +38,30 @@ const BillingNavbar = () => {
           </span>
         </div>
 
-        {/* Main Tabs */}
-        <div className="flex items-center gap-2">
+        {/* Main Tabs - Desktop */}
+        <div className="hidden lg:flex items-center gap-2">
           {tabs.map((tab) => (
             <button
               key={tab.label}
               className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-bold transition-all border ${tab.active
-                  ? "bg-blue-600 text-white shadow-lg shadow-blue-100 border-blue-600"
-                  : "text-slate-400 hover:text-slate-600 hover:bg-slate-50 border-transparent"
+                ? "bg-blue-600 text-white shadow-lg shadow-blue-100 border-blue-600"
+                : "text-slate-400 hover:text-slate-600 hover:bg-slate-50 border-transparent"
                 }`}
             >
               <tab.icon size={16} />
               {tab.label}
             </button>
           ))}
+        </div>
+
+        {/* Mobile Toggle */}
+        <div className="lg:hidden flex items-center">
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="p-1.5 text-slate-500 hover:bg-slate-50 rounded-lg transition-all"
+          >
+            {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
         </div>
       </div>
 
@@ -80,6 +93,25 @@ const BillingNavbar = () => {
           <ChevronDown size={14} className="text-slate-400" />
         </div>
       </div>
+      {/* Mobile Navigation Menu */}
+      {isMobileMenuOpen && (
+        <div className="absolute top-14 left-0 right-0 bg-white border-b border-slate-100 p-4 z-40 lg:hidden shadow-xl animate-in slide-in-from-top duration-200">
+          <div className="flex flex-col gap-2">
+            {tabs.map((tab) => (
+              <button
+                key={tab.label}
+                className={`w-full px-4 py-3 text-[14px] font-bold rounded-xl transition-all border flex items-center gap-3 ${tab.active
+                  ? "bg-blue-600 text-white border-blue-600 shadow-lg shadow-blue-100"
+                  : "bg-white text-slate-500 border-slate-100 hover:bg-slate-50"
+                  }`}
+              >
+                <tab.icon size={18} />
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </nav>
   );
 };
