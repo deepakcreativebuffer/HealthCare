@@ -14,7 +14,12 @@ import {
   Search,
   ClipboardList,
   Sparkles,
+  AlertCircle,
+  Code,
+  FileSearch,
 } from "lucide-react";
+import CMS1500Preview from "./CMS1500Preview";
+import { ediEngine } from "../../utils/ediEngine";
 import ClaimWorkspaceSidebar from "./ClaimWorkspaceSidebar";
 import PatientSnapshot from "./tabs/PatientSnapshot";
 import InsuranceSubscriberTab from "./tabs/InsuranceSubscriberTab";
@@ -24,6 +29,7 @@ import DiagnosisTab from "./tabs/DiagnosisTab";
 import ProceduresTab from "./tabs/ProceduresTab";
 import ClaimDetailsTab from "./tabs/ClaimDetailsTab";
 import AuditComplianceTab from "./tabs/AuditComplianceTab";
+import { billingData } from "../../data/billingData";
 
 const tabs = [
   { id: "Patient Snapshot", label: "Patient", icon: UserCircle },
@@ -34,17 +40,62 @@ const tabs = [
   { id: "Procedures / Charges", label: "Procedures", icon: FileText },
   { id: "Claim Details", label: "Details", icon: ClipboardList },
   { id: "Audit & Compliance", label: "Audit", icon: Search },
+  { id: "CMS-1500 Preview", label: "Form View", icon: FileSearch },
+  { id: "EDI View", label: "837P EDI", icon: Code },
 ];
 
 const ClaimWorkspaceModal = ({ isOpen, onClose, claimId }) => {
   const [activeTab, setActiveTab] = useState("Patient Snapshot");
+  const [validating, setValidating] = useState(false);
+  const [validationErrors, setValidationErrors] = useState([]);
+  const [isValidated, setIsValidated] = useState(false);
+  const [ediRaw, setEdiRaw] = useState("");
+
+  const handleValidate = () => {
+    setValidating(true);
+    setValidationErrors([]);
+    
+    // Simulate complex validation logic
+    // Phase 1 Integration: Real-time EDI Serialization
+    setTimeout(() => {
+      const { patientSnapshot } = billingData;
+      
+      // 1. Assemble Claim Model (Layer 2)
+      const provider = { name: patientSnapshot.providers.billing.name, npi: patientSnapshot.providers.billing.npi, address: patientSnapshot.providers.facility.address };
+      const patient = { name: patientSnapshot.name, payer: patientSnapshot.payer };
+      const encounter = { 
+        dos: patientSnapshot.visitEncounter.dosFrom, 
+        diagnoses: patientSnapshot.diagnosisSection, 
+        procedures: patientSnapshot.proceduresSection.map(p => ({ code: p.cpt, qty: p.units, amount: `$${p.charge}` })) 
+      };
+      
+      const claimModel = ediEngine.assembleClaim(encounter, provider, patient);
+
+      // 2. Run Validation Engine (Layer 3)
+      const validation = ediEngine.validateClaim(claimModel);
+      
+      // 3. Generate EDI 837P (Layer 4)
+      if (validation.isValid) {
+        const rawEdi = ediEngine.serialize837P(claimModel);
+        setEdiRaw(rawEdi);
+      }
+
+      setValidationErrors(validation.errors.map(e => e.message));
+      setValidating(false);
+      setIsValidated(true);
+      
+      if (validation.isValid) {
+        alert("Claim Validation Passed! ANSI X12 837P Segments Generated.");
+      }
+    }, 1200);
+  };
 
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center sm:p-4 antialiased selection:bg-blue-100 p-0">
       {/* Backdrop */}
-      <divStatus
+      <div
         className="absolute inset-0 bg-slate-900/10 backdrop-blur-[2px] animate-in fade-in duration-500"
         onClick={onClose}
       />
@@ -99,10 +150,25 @@ const ClaimWorkspaceModal = ({ isOpen, onClose, claimId }) => {
               </div>
 
               <div className="flex items-center gap-2">
-                <button className="h-9 px-4 rounded-lg border border-slate-300 text-slate-500 font-bold text-[12px] hover:bg-slate-50 transition-all">
-                  Snapshot
+                {validationErrors.length > 0 && (
+                   <div className="flex items-center gap-2 mr-4 bg-red-50 px-3 py-1.5 rounded-lg border border-red-100 animate-in slide-in-from-right-2">
+                     <AlertCircle size={14} className="text-red-500" />
+                     <span className="text-[11px] font-bold text-red-600 uppercase">{validationErrors.length} Errors Found</span>
+                   </div>
+                )}
+                <button 
+                  onClick={handleValidate}
+                  disabled={validating}
+                  className={`h-9 px-4 rounded-lg border font-bold text-[12px] transition-all flex items-center gap-2 ${validating ? 'bg-slate-50 text-slate-400' : 'border-slate-300 text-slate-600 hover:bg-slate-50'}`}
+                >
+                  {validating ? (
+                    <div className="w-3 h-3 border-2 border-slate-300 border-t-slate-500 rounded-full animate-spin" />
+                  ) : (
+                    <Activity size={14} />
+                  )}
+                  Run Validation
                 </button>
-                <button className="h-9 px-5 rounded-lg bg-[#129FED] text-white font-bold text-[12px] shadow-sm hover:bg-[#0089d8] transition-all flex items-center gap-2">
+                <button className={`h-9 px-5 rounded-lg font-bold text-[12px] shadow-sm transition-all flex items-center gap-2 ${isValidated && validationErrors.length === 0 ? 'bg-blue-600 text-white hover:bg-[#0089d8]' : 'bg-slate-100 text-slate-400 cursor-not-allowed'}`}>
                   <CheckCircle2 size={14} />
                   Finish
                 </button>
@@ -154,6 +220,22 @@ const ClaimWorkspaceModal = ({ isOpen, onClose, claimId }) => {
                     {activeTab === "Procedures / Charges" && <ProceduresTab />}
                     {activeTab === "Claim Details" && <ClaimDetailsTab />}
                     {activeTab === "Audit & Compliance" && <AuditComplianceTab />}
+                    {activeTab === "CMS-1500 Preview" && (
+                      <CMS1500Preview claimData={{ patient: billingData.patientSnapshot.name }} />
+                    )}
+                    {activeTab === "EDI View" && (
+                      <div className="p-8 bg-slate-900 h-full overflow-auto">
+                        <div className="flex items-center justify-between mb-4">
+                          <h3 className="text-emerald-400 font-mono text-[14px]">837P Professional Claim - ANSI X12 5010</h3>
+                          <button className="text-[10px] bg-white/10 text-white px-3 py-1 rounded border border-white/10 hover:bg-white/20">
+                            Copy to Clipboard
+                          </button>
+                        </div>
+                        <pre className="text-emerald-300 font-mono text-[12px] leading-relaxed selection:bg-emerald-500/30">
+                          {ediRaw || "// Run validation to generate EDI segments..."}
+                        </pre>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

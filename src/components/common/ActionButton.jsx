@@ -17,9 +17,9 @@ const ActionButton = ({ icon: Icon, onClick, color = 'blue' }) => {
         }}
         className={`p-2 rounded-lg transition-all border ${colorClasses[color] || colorClasses.blue}`}
       >
-        <Icon size={18} />
+        <Icon size={14} />
       </button>
-   
+
     </div>
   );
 };

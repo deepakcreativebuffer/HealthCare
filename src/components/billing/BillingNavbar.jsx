@@ -43,6 +43,7 @@ const BillingNavbar = () => {
           {tabs.map((tab) => (
             <button
               key={tab.label}
+              onClick={() => alert(`Navigating to ${tab.label} Section...`)}
               className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-bold transition-all border ${tab.active
                 ? "bg-blue-600 text-white shadow-lg shadow-blue-100 border-blue-600"
                 : "text-slate-400 hover:text-slate-600 hover:bg-slate-50 border-transparent"
@@ -67,10 +68,16 @@ const BillingNavbar = () => {
 
       {/* Right Actions */}
       <div className="flex items-center gap-4">
-        <button className="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:bg-slate-50 transition-colors border border-slate-100">
+        <button 
+          onClick={() => alert("Global Search Activated...")}
+          className="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:bg-slate-50 transition-colors border border-slate-100"
+        >
           <Search size={16} />
         </button>
-        <button className="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:bg-slate-50 transition-colors relative border border-slate-100">
+        <button 
+          onClick={() => alert("Viewing 3 New Billing Notifications...")}
+          className="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:bg-slate-50 transition-colors relative border border-slate-100"
+        >
           <Bell size={16} />
           <span className="absolute top-1.5 right-2 w-1.5 h-1.5 bg-red-500 rounded-full border-2 border-white" />
         </button>
@@ -85,12 +92,15 @@ const BillingNavbar = () => {
               Admin
             </span>
           </div>
-          <div className="relative group/profile cursor-pointer">
+          <div 
+            onClick={() => alert("Opening User Profile & Settings...")}
+            className="relative group/profile cursor-pointer"
+          >
             <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center overflow-hidden border-2 border-white shadow-sm">
               <UserCircle size={20} className="text-slate-400" />
             </div>
           </div>
-          <ChevronDown size={14} className="text-slate-400" />
+          <ChevronDown size={14} className="text-slate-400 cursor-pointer" onClick={() => alert("Opening Account Switcher...")} />
         </div>
       </div>
       {/* Mobile Navigation Menu */}

@@ -37,6 +37,7 @@ import {
   Scissors,
   Circle,
   Siren,
+  FileCode,
 } from "lucide-react";
 import { api } from "../../data/api";
 import Navbar from "../layout/Navbar";
@@ -44,6 +45,8 @@ import SubNav from "../layout/SubNav";
 import ECGReportModal from "./ECGReportModal";
 
 import AdmitResidentModal from "./AdmitResidentModal";
+import EDIResponseModal from "../billing/EDIResponseModal";
+import DenialAppealWizard from "../billing/tabs/DenialAppealWizard";
 
 const ResidentDetailPage = () => {
   const { id } = useParams();
@@ -53,6 +56,8 @@ const ResidentDetailPage = () => {
   const [activeModal, setActiveModal] = useState(null); // { type: 'LIST' | 'FORM', section: 'Visits' | ... }
   const [isECGModalOpen, setIsECGModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [ediModalState, setEdiModalState] = useState({ isOpen: false, batchId: '', type: '', status: '' });
+  const [activeDenial, setActiveDenial] = useState(null);
   const latestVisit = resident?.visits?.[0] || {};
 
   const openModal = (section, type = 'LIST') => {
@@ -827,68 +832,128 @@ const ResidentDetailPage = () => {
               </button>
             </div>
           )}
-
-          <div className="overflow-auto border border-slate-100 rounded-xl flex-1 bg-white">
-            <table className="w-full text-left border-collapse table-fixed">
-              <thead className="sticky top-0 z-10 bg-slate-50 shadow-sm">
-                <tr>
-                  {headers.map((h, i) => (
-                    <th key={i} className="px-4 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                      {h.replace(/([A-Z])/g, ' $1')}
-                    </th>
-                  ))}
-                  <th className="px-4 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right w-24">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-50">
-                {data.length > 0 ? (
-                  data.map((item, idx) => (
-                    <tr key={idx} className="group hover:bg-blue-50/30 transition-colors">
-                      {headers.map((h, i) => (
-                        <td key={i} className="px-4 py-3 text-[11px] font-bold text-slate-700 truncate">
-                          {item[h] || '-'}
+           <div className="overflow-auto border border-slate-100 rounded-xl flex-1 bg-white">
+            {section === 'Billing' ? (
+              <div className="p-0">
+                <table className="w-full text-left border-collapse table-fixed">
+                  <thead className="sticky top-0 z-10 bg-slate-50 shadow-sm">
+                    <tr>
+                      <th className="px-4 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest w-24">Date</th>
+                      <th className="px-4 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">Invoice / Service</th>
+                      <th className="px-4 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">Payer</th>
+                      <th className="px-4 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Charges</th>
+                      <th className="px-4 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Balance</th>
+                      <th className="px-4 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center w-40">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-50">
+                    {resident.billingRecords?.map((bill, idx) => (
+                      <tr key={idx} className="group hover:bg-blue-50/30 transition-colors">
+                        <td className="px-4 py-3 text-[11px] font-bold text-slate-600">{bill.serviceDate}</td>
+                        <td className="px-4 py-3">
+                          <p className="text-[11px] font-black text-blue-600">{bill.invoiceNumber}</p>
+                          <p className="text-[9px] font-bold text-slate-400 uppercase">Primary Care Visit</p>
                         </td>
-                      ))}
-                      <td className="px-4 py-3 text-right">
-                        <div className="flex justify-end gap-1.5  transition-opacity">
-                          {(section === 'Lab' || section === 'Documents' || section === 'Visits') && (
-                            <button
-                              onClick={(e) => { e.stopPropagation(); alert('Downloading report...'); }}
-                              className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-emerald-600 hover:border-emerald-200 transition-all"
-                              title="Download PDF"
+                        <td className="px-4 py-3 text-[11px] font-bold text-slate-700">{resident.insurance?.plan || 'Medicare'}</td>
+                        <td className="px-4 py-3 text-[11px] font-black text-slate-900 text-right">{bill.charges || '$145.00'}</td>
+                        <td className="px-4 py-3 text-right">
+                          <span className={`text-[11px] font-black ${parseFloat(bill.balance?.replace('$', '') || 0) > 0 ? 'text-red-600' : 'text-emerald-600'}`}>
+                            {bill.balance}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="flex justify-center gap-1.5">
+                            <button 
+                              onClick={() => setEdiModalState({ isOpen: true, batchId: bill.invoiceNumber, type: '277CA Acknowledgment', status: 'Accepted' })}
+                              className="p-1.5 rounded-lg bg-slate-50 border border-slate-200 text-slate-400 hover:text-blue-600 hover:border-blue-200 transition-all"
+                              title="View EDI Acknowledgment"
                             >
-                              <DownloadIcon size={14} />
+                              <FileCode size={14} />
                             </button>
-                          )}
-                          <button
-                            onClick={() => setActiveModal({ section, type: 'FORM', editItem: item })}
-                            className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-blue-600 hover:border-blue-200 transition-all"
-                          >
-                            <Edit size={14} />
-                          </button>
-                          <button
-                            onClick={() => handleDelete(section, item.id)}
-                            className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-red-600 hover:border-red-200 transition-all"
-                          >
-                            <Trash2 size={14} />
-                          </button>
+                            <button 
+                              onClick={() => alert(`Recording adjustment for ${bill.invoiceNumber}...`)}
+                              className="p-1.5 rounded-lg bg-slate-50 border border-slate-200 text-slate-400 hover:text-amber-600 hover:border-amber-200 transition-all"
+                              title="Record Adjustment"
+                            >
+                              <DollarSign size={14} />
+                            </button>
+                            <button 
+                              onClick={() => setActiveDenial({ id: bill.invoiceNumber, amount: bill.balance, reason: 'Duplicate Claim' })}
+                              className="p-1.5 rounded-lg bg-slate-50 border border-slate-200 text-slate-400 hover:text-red-600 hover:border-red-200 transition-all"
+                              title="Appeal Denial"
+                            >
+                              <AlertTriangle size={14} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <table className="w-full text-left border-collapse table-fixed">
+                <thead className="sticky top-0 z-10 bg-slate-50 shadow-sm">
+                  <tr>
+                    {headers.map((h, i) => (
+                      <th key={i} className="px-4 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        {h.replace(/([A-Z])/g, ' $1')}
+                      </th>
+                    ))}
+                    <th className="px-4 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right w-24">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-50">
+                  {data.length > 0 ? (
+                    data.map((item, idx) => (
+                      <tr key={idx} className="group hover:bg-blue-50/30 transition-colors">
+                        {headers.map((h, i) => (
+                          <td key={i} className="px-4 py-3 text-[11px] font-bold text-slate-700 truncate">
+                            {item[h] || '-'}
+                          </td>
+                        ))}
+                        <td className="px-4 py-3 text-right">
+                          <div className="flex justify-end gap-1.5  transition-opacity">
+                            {(section === 'Lab' || section === 'Documents' || section === 'Visits') && (
+                              <button
+                                onClick={(e) => { e.stopPropagation(); alert('Downloading report...'); }}
+                                className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-emerald-600 hover:border-emerald-200 transition-all"
+                                title="Download PDF"
+                              >
+                                <DownloadIcon size={14} />
+                              </button>
+                            )}
+                            <button
+                              onClick={() => setActiveModal({ section, type: 'FORM', editItem: item })}
+                              className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-blue-600 hover:border-blue-200 transition-all"
+                            >
+                              <Edit size={14} />
+                            </button>
+                            <button
+                              onClick={() => handleDelete(section, item.id)}
+                              className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-red-600 hover:border-red-200 transition-all"
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={headers.length + 1} className="px-4 py-16 text-center text-slate-300">
+                        <div className="flex flex-col items-center gap-2">
+                          <Clipboard size={48} className="opacity-20" />
+                          <p className="font-black uppercase tracking-widest text-xs">No records found</p>
                         </div>
                       </td>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={headers.length + 1} className="px-4 py-16 text-center text-slate-300">
-                      <div className="flex flex-col items-center gap-2">
-                        <Clipboard size={48} className="opacity-20" />
-                        <p className="font-black uppercase tracking-widest text-xs">No records found</p>
-                      </div>
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+                  )}
+                </tbody>
+              </table>
+            )}
           </div>
+
         </div>
       </div>
     );
@@ -1987,6 +2052,26 @@ const ResidentDetailPage = () => {
         }}
         editData={resident}
       />
+
+      <EDIResponseModal 
+        isOpen={ediModalState.isOpen}
+        onClose={() => setEdiModalState({ ...ediModalState, isOpen: false })}
+        batchId={ediModalState.batchId}
+        type={ediModalState.type}
+        status={ediModalState.status}
+      />
+
+      {activeDenial && (
+        <DenialAppealWizard 
+          isOpen={!!activeDenial}
+          onClose={() => setActiveDenial(null)}
+          denial={activeDenial}
+          onComplete={(res) => {
+            alert("Appeal Processed Successfully!");
+            setActiveDenial(null);
+          }}
+        />
+      )}
     </div>
   );
 };

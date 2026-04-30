@@ -119,6 +119,22 @@ export const billingData = {
         address: 'Miami, FL 33101'
       }
     },
+    secondaryInsurance: {
+      insuranceType: 'Secondary',
+      primaryPayer: 'Aetna Better Health',
+      payerId: 'AET-9900',
+      policyId: 'XYZ987654321',
+      groupNumber: 'SEC-1122',
+      planType: 'Managed Care',
+      effectiveDate: '01/01/2024',
+      subscriber: {
+        firstName: 'David',
+        lastName: 'Smith',
+        relationship: 'Self',
+        dob: '02/15/1992',
+        address: 'Miami, FL 33101'
+      }
+    },
     providers: {
       billing: {
         name: 'Health',
@@ -164,5 +180,95 @@ export const billingData = {
       submissionTimestamp: '-------------',
       lastModifiedBy: 'System (Auto)'
     }
-  }
+  },
+
+  // Lookup Tables for auto-complete and validation
+  feeScheduleTable: [
+    { cpt: '90837', description: 'Psychotherapy, 60 minutes', price: 200.00 },
+    { cpt: '99213', description: 'Office visit, established patient, level 3', price: 150.00 },
+    { cpt: '99214', description: 'Office visit, established patient, level 4', price: 185.00 },
+    { cpt: '90791', description: 'Psychiatric diagnostic evaluation', price: 250.00 },
+    { cpt: '90834', description: 'Psychotherapy, 45 minutes', price: 165.00 },
+  ],
+
+  icd10Codes: [
+    { code: 'F32.9', description: 'Major depressive disorder, unspecified' },
+    { code: 'E11.9', description: 'Type 2 diabetes mellitus without complications' },
+    { code: 'F41.1', description: 'Generalized anxiety disorder' },
+    { code: 'F10.20', description: 'Alcohol dependence, uncomplicated' },
+    { code: 'I10', description: 'Essential (primary) hypertension' },
+  ],
+
+  cptCodes: [
+    { code: '90837', description: 'Psychotherapy, 60 min' },
+    { code: '99213', description: 'Office visit, 15 min' },
+    { code: '99214', description: 'Office visit, 25 min' },
+    { code: '90791', description: 'Psych assessment' },
+    { code: '90834', description: 'Psychotherapy, 45 min' },
+  ],
+
+  // Phase 3: Payment & Accounting
+  eraData: [
+    { 
+      id: 'ERA-1001', 
+      claimId: 'CLM-00122', 
+      payer: 'Aetna PPO', 
+      billed: 350.00, 
+      allowed: 280.00, 
+      paid: 240.00, 
+      contractualAdjustment: 70.00, 
+      patientResp: 40.00,
+      remark: 'Claim processed according to contract' 
+    },
+    { 
+      id: 'ERA-1002', 
+      claimId: 'CLM-00119', 
+      payer: 'Medicare', 
+      billed: 350.00, 
+      allowed: 180.00, 
+      paid: 144.00, 
+      contractualAdjustment: 170.00, 
+      patientResp: 36.00,
+      remark: 'Co-insurance applied' 
+    }
+  ],
+
+  patientAccounting: [
+    { 
+      patientId: 'PT-001', 
+      name: 'David Smith', 
+      billed: 350.00, 
+      insurancePaid: 240.00, 
+      writeOffs: 70.00, 
+      balance: 40.00, 
+      status: 'Statement Sent',
+      lastPayment: '02/01/2025'
+    },
+    { 
+      patientId: 'PT-002', 
+      name: 'Maria Santos', 
+      billed: 500.00, 
+      insurancePaid: 350.00, 
+      writeOffs: 100.00, 
+      balance: 50.00, 
+      status: 'Paid',
+      lastPayment: '02/10/2025'
+    }
+  ],
+
+  // Phase 4: Follow-up & Resolution
+  arAging: {
+    buckets: [
+      { range: '0-30 Days', amount: 45000, color: '#10b981' },
+      { range: '31-60 Days', amount: 15200, color: '#3b82f6' },
+      { range: '61-90 Days', amount: 8400, color: '#f59e0b' },
+      { range: '90+ Days', amount: 12500, color: '#ef4444' }
+    ],
+    totalOutstanding: 81100
+  },
+
+  writeOffsHistory: [
+    { id: 'WO-001', claimId: 'CLM-00121', amount: 350.00, reason: 'Untimely Filing', date: '02/15/2025', user: 'Admin' },
+    { id: 'WO-002', claimId: 'CLM-00110', amount: 120.00, reason: 'Contractual Adjustment Adjustment', date: '02/14/2025', user: 'Billing Specialist' }
+  ]
 };

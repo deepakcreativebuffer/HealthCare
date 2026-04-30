@@ -413,6 +413,83 @@ const Dashboard = () => {
                   <Button className="w-full mt-6" onClick={closeModal}>Acknowledge</Button>
                </div>
             );
+         case 'VIEW_STATEMENT':
+            return (
+               <div className="space-y-4">
+                  <div className="p-6 bg-white border border-gray-200 rounded-xl shadow-inner max-h-[70vh] overflow-y-auto custom-scrollbar font-sans">
+                     <div className="flex justify-between items-start border-b-2 border-gray-900 pb-4 mb-4">
+                        <div>
+                           <h2 className="text-xl font-black text-gray-900 uppercase">OFFICIAL STATEMENT</h2>
+                           <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">HealthCare Systems Inc.</p>
+                        </div>
+                        <div className="text-right">
+                           <p className="text-[10px] font-black text-gray-400 uppercase">Invoice #</p>
+                           <p className="text-sm font-black text-blue-600">{data?.id}</p>
+                        </div>
+                     </div>
+
+                     <div className="grid grid-cols-2 gap-8 mb-6">
+                        <div>
+                           <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Bill To</p>
+                           <p className="text-[11px] font-bold text-gray-800">{m.name}</p>
+                           <p className="text-[10px] text-gray-500">{m.address}</p>
+                           <p className="text-[10px] text-gray-500">Patient ID: {m.id}</p>
+                        </div>
+                        <div className="text-right">
+                           <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Statement Date</p>
+                           <p className="text-[11px] font-bold text-gray-800">{data?.date}</p>
+                           <p className="text-[9px] font-black text-rose-500 uppercase mt-2">Due Date</p>
+                           <p className="text-[11px] font-bold text-rose-600">Within 15 Days</p>
+                        </div>
+                     </div>
+
+                     <table className="w-full text-left text-[11px] mb-8">
+                        <thead className="bg-gray-900 text-white font-bold uppercase text-[9px]">
+                           <tr>
+                              <th className="py-2 px-3">Service Code</th>
+                              <th className="py-2 px-3">Description</th>
+                              <th className="py-2 px-3 text-right">Charge</th>
+                           </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100">
+                           <tr>
+                              <td className="py-3 px-3 font-bold text-gray-600">99214</td>
+                              <td className="py-3 px-3">
+                                 <p className="font-bold text-gray-800">Office Visit, Established Patient</p>
+                                 <p className="text-[9px] text-gray-400">Moderate complexity, 30-39 minutes</p>
+                              </td>
+                              <td className="py-3 px-3 text-right font-black">${(data?.amount || 0).toFixed(2)}</td>
+                           </tr>
+                           <tr className="bg-gray-50/50">
+                              <td className="py-3 px-3 font-bold text-gray-600">80053</td>
+                              <td className="py-3 px-3">
+                                 <p className="font-bold text-gray-800">Comprehensive Metabolic Panel</p>
+                                 <p className="text-[9px] text-gray-400">Blood chemistry screening</p>
+                              </td>
+                              <td className="py-3 px-3 text-right font-black">$0.00 <span className="text-[8px] text-emerald-500">(INSURED)</span></td>
+                           </tr>
+                        </tbody>
+                        <tfoot>
+                           <tr className="border-t-2 border-gray-900">
+                              <td colSpan="2" className="py-4 text-right font-black text-gray-400 uppercase tracking-widest">Total Patient Responsibility</td>
+                              <td className="py-4 text-right font-black text-[14px] text-gray-900">${(data?.amount || 0).toFixed(2)}</td>
+                           </tr>
+                        </tfoot>
+                     </table>
+
+                     <div className="p-4 bg-blue-50/50 border border-blue-100 rounded-lg">
+                        <p className="text-[10px] font-black text-[#129FED] uppercase mb-1">Insurance Notes</p>
+                        <p className="text-[10px] text-gray-600 leading-relaxed italic">
+                           "Your insurance provider ({m.insurance?.plan}) has been billed for this visit. The amount above represents your co-pay or deductible responsibility as of this statement date."
+                        </p>
+                     </div>
+                  </div>
+                  <div className="flex gap-2">
+                     <Button variant="outline" className="flex-1" onClick={closeModal}>Close</Button>
+                     <Button className="flex-1 bg-gray-900 text-white" onClick={() => { alert('Downloading Statement PDF...'); closeModal(); }}><Printer className="w-4 h-4 mr-2" /> Download Copy</Button>
+                  </div>
+               </div>
+            );
          default:
             return null;
       }
@@ -627,6 +704,7 @@ const Dashboard = () => {
                   <NavItem label="Medications" value="18 Day" icon={Pill} isActive={activeTab === 'medications'} onClick={() => setActiveTab('medications')} />
                   <NavItem label="Lab Results" value="10 Day" icon={FlaskConical} isActive={activeTab === 'lab_results'} onClick={() => setActiveTab('lab_results')} />
                   <NavItem label="Vitals" value="Today" icon={Thermometer} isActive={activeTab === 'vitals'} onClick={() => setActiveTab('vitals')} />
+                  <NavItem label="Financials" value={`${m.billing?.totalBalance > 0 ? '$' + m.billing?.totalBalance.toFixed(2) : 'Paid'}`} icon={CreditCard} isActive={activeTab === 'billing'} onClick={() => setActiveTab('billing')} />
                   <NavItem label="Fax" value="3 Rec" icon={Printer} isActive={activeTab === 'faxes'} onClick={() => setActiveTab('faxes')} />
                </Card>
 
@@ -847,49 +925,6 @@ const Dashboard = () => {
                   </Card>
                )}
 
-               {/* TAB: LAB RESULTS */}
-               {activeTab === 'lab_results' && (
-                  <Card className="p-0 overflow-hidden shadow-md border-t-4 border-t-blue-500 min-h-[400px] flex flex-col">
-                     <div className="p-4 bg-gray-50/50 border-b border-gray-100 flex justify-between items-center">
-                        <h2 className="text-[14px] font-extrabold text-gray-900 uppercase tracking-tight">Latest Lab Results</h2>
-                        <Badge variant="primary" className="bg-blue-100 text-blue-600 font-bold">{m.labResults?.length || 0} RECORDS</Badge>
-                     </div>
-                     <div className="p-0 max-h-[420px] overflow-x-hidden overflow-y-auto custom-scrollbar">
-                        <table className="w-full text-left text-[11px]">
-                           <thead className="bg-gray-50/50 border-b border-gray-100 text-[9px] font-extrabold text-gray-400 uppercase tracking-widest sticky top-0 z-10 backdrop-blur-sm">
-                              <tr>
-                                 <th className="py-2.5 px-4">Test Name</th>
-                                 <th className="py-2.5 px-3">Result</th>
-                                 <th className="py-2.5 px-3 hidden sm:table-cell">Ref Range</th>
-                                 <th className="py-2.5 px-3 hidden md:table-cell">Date</th>
-                                 <th className="py-2.5 px-4 text-right">Status</th>
-                              </tr>
-                           </thead>
-                           <tbody className="divide-y divide-gray-50">
-                              {m.labResults?.map((l, i) => (
-                                 <tr key={i} className="hover:bg-gray-50/50 transition-colors cursor-pointer group" onClick={() => openModal('VIEW_METRIC', { title: l.name, value: l.value, subValue: '', icon: FlaskConical })}>
-                                    <td className="py-3 px-4 font-bold text-gray-900 group-hover:text-blue-600">{l.name}</td>
-                                    <td className="py-3 px-3 font-black text-gray-800">{l.value}</td>
-                                    <td className="py-3 px-3 font-medium text-gray-500 hidden sm:table-cell">{l.range}</td>
-                                    <td className="py-3 px-3 font-bold text-gray-400 hidden md:table-cell text-[9px] tracking-tight">{l.date}</td>
-                                    <td className="py-3 px-4 text-right">
-                                       <Badge className={`${l.status === 'Normal' ? 'bg-emerald-50 text-emerald-600' : l.status === 'High' ? 'bg-rose-50 text-rose-600' : 'bg-orange-50 text-orange-600'} border-none text-[8px] font-black uppercase px-1.5 py-0`}>{l.status}</Badge>
-                                    </td>
-                                 </tr>
-                              ))}
-                           </tbody>
-                        </table>
-                     </div>
-                     <div className="px-4 py-2 bg-gray-50/30 border-t border-gray-100 mt-auto flex items-center justify-between">
-                        <div className="text-[10px] flex gap-2 items-center">
-                           <span className="text-gray-400 font-bold uppercase">Last Test:</span>
-                           <span className="text-gray-700 font-bold">{m.labResults?.[0]?.date} • Springfield Lab</span>
-                        </div>
-                        <Button variant="ghost" className="h-6 text-[9px] font-black text-[#129FED] uppercase hover:bg-blue-50" onClick={() => openModal('VIEW_LIST', { title: 'All Lab Results', items: m.labResults })}>Print All <ChevronRight className="w-3 h-3 ml-0.5" /></Button>
-                     </div>
-                  </Card>
-               )}
-
                {/* TAB: VITALS */}
                {activeTab === 'vitals' && (
                   <Card className="p-0 overflow-hidden shadow-md border-t-4 border-t-rose-500 min-h-[400px] flex flex-col">
@@ -946,6 +981,83 @@ const Dashboard = () => {
                               <Badge className={`${f.status === 'Success' || f.status === 'Sent' ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'} border-none text-[8px] font-black uppercase`}>{f.status}</Badge>
                            </div>
                         ))}
+                     </div>
+                  </Card>
+               )}
+
+                {/* TAB: BILLING / FINANCIALS */}
+               {activeTab === 'billing' && (
+                  <Card className="p-0 overflow-hidden shadow-md border-t-4 border-t-blue-500 min-h-[400px] flex flex-col">
+                     <div className="p-4 bg-gray-50/50 border-b border-gray-100 flex justify-between items-center">
+                        <h2 className="text-[14px] font-extrabold text-gray-900 uppercase tracking-tight">Financial Statement & Billing</h2>
+                        <div className="flex gap-2">
+                           <Badge variant="primary" className="bg-emerald-100 text-emerald-600 font-bold uppercase tracking-widest">{m.insurance?.plan || 'Medicare'}</Badge>
+                           <Badge variant="primary" className="bg-blue-100 text-blue-600 font-bold">ACC # {m.id}</Badge>
+                           <Badge variant="primary" className="bg-rose-100 text-rose-600 font-bold">BALANCE: ${m.billing?.totalBalance.toFixed(2)}</Badge>
+                        </div>
+                     </div>
+                     <div className="p-0 max-h-[420px] overflow-x-hidden overflow-y-auto custom-scrollbar">
+                        <table className="w-full text-left text-[11px]">
+                           <thead className="bg-gray-50/50 border-b border-gray-100 text-[9px] font-extrabold text-gray-400 uppercase tracking-widest sticky top-0 z-10 backdrop-blur-sm">
+                              <tr>
+                                 <th className="py-2.5 px-4">Date</th>
+                                 <th className="py-2.5 px-3">Description</th>
+                                 <th className="py-2.5 px-3">Invoice #</th>
+                                 <th className="py-2.5 px-3 text-right">Amount</th>
+                                 <th className="py-2.5 px-3 text-right">Status</th>
+                                 <th className="py-2.5 px-4 text-center">Actions</th>
+                              </tr>
+                           </thead>
+                           <tbody className="divide-y divide-gray-50">
+                              {m.billing?.records?.map((record, i) => (
+                                 <tr key={i} className="hover:bg-gray-50/50 transition-colors group">
+                                    <td className="py-3 px-4 font-bold text-gray-900">{record.date}</td>
+                                    <td className="py-3 px-3">
+                                       <span className="font-bold text-gray-700">{record.type || 'Services Rendered'}</span>
+                                       <p className="text-[9px] text-gray-400 font-medium uppercase mt-0.5">Primary Care Visit</p>
+                                    </td>
+                                    <td className="py-3 px-3 font-extrabold text-[#129FED]">{record.id}</td>
+                                    <td className="py-3 px-3 text-right font-black text-gray-900">${record.amount.toFixed(2)}</td>
+                                    <td className="py-3 px-3 text-right">
+                                       <Badge className={`${record.status === 'PAID' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'} border-none text-[8px] font-black uppercase px-1.5 py-0`}>{record.status}</Badge>
+                                    </td>
+                                    <td className="py-3 px-4">
+                                       <div className="flex justify-center gap-2">
+                                          <button 
+                                             onClick={() => openModal('VIEW_STATEMENT', record)}
+                                             className="p-1.5 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
+                                             title="View Statement"
+                                          >
+                                             <FileText size={14} />
+                                          </button>
+                                          {record.status !== 'PAID' && (
+                                             <button 
+                                                onClick={() => alert(`Initiating payment for invoice ${record.id}...`)}
+                                                className="p-1.5 rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-100 transition-colors"
+                                                title="Pay Now"
+                                             >
+                                                <CreditCard size={14} />
+                                             </button>
+                                           )}
+                                        </div>
+                                    </td>
+                                 </tr>
+                              ))}
+                           </tbody>
+                        </table>
+                     </div>
+                     <div className="px-4 py-3 bg-gray-50/30 border-t border-gray-100 mt-auto flex items-center justify-between">
+                        <div className="flex gap-4">
+                           <div className="text-[10px] flex gap-2 items-center">
+                              <span className="text-gray-400 font-bold uppercase tracking-widest">Next Due:</span>
+                              <span className="text-gray-700 font-black">Mar 15, 2025</span>
+                           </div>
+                           <div className="text-[10px] flex gap-2 items-center">
+                              <span className="text-gray-400 font-bold uppercase tracking-widest">Auto-Pay:</span>
+                              <span className="text-emerald-600 font-black">ENABLED (Visa ending 4242)</span>
+                           </div>
+                        </div>
+                        <Button variant="ghost" className="h-7 text-[10px] font-black text-[#129FED] uppercase tracking-widest hover:bg-blue-50" onClick={() => openModal('GENERIC_MESSAGE', { title: 'Financial Assistance', message: 'You are currently eligible for our Sliding Scale Fee program. Contact billing at (555) 012-3456 for details.' })}>Billing Support <ChevronRight className="w-3.5 h-3.5 ml-1" /></Button>
                      </div>
                   </Card>
                )}

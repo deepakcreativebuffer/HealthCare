@@ -248,14 +248,14 @@ const DetailedStatsView = ({ title, onBack }) => {
             <div className="relative">
               <Search
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
-                size={18}
+                size={14}
               />
               <input
                 type="text"
                 placeholder="Search records..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-1.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 w-full md:w-64 transition-all"
+                className="pl-8 pr-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 w-full md:w-64 transition-all"
               />
             </div>
           )}
@@ -308,8 +308,8 @@ const DetailedStatsView = ({ title, onBack }) => {
                   </button>
 
                   {showFilterMenu && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white border border-slate-200 rounded-xl shadow-xl z-50 py-2 animate-in fade-in slide-in-from-top-2 duration-200">
-                      <p className="px-4 py-1.5 text-[10px] font-black text-slate-400 uppercase ">
+                    <div className="absolute right-0 mt-2 w-42 bg-white border border-slate-200 rounded-lg shadow-xl z-50 py-1.5 animate-in fade-in slide-in-from-top-2 duration-200">
+                      <p className="px-3 py-1 text-[10px] font-black text-slate-400 uppercase ">
                         Filter By
                       </p>
                       {getFilterOptions().map((option) => (
@@ -336,9 +336,9 @@ const DetailedStatsView = ({ title, onBack }) => {
                 setEditResident(null);
                 setIsAdmitModalOpen(true);
               }}
-              className="flex items-center gap-2 px-4 py-1.5 bg-emerald-600 text-white rounded-lg font-bold hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-100"
+              className="flex items-center gap-2 px-3 py-1.5 bg-emerald-600 text-xs text-white rounded-lg font-medium hover:bg-emerald-700 transition-all shadow-sm shadow-emerald-100"
             >
-              <Plus size={18} />
+              <Plus size={16} />
               <span className="hidden sm:inline">Add Resident</span>
             </button>
           )}
@@ -353,7 +353,7 @@ const DetailedStatsView = ({ title, onBack }) => {
             title !== "Activity Log" && (
               <button
                 onClick={handleExport}
-                className="flex items-center gap-2 px-4 py-1.5 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-100"
+                className="flex items-center gap-2 px-4 py-1.5 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-all shadow-sm shadow-blue-100"
               >
                 <Download size={18} />
                 <span className="hidden sm:inline">Export</span>
@@ -695,7 +695,7 @@ const DetailedStatsView = ({ title, onBack }) => {
                       title !== "Staff Schedule" &&
                       title !== "Activity Log" && (
                         title.includes("Resident") ? (
-                          <td className="px-6 py-4 text-right">
+                          <td className="px-4 py-2 text-right">
                             <div className="flex items-center justify-end gap-2">
                               <ActionButton
                                 icon={Eye}
@@ -717,7 +717,7 @@ const DetailedStatsView = ({ title, onBack }) => {
                             </div>
                           </td>
                         ) : (
-                          <td className="px-6 py-4 text-right">
+                          <td className="px-4 py-2 text-right">
                             <button
                               onClick={() => setSelectedDetail(item)}
                               className="p-2 rounded-lg text-slate-400 hover:bg-blue-50 hover:text-blue-600 transition-all border border-transparent hover:border-blue-100"

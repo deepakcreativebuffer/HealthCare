@@ -23,97 +23,147 @@ import {
   LayoutGrid,
   Loader2,
   Search,
+  ShieldAlert,
+  XCircle,
 } from "lucide-react";
 import ClaimWorkspaceModal from "./ClaimWorkspaceModal";
 import EditProviderModal from "./modals/EditProviderModal";
 import ManageLocationsModal from "./modals/ManageLocationsModal";
 import CreateEncounterModal from "./modals/CreateEncounterModal";
 import NewClaimModal from "./modals/NewClaimModal";
+import ERAAccountingView from "./tabs/ERAAccountingView";
+import StatementsMessagingView from "./tabs/StatementsMessagingView";
+import FollowUpResolutionView from "./tabs/FollowUpResolutionView";
+import EDIResponseModal from "./EDIResponseModal";
 
-const PaymentsView = ({ payments }) => {
+const RejectionsView = ({ rejections, onFix, onViewAck }) => {
+  const [activeSubTab, setActiveSubTab] = React.useState("Clearinghouse Rejections");
+
   return (
     <div className="space-y-4 animate-in fade-in duration-500">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        {[
-          { label: "Total ERA Processed", value: "$124,500.00", color: "green", icon: FileUp },
-          { label: "Pending Verification", value: "$8,240.00", color: "orange", icon: Clock },
-          { label: "Checks Matched", value: "48", color: "blue", icon: DollarSign },
-          { label: "Electronic Remits", value: "156", color: "blue", icon: Activity },
-        ].map((stat, i) => (
-          <div key={i} className="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex items-center gap-4">
-            <div className={`w-10 h-10 rounded-lg flex items-center justify-center border ${stat.color === 'green' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : stat.color === 'orange' ? 'bg-amber-50 text-amber-600 border-amber-100' : 'bg-blue-50 text-blue-600 border-blue-100'}`}>
-              <stat.icon size={20} strokeWidth={2.5} />
-            </div>
-            <div>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">{stat.label}</p>
-              <h4 className="text-lg font-bold text-slate-800 leading-tight">{stat.value}</h4>
-            </div>
-          </div>
+      {/* Sub-Tabs */}
+      <div className="flex items-center gap-2 border-b border-slate-100 pb-px mb-4">
+        {["Clearinghouse Rejections", "Acknowledgments (999/277CA)"].map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setActiveSubTab(tab)}
+            className={`px-4 py-2 text-[12px] font-bold transition-all border-b-2 ${activeSubTab === tab
+              ? "border-[#129FED] text-[#129FED]"
+              : "border-transparent text-slate-400 hover:text-slate-600"
+              }`}
+          >
+            {tab}
+          </button>
         ))}
       </div>
 
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-        <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-[#E3F2FD] flex items-center justify-center text-[#129FED]">
-              <DollarSign size={16} />
+      {activeSubTab === "Clearinghouse Rejections" && (
+        <>
+          <div className="bg-[#FEF2F2] border border-red-100 rounded-xl p-4 flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-red-100 flex items-center justify-center text-red-600">
+              <AlertCircle size={24} />
             </div>
-            <h3 className="text-sm font-bold text-slate-800">Payments & Remittances (ERA/EOB)</h3>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
-              <input 
-                type="text" 
-                placeholder="Search by Payer or ID..." 
-                className="pl-9 pr-4 py-1.5 bg-white border border-slate-200 rounded-lg text-xs outline-none focus:border-[#129FED] w-64 transition-all"
-              />
+            <div>
+              <h3 className="text-lg font-bold text-red-900">Claim Rejections Dashboard</h3>
+              <p className="text-sm text-red-700 font-medium">There are {rejections.length} claims that require immediate correction and resubmission.</p>
             </div>
-            <button className="bg-[#129FED] text-white px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2 shadow-sm shadow-blue-100 transition-all hover:opacity-90">
-              <Plus size={14} /> Import ERA
-            </button>
           </div>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="bg-slate-50/30">
-                <th className="px-6 py-3 text-left text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Reference ID</th>
-                <th className="px-6 py-3 text-left text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Payer Name</th>
-                <th className="px-6 py-3 text-left text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Amount</th>
-                <th className="px-6 py-3 text-left text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Received Date</th>
-                <th className="px-6 py-3 text-left text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Method</th>
-                <th className="px-6 py-3 text-left text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Status</th>
-                <th className="px-6 py-3 text-left text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-50">
-              {payments.map((pay, idx) => (
-                <tr key={idx} className="hover:bg-slate-50/80 transition-all group">
-                  <td className="px-6 py-3.5 text-xs font-bold text-[#129FED]">{pay.id}</td>
-                  <td className="px-6 py-3.5 text-xs font-bold text-slate-700">{pay.payer}</td>
-                  <td className="px-6 py-3.5 text-xs font-bold text-slate-900">{pay.amount}</td>
-                  <td className="px-6 py-3.5 text-xs font-bold text-slate-500">{pay.date}</td>
-                  <td className="px-6 py-3.5">
-                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${pay.type === 'ERA' ? 'bg-blue-50 text-blue-600 border-blue-100' : 'bg-slate-50 text-slate-600 border-slate-100'}`}>
-                      {pay.type}
-                    </span>
-                  </td>
-                  <td className="px-6 py-3.5">
-                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${pay.status === 'Processed' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : pay.status === 'Matched' ? 'bg-blue-50 text-blue-600 border-blue-100' : 'bg-amber-50 text-amber-600 border-amber-100'}`}>
-                      {pay.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-3.5">
-                    <button className="text-[10px] font-bold text-[#129FED] hover:underline mr-3">View EOB</button>
-                    <button className="text-[10px] font-bold text-slate-400 hover:text-slate-600 underline">Match</button>
-                  </td>
+
+          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="bg-slate-50/30">
+                    <th className="px-6 py-3 text-left text-[10px] font-bold text-slate-400 uppercase">Claim ID</th>
+                    <th className="px-6 py-3 text-left text-[10px] font-bold text-slate-400 uppercase">Patient</th>
+                    <th className="px-6 py-3 text-left text-[10px] font-bold text-slate-400 uppercase">Payer</th>
+                    <th className="px-6 py-3 text-left text-[10px] font-bold text-slate-400 uppercase">Error Message</th>
+                    <th className="px-6 py-3 text-left text-[10px] font-bold text-slate-400 uppercase">Days Old</th>
+                    <th className="px-6 py-3 text-left text-[10px] font-bold text-slate-400 uppercase">Status</th>
+                    <th className="px-6 py-3 text-left text-[10px] font-bold text-slate-400 uppercase">Action</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-50">
+                  {rejections.map((rej, idx) => (
+                    <tr key={idx} className="hover:bg-red-50/30 transition-all group">
+                      <td className="px-6 py-3.5 text-xs font-bold text-red-600">{rej.id}</td>
+                      <td className="px-6 py-3.5 text-xs font-bold text-slate-700">{rej.patient}</td>
+                      <td className="px-6 py-3.5 text-xs font-bold text-slate-700">{rej.payer}</td>
+                      <td className="px-6 py-3.5">
+                        <div className="flex flex-col">
+                          <span className="text-xs font-bold text-slate-900">{rej.reason}</span>
+                          <span className="text-[10px] text-slate-400 font-medium">{rej.code}</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-3.5 text-xs font-bold text-slate-500">{rej.daysOld} days</td>
+                      <td className="px-6 py-3.5">
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold border bg-red-50 text-red-600 border-red-100">
+                          Rejected
+                        </span>
+                      </td>
+                      <td className="px-6 py-3.5">
+                        <button
+                          onClick={() => onFix(rej.id)}
+                          className="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold hover:bg-blue-700 transition-all shadow-sm shadow-blue-100"
+                        >
+                          Fix & Resubmit
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </>
+      )}
+
+      {activeSubTab === "Acknowledgments (999/277CA)" && (
+        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left">
+              <thead>
+                <tr className="bg-slate-50/30">
+                  <th className="px-6 py-3 text-[10px] font-bold text-slate-400 uppercase">Batch ID</th>
+                  <th className="px-6 py-3 text-[10px] font-bold text-slate-400 uppercase">Response Type</th>
+                  <th className="px-6 py-3 text-[10px] font-bold text-slate-400 uppercase">Control #</th>
+                  <th className="px-6 py-3 text-[10px] font-bold text-slate-400 uppercase">Status</th>
+                  <th className="px-6 py-3 text-[10px] font-bold text-slate-400 uppercase">Received</th>
+                  <th className="px-6 py-3 text-[10px] font-bold text-slate-400 uppercase">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-slate-50">
+                {[
+                  { id: 'BAT-9901', type: '999 Implementation Ack', ctrl: '000000123', status: 'Accepted', date: '10 mins ago' },
+                  { id: 'BAT-9900', type: '277CA Claim Ack', ctrl: '000000122', status: 'Rejected', date: '1 hour ago' },
+                  { id: 'BAT-9895', type: '277CA Claim Ack', ctrl: '000000120', status: 'Accepted', date: '3 hours ago' },
+                ].map((ack, idx) => (
+                  <tr key={idx} className="hover:bg-slate-50 transition-colors">
+                    <td className="px-6 py-3.5 text-xs font-bold text-slate-700">{ack.id}</td>
+                    <td className="px-6 py-3.5 text-xs font-medium text-slate-500">{ack.type}</td>
+                    <td className="px-6 py-3.5 text-xs font-mono text-[#129FED]">{ack.ctrl}</td>
+                    <td className="px-6 py-3.5">
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${ack.status === 'Accepted' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-red-50 text-red-600 border-red-100'
+                        }`}>
+                        {ack.status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-3.5 text-xs font-medium text-slate-400">{ack.date}</td>
+                    <td className="px-6 py-3.5">
+                      <button
+                        onClick={() => onViewAck(ack)}
+                        className="text-[10px] font-bold text-[#129FED] hover:underline"
+                      >
+                        View Raw Response
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
@@ -123,18 +173,18 @@ const ReportsView = ({ reportData, statusBreakdown, timeframe, setTimeframe, set
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 animate-in fade-in duration-500">
       <div className="lg:col-span-2 space-y-4">
         {/* Revenue Chart Card */}
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
           <div className="flex items-center justify-between mb-8">
             <div>
               <h3 className="text-[15px] font-bold text-slate-800">Revenue Performance</h3>
               <p className="text-xs text-slate-400 font-medium">Monthly collection trends vs previous period</p>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               <div className="flex items-center gap-1.5">
                 <div className="w-2.5 h-2.5 rounded-full bg-[#129FED]" />
                 <span className="text-[10px] font-bold text-slate-500 uppercase">Gross Revenue</span>
               </div>
-              <select 
+              <select
                 id="revenue-timeframe-select"
                 className="bg-slate-50 border-none outline-none text-[10px] font-bold text-slate-500 px-3 py-1.5 rounded-lg focus:ring-1 focus:ring-blue-200 cursor-pointer"
                 value={timeframe || "Last 6 months"}
@@ -151,17 +201,17 @@ const ReportsView = ({ reportData, statusBreakdown, timeframe, setTimeframe, set
               </select>
             </div>
           </div>
-          <div className="h-64 mt-4 relative">
-            <div className="absolute inset-x-0 bottom-0 flex items-end justify-between h-48 px-2">
+          <div className="h-45 mt-2 relative">
+            <div className="absolute inset-x-0 bottom-0 flex items-end justify-between h-40 px-2">
               {reportData.revenueByMonth.map((bar, idx) => (
                 <div key={idx} className="flex flex-col items-center gap-3 w-full group">
                   <div className="relative w-12 flex flex-col items-center justify-end h-full">
-                    <div 
+                    <div
                       className="w-full bg-gradient-to-t from-blue-600 to-[#129FED] rounded-t-lg transition-all duration-700 ease-out group-hover:opacity-80 relative group-hover:scale-x-110 origin-bottom"
                       style={{ height: `${(bar.amount / 60000) * 100}%` }}
                     >
                       <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[9px] font-bold px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-all pointer-events-none">
-                        ${(bar.amount/1000).toFixed(1)}k
+                        ${(bar.amount / 1000).toFixed(1)}k
                       </div>
                     </div>
                   </div>
@@ -183,21 +233,21 @@ const ReportsView = ({ reportData, statusBreakdown, timeframe, setTimeframe, set
 
         {/* Top Payers Table */}
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-          <div className="px-6 py-4 border-b border-slate-100">
+          <div className="px-4 py-3 border-b border-slate-100">
             <h3 className="text-sm font-bold text-slate-800">Top Payers by Volume</h3>
           </div>
           <table className="w-full">
             <tbody className="divide-y divide-slate-50">
               {reportData.payerDistribution.map((payer, idx) => (
                 <tr key={idx} className="hover:bg-slate-50/50 transition-all">
-                  <td className="px-6 py-3.5">
-                    <div className="flex items-center gap-3">
-                      <div className="w-6 h-6 rounded bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-600">{idx+1}</div>
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 rounded bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-600">{idx + 1}</div>
                       <span className="text-xs font-bold text-slate-700">{payer.name}</span>
                     </div>
                   </td>
-                  <td className="px-6 py-3.5 text-right font-bold text-xs text-slate-500">{payer.value}% of claims</td>
-                  <td className="px-6 py-3.5 text-right shrink-0">
+                  <td className="px-6 py-3 text-right font-bold text-xs text-slate-500">{payer.value}% of claims</td>
+                  <td className="px-6 py-3 text-right shrink-0">
                     <div className="w-24 bg-slate-100 h-1.5 rounded-full overflow-hidden inline-block align-middle ml-4">
                       <div className="bg-[#129FED] h-full transition-all duration-1000" style={{ width: `${payer.value}%` }} />
                     </div>
@@ -311,6 +361,10 @@ const BillingDashboard = () => {
   // State for Status Breakdown Filter
   const [breakdownTimeframe, setBreakdownTimeframe] = useState("6-month");
   const [showBreakdownDropdown, setShowBreakdownDropdown] = useState(false);
+
+  // EDI Modal States
+  const [isEDIModalOpen, setIsEDIModalOpen] = useState(false);
+  const [selectedBatch, setSelectedBatch] = useState(null);
 
   useEffect(() => {
     // Initial fetch
@@ -431,30 +485,19 @@ const BillingDashboard = () => {
     setIsClaimModalOpen(true);
   };
 
-  const handleStatClick = (label) => {
-    const filterMap = {
-      "Submitted Today": "Submitted",
-      "Pending Review": "Pending",
-      Rejected: "Rejected",
-    };
-
-    const filterValue = filterMap[label];
-    if (filterValue) {
-      setClaimsFilter(filterValue);
-      // Switch to appropriate tab
-      if (label === "Submitted Today" || label === "Rejected") {
-        setActiveTableTab("Submissions");
-      } else {
-        setActiveTableTab("Claims");
-      }
-
-      // Smooth scroll to table
-      const tableElement = document.getElementById("claims-table-section");
-      if (tableElement) {
-        tableElement.scrollIntoView({ behavior: "smooth" });
-      }
-    }
+  const openEDIModal = (batch) => {
+    setSelectedBatch(batch);
+    setIsEDIModalOpen(true);
   };
+
+  const billingTabs = [
+    { label: "Billing Dashboard", icon: LayoutGrid },
+    { label: "Accounting & Posting", icon: DollarSign },
+    { label: "Statements & Messaging", icon: FileText },
+    { label: "Follow-up & Resolution", icon: ShieldAlert },
+    { label: "Reports", icon: TrendingUp },
+    { label: "Rejections", icon: AlertCircle },
+  ];
 
   // Use the local billingData throughout the component
   const data = billingData;
@@ -489,11 +532,36 @@ const BillingDashboard = () => {
   const locations = data.locations;
   const encounter = data.encounter;
 
-  const billingTabs = [
-    { label: "Billing Dashboard", icon: LayoutGrid },
-    { label: "Payments / ERA", icon: DollarSign },
-    { label: "Reports", icon: TrendingUp },
-  ];
+  const handleStatClick = (label) => {
+    const filterMap = {
+      "Submitted Today": "Submitted",
+      "Pending Review": "Pending",
+      Rejected: "Rejected",
+    };
+
+    const filterValue = filterMap[label];
+    if (filterValue) {
+      if (label === "Rejected") {
+        setActiveBillingTab("Rejections");
+      } else {
+        setClaimsFilter(filterValue);
+        // Switch to appropriate tab
+        if (label === "Submitted Today") {
+          setActiveTableTab("Submissions");
+        } else {
+          setActiveTableTab("Claims");
+        }
+      }
+
+      // Smooth scroll to table area if in dashboard
+      if (activeBillingTab === "Billing Dashboard") {
+        const tableElement = document.getElementById("claims-table-section");
+        if (tableElement) {
+          tableElement.scrollIntoView({ behavior: "smooth" });
+        }
+      }
+    }
+  };
 
   const iconMap = {
     FileText,
@@ -535,6 +603,7 @@ const BillingDashboard = () => {
                 {tab.label}
               </button>
             ))}
+
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
@@ -982,7 +1051,10 @@ const BillingDashboard = () => {
                             Submission History
                           </h3>
                         </div>
-                        <button className="text-slate-500 hover:text-slate-800 text-[10px] font-bold flex items-center gap-1.5 px-2 py-1 rounded-lg border border-slate-200">
+                        <button
+                          onClick={() => setRefreshing(true)}
+                          className="text-slate-500 hover:text-slate-800 text-[10px] font-bold flex items-center gap-1.5 px-2 py-1 rounded-lg border border-slate-200"
+                        >
                           <Activity size={12} className="rotate-90" /> Refresh
                         </button>
                       </div>
@@ -1388,13 +1460,29 @@ const BillingDashboard = () => {
           </div>
         )}
 
-        {activeBillingTab === "Payments / ERA" && (
-          <PaymentsView payments={data.payments} />
+        {activeBillingTab === "Accounting & Posting" && (
+          <ERAAccountingView
+            eraData={data.eraData}
+            patientAccounting={data.patientAccounting}
+          />
+        )}
+
+        {activeBillingTab === "Statements & Messaging" && (
+          <StatementsMessagingView
+            patientAccounting={data.patientAccounting}
+          />
+        )}
+
+        {activeBillingTab === "Follow-up & Resolution" && (
+          <FollowUpResolutionView
+            arAging={data.arAging}
+            writeOffsHistory={data.writeOffsHistory}
+          />
         )}
 
         {activeBillingTab === "Reports" && (
-          <ReportsView 
-            reportData={data.reportData} 
+          <ReportsView
+            reportData={data.reportData}
             statusBreakdown={data.statusBreakdown}
             timeframe={timeframe}
             setTimeframe={setTimeframe}
@@ -1402,59 +1490,81 @@ const BillingDashboard = () => {
           />
         )}
 
-        {/* Footer App Version */}
-        <div className="text-center pb-8 pt-4 opacity-40">
-          <p className="text-[11px] font-extrabold text-slate-400 uppercase tracking-[0.2em]">
-            HEALTHCARE Inc. • v1.0.8
-          </p>
-        </div>
-
-        {isClaimModalOpen && (
-          <ClaimWorkspaceModal
-            isOpen={isClaimModalOpen}
-            onClose={() => setIsClaimModalOpen(false)}
-            claimId={selectedClaimId}
+        {activeBillingTab === "Rejections" && (
+          <RejectionsView
+            rejections={[
+              { id: 'CLM-00121', patient: 'John Doe', payer: 'UnitedHealth', reason: 'Missing NPI in Loop 2010AA', code: 'REJ-01', daysOld: 5 },
+              { id: 'CLM-00125', patient: 'Sarah Wilson', payer: 'Aetna PPO', reason: 'Invalid Diagnosis Pointer in Loop 2400', code: 'REJ-04', daysOld: 2 },
+              { id: 'CLM-00130', patient: 'Michael Brown', payer: 'Cigna Health', reason: 'Missing Subscriber ID in Loop 2010BA', code: 'REJ-09', daysOld: 1 }
+            ]}
+            onFix={(id) => openClaimModal(id)}
+            onViewAck={(ack) => openEDIModal(ack)}
           />
         )}
-
-        {/* New Functional Modals */}
-        <EditProviderModal
-          isOpen={isEditProviderModalOpen}
-          onClose={() => setIsEditProviderModalOpen(false)}
-          provider={provider}
-          onSave={(updated) => {
-            setBillingData((prev) => ({ ...prev, provider: updated }));
-          }}
-        />
-
-        <ManageLocationsModal
-          isOpen={isManageLocationsModalOpen}
-          onClose={() => setIsManageLocationsModalOpen(false)}
-          locations={locations}
-          onUpdate={(updated) => {
-            setBillingData((prev) => ({ ...prev, locations: updated }));
-          }}
-        />
-
-        <CreateEncounterModal
-          isOpen={isCreateEncounterModalOpen}
-          onClose={() => setIsCreateEncounterModalOpen(false)}
-          onSave={(newEncounter) => {
-            setBillingData((prev) => ({ ...prev, encounter: newEncounter }));
-          }}
-        />
-
-        <NewClaimModal
-          isOpen={isNewClaimModalOpen}
-          onClose={() => setIsNewClaimModalOpen(false)}
-          onSave={(newClaim) => {
-            setBillingData((prev) => ({
-              ...prev,
-              recentClaims: [newClaim, ...prev.recentClaims],
-            }));
-          }}
-        />
       </div>
+
+      {/* Footer App Version */}
+      <div className="text-center pb-8 pt-4 opacity-40">
+        <p className="text-[11px] font-extrabold text-slate-400 uppercase tracking-[0.2em]">
+          HEALTHCARE Inc. • v1.0.8
+        </p>
+      </div>
+
+      {isClaimModalOpen && (
+        <ClaimWorkspaceModal
+          isOpen={isClaimModalOpen}
+          onClose={() => setIsClaimModalOpen(false)}
+          claimId={selectedClaimId}
+        />
+      )}
+
+      <EDIResponseModal 
+        isOpen={isEDIModalOpen}
+        onClose={() => setIsEDIModalOpen(false)}
+        batchId={selectedBatch?.id}
+        type={selectedBatch?.type}
+        status={selectedBatch?.status}
+      />
+
+
+
+      {/* New Functional Modals */}
+      <EditProviderModal
+        isOpen={isEditProviderModalOpen}
+        onClose={() => setIsEditProviderModalOpen(false)}
+        provider={provider}
+        onSave={(updated) => {
+          setBillingData((prev) => ({ ...prev, provider: updated }));
+        }}
+      />
+
+      <ManageLocationsModal
+        isOpen={isManageLocationsModalOpen}
+        onClose={() => setIsManageLocationsModalOpen(false)}
+        locations={locations}
+        onUpdate={(updated) => {
+          setBillingData((prev) => ({ ...prev, locations: updated }));
+        }}
+      />
+
+      <CreateEncounterModal
+        isOpen={isCreateEncounterModalOpen}
+        onClose={() => setIsCreateEncounterModalOpen(false)}
+        onSave={(newEncounter) => {
+          setBillingData((prev) => ({ ...prev, encounter: newEncounter }));
+        }}
+      />
+
+      <NewClaimModal
+        isOpen={isNewClaimModalOpen}
+        onClose={() => setIsNewClaimModalOpen(false)}
+        onSave={(newClaim) => {
+          setBillingData((prev) => ({
+            ...prev,
+            recentClaims: [newClaim, ...prev.recentClaims],
+          }));
+        }}
+      />
     </main>
   );
 };

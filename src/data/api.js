@@ -157,6 +157,58 @@ export const api = {
           { code: "80053", qty: 1, amount: "$45.00" },
         ],
       },
+      eraData: [
+        {
+          id: 'ERA-1001', claimId: 'CLM-00122', payer: 'Aetna PPO', billed: 350.00, allowed: 280.00, paid: 240.00, contractualAdjustment: 70.00, patientResp: 40.00, remark: 'Claim processed according to contract',
+          checkNumber: 'CHK-29384756', checkDate: '02/10/2025', payerAddress: 'PO Box 14079, Lexington, KY 40512',
+          patient: 'Elizabeth Thomas', patientId: 'PT-003', subscriberId: 'AET-998877',
+          renderingProvider: 'Dr. Emily Roberts', renderingNPI: '1234567890',
+          serviceLines: [
+            { lineNo: 1, cpt: '99214', description: 'Office Visit - Level 4', dos: '01/28/2025', units: 1, billed: 200.00, allowed: 160.00, paid: 130.00, coInsurance: 20.00, copay: 10.00, deductible: 0, adjustmentCode: 'CO-45', adjustmentAmount: 40.00, remarkCode: 'N362' },
+            { lineNo: 2, cpt: '80053', description: 'Comprehensive Metabolic Panel', dos: '01/28/2025', units: 1, billed: 150.00, allowed: 120.00, paid: 110.00, coInsurance: 10.00, copay: 0, deductible: 0, adjustmentCode: 'CO-45', adjustmentAmount: 30.00, remarkCode: 'N362' }
+          ],
+          adjustmentReasons: [
+            { code: 'CO-45', description: 'Charge exceeds fee schedule/maximum allowable or contracted/legislated fee arrangement', amount: 70.00 }
+          ],
+          remarkCodes: [
+            { code: 'N362', description: 'The number of Days or Units of Service exceeds our acceptable maximum.' }
+          ]
+        },
+        {
+          id: 'ERA-1002', claimId: 'CLM-00119', payer: 'Medicare', billed: 350.00, allowed: 180.00, paid: 144.00, contractualAdjustment: 170.00, patientResp: 36.00, remark: 'Co-insurance applied',
+          checkNumber: 'EFT-00112233', checkDate: '02/08/2025', payerAddress: 'CMS, 7500 Security Blvd, Baltimore, MD 21244',
+          patient: 'Barbara Taylor', patientId: 'PT-004', subscriberId: 'MCR-112233',
+          renderingProvider: 'Dr. John Chen', renderingNPI: '0987654321',
+          serviceLines: [
+            { lineNo: 1, cpt: '99213', description: 'Office Visit - Level 3', dos: '01/25/2025', units: 1, billed: 150.00, allowed: 80.00, paid: 64.00, coInsurance: 16.00, copay: 0, deductible: 0, adjustmentCode: 'CO-45', adjustmentAmount: 70.00, remarkCode: 'MA130' },
+            { lineNo: 2, cpt: '36415', description: 'Venipuncture', dos: '01/25/2025', units: 1, billed: 50.00, allowed: 25.00, paid: 20.00, coInsurance: 5.00, copay: 0, deductible: 0, adjustmentCode: 'CO-45', adjustmentAmount: 25.00, remarkCode: 'N/A' },
+            { lineNo: 3, cpt: '85025', description: 'CBC with Differential', dos: '01/25/2025', units: 1, billed: 150.00, allowed: 75.00, paid: 60.00, coInsurance: 15.00, copay: 0, deductible: 0, adjustmentCode: 'CO-45', adjustmentAmount: 75.00, remarkCode: 'MA130' }
+          ],
+          adjustmentReasons: [
+            { code: 'CO-45', description: 'Charge exceeds fee schedule/maximum allowable or contracted/legislated fee arrangement', amount: 170.00 }
+          ],
+          remarkCodes: [
+            { code: 'MA130', description: 'Your claim contains incomplete and/or invalid information.' }
+          ]
+        }
+      ],
+      patientAccounting: [
+        { patientId: 'PT-001', name: 'David Smith', billed: 350.00, insurancePaid: 240.00, writeOffs: 70.00, balance: 40.00, status: 'Statement Sent', lastPayment: '02/01/2025' },
+        { patientId: 'PT-002', name: 'Maria Santos', billed: 500.00, insurancePaid: 350.00, writeOffs: 100.00, balance: 50.00, status: 'Paid', lastPayment: '02/10/2025' }
+      ],
+      arAging: {
+        buckets: [
+          { range: '0-30 Days', amount: 45000, color: '#10b981' },
+          { range: '31-60 Days', amount: 15200, color: '#3b82f6' },
+          { range: '61-90 Days', amount: 8400, color: '#f59e0b' },
+          { range: '90+ Days', amount: 12500, color: '#ef4444' }
+        ],
+        totalOutstanding: 81100
+      },
+      writeOffsHistory: [
+        { id: 'WO-001', claimId: 'CLM-00121', amount: 350.00, reason: 'Untimely Filing', date: '02/15/2025', user: 'Admin' },
+        { id: 'WO-002', claimId: 'CLM-00110', amount: 120.00, reason: 'Contractual Adjustment', date: '02/14/2025', user: 'Billing Specialist' }
+      ]
     };
     return simulateAPI(data);
   },
